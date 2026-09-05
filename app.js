@@ -362,13 +362,12 @@ function initEspecialesBase() {
     let bp = 6000;
     let fab = 5000;
 
-    // Cálculo Precio BP
+    // Cálculo Precio BP (crecimiento continuo sin tope en 300)
     if (lvl <= 250) {
       bp = 6000 + (lvl - 150) * 125;
-    } else if (lvl <= 300) {
-      bp = 18500 + (lvl - 250) * 230;
     } else {
-      bp = 30000; // Tope en 30k para nivel 300+
+      // Sigue subiendo 230 DDC por cada nivel a partir del 250 en adelante
+      bp = 18500 + (lvl - 250) * 230;
     }
 
     // Cálculo Precio Fabricado
