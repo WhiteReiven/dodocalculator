@@ -20,25 +20,33 @@ const STATS_BASE = [
   { key: 'velocidad', label: 'VELOCIDAD', type: 'other' }
 ];
 
-// Elementos DOM
+// Tabs
 const tabMutated = document.getElementById('tab-mutated');
 const tabBase = document.getElementById('tab-base');
 const secMutated = document.getElementById('section-mutated');
 const secBase = document.getElementById('section-base');
 
-const selectMutated = document.getElementById('select-mutated-dino');
+// Mutados DOM
+const inputMutated = document.getElementById('search-mutated-dino');
+const dropdownMutated = document.getElementById('dropdown-mutated-dino');
 const mutatedStatsList = document.getElementById('mutated-stats-list');
 const mutatedBasePriceEl = document.getElementById('mutated-base-price');
 const priceUncasteredEl = document.getElementById('price-uncastered');
 const priceCasteredEl = document.getElementById('price-castered');
 
-const selectBase = document.getElementById('select-base-dino');
+// Base DOM
+const inputBase = document.getElementById('search-base-dino');
+const dropdownBase = document.getElementById('dropdown-base-dino');
 const baseStatsGrid = document.getElementById('base-stats-grid');
 const baseDinoTierEl = document.getElementById('base-dino-tier');
 const baseTotalLvlEl = document.getElementById('base-total-lvl');
 const basePriceTotalEl = document.getElementById('base-price-total');
 
-// Cambiar de Pestaña
+// Estado de selección actual
+let currentMutatedDino = Object.keys(MUTATED_DINOS)[0] || '';
+let currentBaseDino = Object.keys(BASE_DINOS)[0] || '';
+
+// Manejo de tabs
 tabMutated.addEventListener('click', () => {
   tabMutated.classList.add('active');
   tabBase.classList.remove('active');
@@ -53,13 +61,59 @@ tabBase.addEventListener('click', () => {
   secMutated.classList.add('hidden');
 });
 
-// Inicializar Dinos Mutados
+// Helper genérico para autocompletado con búsqueda en tiempo real
+function setupAutocomplete(inputEl, dropdownEl, listKeys, onSelect) {
+  function renderList(query = '') {
+    dropdownEl.innerHTML = '';
+    const cleanQuery = query.toLowerCase().trim();
+    const filtered = listKeys.filter(item => item.toLowerCase().includes(cleanQuery));
+
+    if (filtered.length === 0) {
+      const emptyLi = document.createElement('li');
+      emptyLi.className = 'autocomplete-empty';
+      emptyLi.textContent = 'No se encontraron coincidencias';
+      dropdownEl.appendChild(emptyLi);
+      dropdownEl.classList.remove('hidden');
+      return;
+    }
+
+    filtered.forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'autocomplete-item';
+      li.textContent = item;
+      li.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        inputEl.value = item;
+        dropdownEl.classList.add('hidden');
+        onSelect(item);
+      });
+      dropdownEl.appendChild(li);
+    });
+
+    dropdownEl.classList.remove('hidden');
+  }
+
+  inputEl.addEventListener('input', () => {
+    renderList(inputEl.value);
+  });
+
+  inputEl.addEventListener('focus', () => {
+    renderList(inputEl.value);
+  });
+
+  inputEl.addEventListener('blur', () => {
+    setTimeout(() => dropdownEl.classList.add('hidden'), 150);
+  });
+}
+
+// Inicialización de Dinos Mutados
 function initMutated() {
-  Object.keys(MUTATED_DINOS).sort().forEach(dino => {
-    const opt = document.createElement('option');
-    opt.value = dino;
-    opt.textContent = dino;
-    selectMutated.appendChild(opt);
+  const dinosList = Object.keys(MUTATED_DINOS).sort();
+  inputMutated.value = currentMutatedDino;
+
+  setupAutocomplete(inputMutated, dropdownMutated, dinosList, (selected) => {
+    currentMutatedDino = selected;
+    calculateMutated();
   });
 
   STATS_MUTADOS.forEach(stat => {
@@ -77,19 +131,13 @@ function initMutated() {
     row.querySelector('.stat-input').addEventListener('input', calculateMutated);
   });
 
-  selectMutated.addEventListener('change', calculateMutated);
   calculateMutated();
 }
 
 function calculateMutated() {
-  const dinoName = selectMutated.value;
-  const basePrice = MUTATED_DINOS[dinoName] || 0;
+  const basePrice = MUTATED_DINOS[currentMutatedDino] || 0;
   mutatedBasePriceEl.textContent = `${basePrice.toLocaleString()} DodoCoins`;
 
-  // Factores según fórmula Excel:
-  // G4 = ((G2 / 4) * 1.5) / 254
-  // H4 = ((G2 / 4) / 2) / 254
-  // I4 = ((G2 / 4) * 1.25) / 254
   const factorPrincipal = ((basePrice / 4) * 1.5) / 254;
   const factorSecundariaH = ((basePrice / 4) / 2) / 254;
   const factorSecundariaI = ((basePrice / 4) * 1.25) / 254;
@@ -100,11 +148,9 @@ function calculateMutated() {
 
   let totalSinCastrar = 0;
 
-  // Cálculo de estadísticas principales
   if (chkVida) totalSinCastrar += Number(document.getElementById('val-mut-vida').value || 0) * factorPrincipal;
   if (chkDano) totalSinCastrar += Number(document.getElementById('val-mut-dano').value || 0) * factorPrincipal;
 
-  // Cálculo de estadísticas secundarias según reglas de exclusión mutua de la planilla
   const secStats = ['peso', 'energia', 'comida', 'oxigeno', 'velocidad'];
   let activeSecBefore = 0;
 
@@ -133,13 +179,14 @@ function calculateMutated() {
   priceCasteredEl.textContent = `${finalCastrado.toLocaleString()} DodoCoins`;
 }
 
-// Inicializar Dinos Base
+// Inicialización de Dinos Base
 function initBase() {
-  Object.keys(BASE_DINOS).sort().forEach(dino => {
-    const opt = document.createElement('option');
-    opt.value = dino;
-    opt.textContent = dino;
-    selectBase.appendChild(opt);
+  const dinosList = Object.keys(BASE_DINOS).sort();
+  inputBase.value = currentBaseDino;
+
+  setupAutocomplete(inputBase, dropdownBase, dinosList, (selected) => {
+    currentBaseDino = selected;
+    calculateBase();
   });
 
   STATS_BASE.forEach(stat => {
@@ -153,13 +200,11 @@ function initBase() {
     card.querySelector('input').addEventListener('input', calculateBase);
   });
 
-  selectBase.addEventListener('change', calculateBase);
   calculateBase();
 }
 
 function calculateBase() {
-  const dinoName = selectBase.value;
-  const tier = BASE_DINOS[dinoName] ?? 4;
+  const tier = BASE_DINOS[currentBaseDino] ?? 4;
   baseDinoTierEl.textContent = `Tier ${tier}`;
 
   const rates = BASE_TIER_RATES[tier] || BASE_TIER_RATES[4];
@@ -184,6 +229,5 @@ function calculateBase() {
   basePriceTotalEl.textContent = `${Math.round(totalPrice).toLocaleString()} DodoCoins`;
 }
 
-// Arranque
 initMutated();
 initBase();
