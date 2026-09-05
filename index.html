@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <!-- Fondo con degradados de brillo neón idéntico al sitio -->
   <div class="glow-bg top-left"></div>
   <div class="glow-bg top-right"></div>
 
@@ -23,7 +22,6 @@
   </header>
 
   <main class="container">
-    <!-- Selector de Modo -->
     <div class="tabs-wrapper">
       <button class="tab-btn active" id="tab-mutated">Dinos Mutados</button>
       <button class="tab-btn" id="tab-base">Dinos Base</button>
@@ -32,8 +30,11 @@
     <!-- SECCIÓN MUTADOS -->
     <section id="section-mutated" class="card-calculator">
       <div class="form-group">
-        <label for="select-mutated-dino">Seleccionar Criatura Mutada</label>
-        <select id="select-mutated-dino" class="custom-select"></select>
+        <label for="search-mutated-dino">Buscar Criatura Mutada</label>
+        <div class="autocomplete-wrapper">
+          <input type="text" id="search-mutated-dino" class="custom-search-input" placeholder="Escribe para buscar..." autocomplete="off" />
+          <ul id="dropdown-mutated-dino" class="autocomplete-list hidden"></ul>
+        </div>
       </div>
 
       <div class="info-banner">
@@ -48,9 +49,7 @@
         <span>Tipo</span>
       </div>
 
-      <div class="stats-list" id="mutated-stats-list">
-        <!-- Renderizado dinámicamente -->
-      </div>
+      <div class="stats-list" id="mutated-stats-list"></div>
 
       <div class="results-container">
         <div class="result-box">
@@ -67,8 +66,11 @@
     <!-- SECCIÓN BASE -->
     <section id="section-base" class="card-calculator hidden">
       <div class="form-group">
-        <label for="select-base-dino">Seleccionar Criatura Base</label>
-        <select id="select-base-dino" class="custom-select"></select>
+        <label for="search-base-dino">Buscar Criatura Base</label>
+        <div class="autocomplete-wrapper">
+          <input type="text" id="search-base-dino" class="custom-search-input" placeholder="Escribe para buscar..." autocomplete="off" />
+          <ul id="dropdown-base-dino" class="autocomplete-list hidden"></ul>
+        </div>
       </div>
 
       <div class="info-banner">
@@ -78,9 +80,7 @@
         <strong id="base-total-lvl" class="text-neon">1</strong>
       </div>
 
-      <div class="stats-grid" id="base-stats-grid">
-        <!-- Puntos asignables por stat -->
-      </div>
+      <div class="stats-grid" id="base-stats-grid"></div>
 
       <div class="results-container">
         <div class="result-box highlight full-width">
