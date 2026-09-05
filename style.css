@@ -341,3 +341,127 @@ body {
 .hidden {
   display: none !important;
 }
+
+/* ==========================================
+   OPTIMIZACIONES PARA DISPOSITIVOS MÓVILES
+   ========================================== */
+
+@media (max-width: 768px) {
+  /* Contenedor y espaciado general */
+  .container {
+    padding: 0 12px;
+  }
+
+  .site-header {
+    padding: 30px 12px 20px;
+  }
+
+  .brand-title {
+    font-size: 2rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .card-calculator {
+    padding: 18px 14px;
+    border-radius: 12px;
+  }
+
+  /* Pestañas: cuadrícula de 2x2 para no desbordar la pantalla */
+  .tabs-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .tab-btn {
+    padding: 10px 8px;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  /* Info Banner flexible */
+  .info-banner {
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+
+  .info-banner span[style*="margin-left"] {
+    margin-left: 0 !important;
+  }
+
+  /* Lista de estadísticas en Dinos Mutados */
+  .stats-table-header {
+    display: none; /* Oculta encabezados en móvil para ganar espacio */
+  }
+
+  .stat-row {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "chk label badge"
+      "chk input input";
+    row-gap: 8px;
+    column-gap: 10px;
+    padding: 12px 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
+  .stat-checkbox {
+    grid-area: chk;
+    width: 22px;
+    height: 22px;
+    align-self: center;
+  }
+
+  .stat-row label {
+    grid-area: label;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .stat-badge {
+    grid-area: badge;
+    justify-self: end;
+  }
+
+  .stat-input {
+    grid-area: input;
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px 12px;
+  }
+
+  /* Grilla de Dinos Base */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Cajas de resultados a columna completa */
+  .results-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .result-value {
+    font-size: 1.5rem;
+  }
+
+  /* Entradas de texto táctiles */
+  .custom-search-input,
+  .custom-select {
+    font-size: 16px; /* Evita que Safari en iOS haga zoom automático */
+    padding: 12px 14px;
+  }
+
+  .autocomplete-item {
+    padding: 12px 16px;
+  }
+}
