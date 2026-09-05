@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculadora de Dinos | Wild Dodo Gaming</title>
+  <title>Calculadora | Wild Dodo Gaming</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,15 +16,18 @@
   <header class="site-header">
     <div class="brand">
       <span class="brand-badge">WILD DODO</span>
-      <h1 class="brand-title">Calculadora de Dinos</h1>
-      <p class="brand-subtitle">Cotizador oficial según estadísticas para servidores ASA/ASE</p>
+      <h1 class="brand-title">Calculadora de Mercado</h1>
+      <p class="brand-subtitle">Cotizador oficial para Servidores ASA/ASE</p>
     </div>
   </header>
 
   <main class="container">
+    <!-- Pestañas Principales -->
     <div class="tabs-wrapper">
       <button class="tab-btn active" id="tab-mutated">Dinos Mutados</button>
       <button class="tab-btn" id="tab-base">Dinos Base</button>
+      <button class="tab-btn" id="tab-recursos">Recursos</button>
+      <button class="tab-btn" id="tab-bp">BP Armas & Monturas</button>
     </div>
 
     <!-- SECCIÓN MUTADOS -->
@@ -32,7 +35,7 @@
       <div class="form-group">
         <label for="search-mutated-dino">Buscar Criatura Mutada</label>
         <div class="autocomplete-wrapper">
-          <input type="text" id="search-mutated-dino" class="custom-search-input" placeholder="Escribe para buscar..." autocomplete="off" />
+          <input type="text" id="search-mutated-dino" class="custom-search-input" placeholder="Escribe para buscar dino mutado..." autocomplete="off" />
           <ul id="dropdown-mutated-dino" class="autocomplete-list hidden"></ul>
         </div>
       </div>
@@ -43,7 +46,7 @@
       </div>
 
       <div class="stats-table-header">
-        <span>Incluir Stat</span>
+        <span>Incluir</span>
         <span>Estadística</span>
         <span>Puntos / Valor</span>
         <span>Tipo</span>
@@ -68,7 +71,7 @@
       <div class="form-group">
         <label for="search-base-dino">Buscar Criatura Base</label>
         <div class="autocomplete-wrapper">
-          <input type="text" id="search-base-dino" class="custom-search-input" placeholder="Escribe para buscar..." autocomplete="off" />
+          <input type="text" id="search-base-dino" class="custom-search-input" placeholder="Escribe para buscar dino base..." autocomplete="off" />
           <ul id="dropdown-base-dino" class="autocomplete-list hidden"></ul>
         </div>
       </div>
@@ -86,6 +89,67 @@
         <div class="result-box highlight full-width">
           <span class="result-label">Precio Estimado Base</span>
           <span class="result-value" id="base-price-total">0 DodoCoins</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN RECURSOS -->
+    <section id="section-recursos" class="card-calculator hidden">
+      <div class="form-group">
+        <label for="search-recurso">Buscar Recurso</label>
+        <div class="autocomplete-wrapper">
+          <input type="text" id="search-recurso" class="custom-search-input" placeholder="Escribe para buscar recurso (ej. Perla Negra, Metal)..." autocomplete="off" />
+          <ul id="dropdown-recurso" class="autocomplete-list hidden"></ul>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <span>Tasa de cambio: </span>
+        <strong id="recurso-rate-info" class="text-neon">1 DDC = 1 unidad</strong>
+      </div>
+
+      <div class="form-group">
+        <label for="input-recurso-cant">Indicar Cantidad a Convertir</label>
+        <input type="number" id="input-recurso-cant" class="custom-search-input" value="1000" min="1" />
+      </div>
+
+      <div class="results-container">
+        <div class="result-box highlight full-width">
+          <span class="result-label">Precio en DodoCoins</span>
+          <span class="result-value" id="recurso-price-total">0 DodoCoins</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN BP ARMAS & MONTURAS -->
+    <section id="section-bp" class="card-calculator hidden">
+      <div class="form-group">
+        <label for="select-bp-category">Tipo de Ítem</label>
+        <select id="select-bp-category" class="custom-select"></select>
+      </div>
+
+      <div class="form-group">
+        <label for="search-bp-item">Buscar Objeto</label>
+        <div class="autocomplete-wrapper">
+          <input type="text" id="search-bp-item" class="custom-search-input" placeholder="Escribe para buscar arma o montura..." autocomplete="off" />
+          <ul id="dropdown-bp-item" class="autocomplete-list hidden"></ul>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <span>Precio Tienda F3: </span>
+        <strong id="bp-f3-price" class="text-neon">0 DodoCoins</strong>
+      </div>
+
+      <div class="form-group">
+        <label id="label-bp-stat" for="input-bp-stat">Indicar Daño / Armadura (%)</label>
+        <input type="number" id="input-bp-stat" class="custom-search-input" value="200" min="0" />
+      </div>
+
+      <div class="results-container">
+        <div class="result-box highlight full-width">
+          <span class="result-label">Precio Calculado</span>
+          <span class="result-value" id="bp-price-total">0 DodoCoins</span>
         </div>
       </div>
     </section>
