@@ -66,32 +66,105 @@
       </div>
     </section>
 
-    <!-- SECCIÓN BASE -->
-    <section id="section-base" class="card-calculator hidden">
+    <!-- PESTAÑA 2: DINOS BASE (+ MEK & GACHA) -->
+<section id="section-base" class="calculator-section hidden">
+  <div class="base-layout-container">
+    
+    <!-- COLUMNA IZQUIERDA: CALCULADORA DINO BASE -->
+    <div class="card-calculator main-calc-card">
       <div class="form-group">
-        <label for="search-base-dino">Buscar Criatura Base</label>
+        <label for="search-base-dino">Seleccione Dino</label>
         <div class="autocomplete-wrapper">
-          <input type="text" id="search-base-dino" class="custom-search-input" placeholder="Escribe para buscar dino base..." autocomplete="off" />
+          <input type="text" id="search-base-dino" class="custom-search-input" placeholder="Buscar dino base..." autocomplete="off">
           <ul id="dropdown-base-dino" class="autocomplete-list hidden"></ul>
         </div>
       </div>
 
       <div class="info-banner">
-        <span>Tier Calculado: </span>
-        <strong id="base-dino-tier" class="text-neon">Tier 0</strong>
-        <span style="margin-left: auto;">Nivel Total: </span>
-        <strong id="base-total-lvl" class="text-neon">1</strong>
+        <span>Categoría oficial:</span>
+        <span id="base-dino-tier" class="text-neon">Tier 4</span>
       </div>
 
-      <div class="stats-grid" id="base-stats-grid"></div>
+      <div class="stats-grid" id="base-stats-grid">
+        <!-- Generado dinámicamente por app.js -->
+      </div>
 
       <div class="results-container">
-        <div class="result-box highlight full-width">
-          <span class="result-label">Precio Estimado Base</span>
-          <span class="result-value" id="base-price-total">0 DodoCoins</span>
+        <div class="result-box">
+          <span class="result-label">Nivel del Dino</span>
+          <span id="base-total-lvl" class="result-value">1</span>
+        </div>
+        <div class="result-box highlight">
+          <span class="result-label">Precio Final</span>
+          <span id="base-price-total" class="result-value">0 DodoCoins</span>
         </div>
       </div>
-    </section>
+    </div>
+
+    <!-- COLUMNA DERECHA: TARJETAS FIJAS MEK Y GACHA -->
+    <div class="side-specials-column">
+      
+      <!-- TARJETA MEK -->
+      <div class="card-calculator side-card">
+        <div class="side-card-header">
+          <span class="side-icon">⚙️</span>
+          <div>
+            <h3 class="side-card-title">MEK</h3>
+            <span class="side-card-sub">Calculadora de precio</span>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label for="mek-level-input">Indicar LVL</label>
+          <input type="number" id="mek-level-input" class="custom-search-input" value="150" min="150" max="540">
+          <span class="helper-text" id="mek-helper-text">Nivel mínimo 150 · Máximo 540</span>
+        </div>
+
+        <div class="mek-results-grid">
+          <div class="side-result-box">
+            <span class="side-res-label">PRECIO BP</span>
+            <span id="mek-price-bp" class="side-res-value text-yellow">6.000</span>
+          </div>
+          <div class="side-result-box">
+            <span class="side-res-label">PRECIO FABRICADO</span>
+            <span id="mek-price-fab" class="side-res-value text-cyan">5.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARJETA GACHA -->
+      <div class="card-calculator side-card">
+        <div class="side-card-header">
+          <span class="side-icon">💎</span>
+          <div>
+            <h3 class="side-card-title">GACHA</h3>
+            <span class="side-card-sub">Precio por recurso</span>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label for="select-gacha-recurso">Recurso</label>
+          <select id="select-gacha-recurso" class="custom-search-input custom-select">
+            <option value="ELEMENTO">ELEMENTO</option>
+            <option value="POLIMERO">POLIMERO</option>
+            <option value="PERLA NEGRA">PERLA NEGRA</option>
+            <option value="METAL">METAL</option>
+            <option value="CRISTAL">CRISTAL</option>
+            <option value="OBSIDIANA">OBSIDIANA</option>
+            <option value="VARIOS">VARIOS</option>
+          </select>
+        </div>
+
+        <div class="side-result-box highlight-purple">
+          <span class="side-res-label">PRECIO</span>
+          <span id="gacha-price-total" class="side-res-value text-purple">15.000</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
 
     <!-- SECCIÓN RECURSOS -->
     <section id="section-recursos" class="card-calculator hidden">
