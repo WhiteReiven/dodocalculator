@@ -324,6 +324,81 @@ function calculateBP() {
   bpPriceTotalEl.textContent = `${Math.round(total).toLocaleString()} DodoCoins`;
 }
 
+
+// --- LÓGICA ESPECIALES: MEK & GACHA ---
+const GACHA_PRECIOS = {
+  "ELEMENTO": 15000,
+  "POLIMERO": 8000,
+  "PERLA NEGRA": 8000,
+  "METAL": 6000,
+  "CRISTAL": 6000,
+  "OBSIDIANA": 6000,
+  "VARIOS": 4000
+};
+
+function initEspecialesBase() {
+  const mekInput = document.getElementById('mek-level-input');
+  const mekHelper = document.getElementById('mek-helper-text');
+  const mekPriceBp = document.getElementById('mek-price-bp');
+  const mekPriceFab = document.getElementById('mek-price-fab');
+
+  const gachaSelect = document.getElementById('select-gacha-recurso');
+  const gachaTotal = document.getElementById('gacha-price-total');
+
+  function calcularMek() {
+    const lvl = Number(mekInput.value);
+
+    if (isNaN(lvl) || lvl < 150 || lvl > 540) {
+      mekHelper.textContent = "¡Error! Nivel permitido entre 150 y 540";
+      mekHelper.classList.add("error");
+      mekPriceBp.textContent = "---";
+      mekPriceFab.textContent = "---";
+      return;
+    }
+
+    mekHelper.textContent = "Nivel mínimo 150 · Máximo 540";
+    mekHelper.classList.remove("error");
+
+    let bp = 6000;
+    let fab = 5000;
+
+    // Cálculo Precio BP
+    if (lvl <= 250) {
+      bp = 6000 + (lvl - 150) * 125;
+    } else if (lvl <= 300) {
+      bp = 18500 + (lvl - 250) * 230;
+    } else {
+      bp = 30000; // Tope en 30k para nivel 300+
+    }
+
+    // Cálculo Precio Fabricado
+    if (lvl <= 250) {
+      fab = 5000 + (lvl - 150) * 70;
+    } else if (lvl <= 300) {
+      fab = 12000 + (lvl - 250) * 100;
+    } else {
+      fab = 17000 + (lvl - 300) * 137.5;
+    }
+
+    mekPriceBp.textContent = Math.round(bp).toLocaleString();
+    mekPriceFab.textContent = Math.round(fab).toLocaleString();
+  }
+
+  function calcularGacha() {
+    const rec = gachaSelect.value;
+    const precio = GACHA_PRECIOS[rec] || 4000;
+    gachaTotal.textContent = precio.toLocaleString();
+  }
+
+  if (mekInput) mekInput.addEventListener('input', calcularMek);
+  if (gachaSelect) gachaSelect.addEventListener('change', calcularGacha);
+
+  calcularMek();
+  calcularGacha();
+}
+
+// Ejecutar al cargar
+initEspecialesBase();
 // Inicialización general
 initMutated();
 initBase();
