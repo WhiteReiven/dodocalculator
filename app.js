@@ -1,25 +1,28 @@
 import { BASE_TIER_RATES, BASE_DINOS, MUTATED_DINOS, RECURSOS_DATA, BP_CATEGORIES } from './data.js';
 
-// --- PESTAÑAS ---
+// --- PESTAÑAS PRINCIPALES ---
 const tabs = {
   mutated: { btn: document.getElementById('tab-mutated'), sec: document.getElementById('section-mutated') },
   base: { btn: document.getElementById('tab-base'), sec: document.getElementById('section-base') },
   recursos: { btn: document.getElementById('tab-recursos'), sec: document.getElementById('section-recursos') },
-  bp: { btn: document.getElementById('tab-bp'), sec: document.getElementById('section-bp') }
+  bp: { btn: document.getElementById('tab-bp'), sec: document.getElementById('section-bp') },
+  market: { btn: document.getElementById('tab-marketplace'), sec: document.getElementById('section-marketplace') }
 };
 
 Object.keys(tabs).forEach(k => {
-  tabs[k].btn.addEventListener('click', () => {
-    Object.keys(tabs).forEach(other => {
-      tabs[other].btn.classList.remove('active');
-      tabs[other].sec.classList.add('hidden');
+  if (tabs[k].btn && tabs[k].sec) {
+    tabs[k].btn.addEventListener('click', () => {
+      Object.keys(tabs).forEach(other => {
+        if (tabs[other].btn) tabs[other].btn.classList.remove('active');
+        if (tabs[other].sec) tabs[other].sec.classList.add('hidden');
+      });
+      tabs[k].btn.classList.add('active');
+      tabs[k].sec.classList.remove('hidden');
     });
-    tabs[k].btn.classList.add('active');
-    tabs[k].sec.classList.remove('hidden');
-  });
+  }
 });
 
-// Helper genérico para autocompletado interactivo
+// Helper genérico para autocompletado
 function setupAutocomplete(inputEl, dropdownEl, listKeys, onSelect) {
   function renderList(query = '') {
     dropdownEl.innerHTML = '';
@@ -234,8 +237,6 @@ function calculateRecursos() {
   const cant = Math.max(0, Number(inputRecursoCant.value || 0));
 
   recursoRateEl.textContent = `${rec.cant} ${currentRecurso} = ${rec.ddc} DDC`;
-
-  // Fórmula oficial de la planilla: Cantidad / (cant / ddc) = (Cantidad * ddc) / cant
   const totalDDC = Math.round((cant * rec.ddc) / rec.cant);
   recursoPriceTotalEl.textContent = `${totalDDC.toLocaleString()} DodoCoins`;
 }
@@ -300,7 +301,6 @@ function calculateBP() {
   const ranges = cat.ranges;
   const mults = cat.mults;
 
-  // Precios base por tramo de acuerdo al multiplicador de la planilla
   const prices = mults.map(m => f3Price * m);
 
   let baseR = ranges[0];
@@ -324,8 +324,9 @@ function calculateBP() {
   bpPriceTotalEl.textContent = `${Math.round(total).toLocaleString()} DodoCoins`;
 }
 
-
-// --- LÓGICA ESPECIALES: MEK & GACHA ---
+// ==========================================
+// 5. ESPECIALES: MEK & GACHA
+// ==========================================
 const GACHA_PRECIOS = {
   "ELEMENTO": 15000,
   "POLIMERO": 8000,
@@ -346,31 +347,33 @@ function initEspecialesBase() {
   const gachaTotal = document.getElementById('gacha-price-total');
 
   function calcularMek() {
+    if (!mekInput) return;
     const lvl = Number(mekInput.value);
 
     if (isNaN(lvl) || lvl < 150 || lvl > 540) {
-      mekHelper.textContent = "¡Error! Nivel permitido entre 150 y 540";
-      mekHelper.classList.add("error");
-      mekPriceBp.textContent = "---";
-      mekPriceFab.textContent = "---";
+      if (mekHelper) {
+        mekHelper.textContent = "¡Error! Nivel permitido entre 150 y 540";
+        mekHelper.classList.add("error");
+      }
+      if (mekPriceBp) mekPriceBp.textContent = "---";
+      if (mekPriceFab) mekPriceFab.textContent = "---";
       return;
     }
 
-    mekHelper.textContent = "Nivel mínimo 150 · Máximo 540";
-    mekHelper.classList.remove("error");
+    if (mekHelper) {
+      mekHelper.textContent = "Nivel mínimo 150 · Máximo 540";
+      mekHelper.classList.remove("error");
+    }
 
     let bp = 6000;
     let fab = 5000;
 
-    // Cálculo Precio BP (crecimiento continuo sin tope en 300)
     if (lvl <= 250) {
       bp = 6000 + (lvl - 150) * 125;
     } else {
-      // Sigue subiendo 230 DDC por cada nivel a partir del 250 en adelante
       bp = 18500 + (lvl - 250) * 230;
     }
 
-    // Cálculo Precio Fabricado
     if (lvl <= 250) {
       fab = 5000 + (lvl - 150) * 70;
     } else if (lvl <= 300) {
@@ -379,11 +382,12 @@ function initEspecialesBase() {
       fab = 17000 + (lvl - 300) * 137.5;
     }
 
-    mekPriceBp.textContent = Math.round(bp).toLocaleString();
-    mekPriceFab.textContent = Math.round(fab).toLocaleString();
+    if (mekPriceBp) mekPriceBp.textContent = Math.round(bp).toLocaleString();
+    if (mekPriceFab) mekPriceFab.textContent = Math.round(fab).toLocaleString();
   }
 
   function calcularGacha() {
+    if (!gachaSelect || !gachaTotal) return;
     const rec = gachaSelect.value;
     const precio = GACHA_PRECIOS[rec] || 4000;
     gachaTotal.textContent = precio.toLocaleString();
@@ -396,20 +400,13 @@ function initEspecialesBase() {
   calcularGacha();
 }
 
-// Aviso provisional de Marketplace
-const marketBtn = document.getElementById('tab-market-preview');
-if (marketBtn) {
-  marketBtn.addEventListener('click', () => {
-    alert('🛒 Mercado Comunitario Wild Dodo en desarrollo.\n\nPróximamente podrás iniciar sesión con Discord para publicar y comprar dinos.');
-  });
-}
-
-// --- AUTENTICACIÓN SUPABASE Y DISCORD ---
+// ==========================================
+// 6. SUPABASE AUTH & MARKETPLACE
+// ==========================================
 const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx"; // Pega la clave que empieza con sb_publishable_...
+const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx";
 
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-
 let currentUser = null;
 
 async function initAuth() {
@@ -421,19 +418,15 @@ async function initAuth() {
   const avatarImg = document.getElementById('user-discord-avatar');
   const nameSpan = document.getElementById('user-discord-name');
 
-  // Iniciar sesión
   if (btnLogin) {
     btnLogin.addEventListener('click', async () => {
       await supabaseClient.auth.signInWithOAuth({
         provider: 'discord',
-        options: {
-          redirectTo: window.location.origin
-        }
+        options: { redirectTo: window.location.origin }
       });
     });
   }
 
-  // Cerrar sesión
   if (btnLogout) {
     btnLogout.addEventListener('click', async () => {
       await supabaseClient.auth.signOut();
@@ -441,11 +434,9 @@ async function initAuth() {
     });
   }
 
-  // Sesión inicial
   const { data: { session } } = await supabaseClient.auth.getSession();
   renderUser(session?.user || null);
 
-  // Escuchar cambios de estado
   supabaseClient.auth.onAuthStateChange((_event, session) => {
     renderUser(session?.user || null);
   });
@@ -469,12 +460,8 @@ async function initAuth() {
   }
 }
 
-initAuth();
-
-// --- SISTEMA DE MARKETPLACE ---
 function initMarketplace() {
   const tabMarket = document.getElementById('tab-marketplace');
-  const secMarket = document.getElementById('section-marketplace');
   const btnOpenPublish = document.getElementById('btn-open-publish');
   const modalPublish = document.getElementById('modal-publish');
   const btnCloseModal = document.getElementById('btn-close-modal');
@@ -483,7 +470,6 @@ function initMarketplace() {
   const searchInput = document.getElementById('market-search-input');
   const filterCat = document.getElementById('market-filter-cat');
 
-  // Elementos del formulario estandarizado
   const catSelect = document.getElementById('pub-category');
   const dinoInput = document.getElementById('pub-dino-name');
   const dinoDropdown = document.getElementById('dropdown-pub-dino');
@@ -502,25 +488,18 @@ function initMarketplace() {
   let activeFloorPrice = 0;
   let allListings = [];
 
-  // Lista de referencia tomada de tu calculador (o fallback seguro)
-  const officialCatalog = (typeof dinosData !== 'undefined') ? Object.keys(dinosData) : [
-    "Rex", "Giganotosaurio", "Carcharodontosaurio", "Therizinosaurio", 
-    "Espinosaurio", "Yutyrannus", "Argentavis", "Quetzal", "Ankylosaurio", 
-    "Doedicurus", "Megatherium", "Basilosaurio", "Tusoteuthis", "Abeja Gigante"
-  ];
+  // Obtener lista completa unificada de criaturas desde data.js
+  const officialDinos = Array.from(new Set([
+    ...Object.keys(MUTATED_DINOS || {}),
+    ...Object.keys(BASE_DINOS || {})
+  ])).sort();
 
-  // Alternar vista de pestañas
-  if (tabMarket && secMarket) {
+  if (tabMarket) {
     tabMarket.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.calculator-section, #section-base, #section-mutated, #section-recursos, #section-bp').forEach(s => s.classList.add('hidden'));
-      tabMarket.classList.add('active');
-      secMarket.classList.remove('hidden');
       cargarPublicaciones();
     });
   }
 
-  // Modal open / close
   if (btnOpenPublish) {
     btnOpenPublish.addEventListener('click', () => {
       if (!currentUser) {
@@ -536,84 +515,89 @@ function initMarketplace() {
     btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
   }
 
-  // Manejo de categorías (Gacha / MEK / Dinos)
-  catSelect.addEventListener('change', () => {
-    const val = catSelect.value;
-    document.getElementById('group-pub-dino').classList.toggle('hidden', val === 'gacha');
-    gachaGroup.classList.toggle('hidden', val !== 'gacha');
-    mekGroup.classList.toggle('hidden', val !== 'mek');
+  if (catSelect) {
+    catSelect.addEventListener('change', () => {
+      const val = catSelect.value;
+      const groupDino = document.getElementById('group-pub-dino');
+      if (groupDino) groupDino.classList.toggle('hidden', val === 'gacha');
+      if (gachaGroup) gachaGroup.classList.toggle('hidden', val !== 'gacha');
+      if (mekGroup) mekGroup.classList.toggle('hidden', val !== 'mek');
 
-    if (val === 'gacha') {
-      dinoInput.removeAttribute('required');
-    } else {
-      dinoInput.setAttribute('required', 'true');
-    }
-    recalcularPiso();
-  });
-
-  // Autocompletado híbrido
-  dinoInput.addEventListener('input', () => {
-    const val = dinoInput.value.trim().toLowerCase();
-    dinoDropdown.innerHTML = '';
-
-    if (!val) {
-      dinoDropdown.classList.add('hidden');
-      tierBadge.textContent = '';
+      if (dinoInput) {
+        if (val === 'gacha') {
+          dinoInput.removeAttribute('required');
+        } else {
+          dinoInput.setAttribute('required', 'true');
+        }
+      }
       recalcularPiso();
-      return;
-    }
+    });
+  }
 
-    const matches = officialCatalog.filter(d => d.toLowerCase().includes(val));
+  // Autocompletado del modal
+  if (dinoInput && dinoDropdown) {
+    dinoInput.addEventListener('input', () => {
+      const val = dinoInput.value.trim().toLowerCase();
+      dinoDropdown.innerHTML = '';
 
-    if (matches.length > 0) {
-      matches.slice(0, 5).forEach(match => {
-        const li = document.createElement('li');
-        li.textContent = match;
-        li.addEventListener('click', () => {
-          dinoInput.value = match;
-          dinoDropdown.classList.add('hidden');
-          verificarDinoOficial(match);
+      if (!val) {
+        dinoDropdown.classList.add('hidden');
+        if (tierBadge) tierBadge.textContent = '';
+        recalcularPiso();
+        return;
+      }
+
+      const matches = officialDinos.filter(d => d.toLowerCase().includes(val));
+
+      if (matches.length > 0) {
+        matches.slice(0, 5).forEach(match => {
+          const li = document.createElement('li');
+          li.textContent = match;
+          li.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            dinoInput.value = match;
+            dinoDropdown.classList.add('hidden');
+            verificarDino(match);
+          });
+          dinoDropdown.appendChild(li);
         });
-        dinoDropdown.appendChild(li);
-      });
-      dinoDropdown.classList.remove('hidden');
-    } else {
-      dinoDropdown.classList.add('hidden');
-      tierBadge.textContent = 'Criatura personalizada / No listada';
-      recalcularPiso();
-    }
-  });
+        dinoDropdown.classList.remove('hidden');
+      } else {
+        dinoDropdown.classList.add('hidden');
+        if (tierBadge) tierBadge.textContent = 'Criatura personalizada / No listada';
+        recalcularPiso();
+      }
+    });
 
-  document.addEventListener('click', (e) => {
-    if (!dinoInput.contains(e.target) && !dinoDropdown.contains(e.target)) {
-      dinoDropdown.classList.add('hidden');
-    }
-  });
+    dinoInput.addEventListener('blur', () => {
+      setTimeout(() => dinoDropdown.classList.add('hidden'), 200);
+    });
+  }
 
-  function verificarDinoOficial(nombre) {
-    const data = (typeof dinosData !== 'undefined') ? dinosData[nombre] : null;
-    if (data && data.tier) {
-      tierBadge.textContent = `Oficial: Tier ${data.tier}`;
-    } else {
-      tierBadge.textContent = 'Dino oficial reconocido';
+  function verificarDino(nombre) {
+    const tier = BASE_DINOS[nombre];
+    if (tierBadge) {
+      tierBadge.textContent = tier ? `Oficial: Tier ${tier}` : 'Criatura oficial reconocida';
     }
     recalcularPiso();
   }
 
-  // Motor de cálculo de piso oficial para el Modal
   function recalcularPiso() {
+    if (!catSelect || !calculatedFloorSpan || !floorLegend) return;
     const cat = catSelect.value;
     activeFloorPrice = 0;
     floorLegend.textContent = "Sin precio piso obligatorio";
 
     if (cat === 'gacha') {
-      const rec = gachaSelect.value;
+      const rec = gachaSelect ? gachaSelect.value : "ELEMENTO";
       activeFloorPrice = GACHA_PRECIOS[rec] || 4000;
       floorLegend.textContent = `Piso oficial Gacha ${rec}`;
     } else if (cat === 'mek') {
-      const lvl = Math.min(540, Math.max(150, Number(mekLvlInput.value || 150)));
+      const lvl = Math.min(540, Math.max(150, Number(mekLvlInput?.value || 150)));
       let tipo = 'fab';
-      for (const r of mekTypeRadios) if (r.checked) tipo = r.value;
+      if (mekTypeRadios) {
+        for (const r of mekTypeRadios) if (r.checked) tipo = r.value;
+      }
 
       if (tipo === 'bp') {
         activeFloorPrice = (lvl <= 250) ? 6000 + (lvl - 150) * 125 : 18500 + (lvl - 250) * 230;
@@ -625,14 +609,18 @@ function initMarketplace() {
         floorLegend.textContent = `Piso oficial MEK Fabricado (Lvl ${lvl})`;
       }
     } else if (cat === 'base' || cat === 'mutated') {
-      const dino = dinoInput.value.trim();
-      const data = (typeof dinosData !== 'undefined') ? dinosData[dino] : null;
-      if (data && data.tier) {
-        // Regla base según el tier si no especifican stats
-        activeFloorPrice = (data.tier === 6) ? 1000 : (data.tier === 5 ? 2500 : 5000);
-        floorLegend.textContent = `Piso base para Tier ${data.tier}`;
+      const dino = dinoInput?.value.trim() || '';
+      const tier = BASE_DINOS[dino];
+      const mutBasePrice = MUTATED_DINOS[dino];
+
+      if (cat === 'mutated' && mutBasePrice) {
+        activeFloorPrice = Math.round(mutBasePrice * 0.75); // Precio mínimo base castrado
+        floorLegend.textContent = `Piso oficial base mutado (${dino})`;
+      } else if (tier) {
+        activeFloorPrice = (tier === 6) ? 1000 : (tier === 5 ? 2500 : 5000);
+        floorLegend.textContent = `Piso base Tier ${tier}`;
       } else {
-        activeFloorPrice = 1000; // Mínimo de cortesía del servidor
+        activeFloorPrice = 1000;
         floorLegend.textContent = "Piso mínimo por defecto";
       }
     }
@@ -643,6 +631,7 @@ function initMarketplace() {
   }
 
   function validarPrecioFinal() {
+    if (!sellPriceInput || !priceError) return true;
     const sellP = Number(sellPriceInput.value || 0);
     if (sellP > 0 && sellP < activeFloorPrice) {
       priceError.style.display = 'block';
@@ -652,10 +641,10 @@ function initMarketplace() {
     return true;
   }
 
-  sellPriceInput.addEventListener('input', validarPrecioFinal);
-  gachaSelect.addEventListener('change', recalcularPiso);
-  mekLvlInput.addEventListener('input', recalcularPiso);
-  mekTypeRadios.forEach(r => r.addEventListener('change', recalcularPiso));
+  if (sellPriceInput) sellPriceInput.addEventListener('input', validarPrecioFinal);
+  if (gachaSelect) gachaSelect.addEventListener('change', recalcularPiso);
+  if (mekLvlInput) mekLvlInput.addEventListener('input', recalcularPiso);
+  if (mekTypeRadios) mekTypeRadios.forEach(r => r.addEventListener('change', recalcularPiso));
 
   // Enviar a Supabase
   if (formPublish) {
@@ -682,7 +671,7 @@ function initMarketplace() {
         discord_avatar: avatar,
         dino_name: dinoName,
         category: cat,
-        details: { desc: document.getElementById('pub-details').value.trim() },
+        details: { desc: document.getElementById('pub-details')?.value.trim() || '' },
         min_price: activeFloorPrice,
         selling_price: sellP,
         status: 'active'
@@ -702,7 +691,7 @@ function initMarketplace() {
 
   // Cargar publicaciones
   async function cargarPublicaciones() {
-    if (!supabaseClient) return;
+    if (!supabaseClient || !gridListings) return;
     const { data, error } = await supabaseClient
       .from('market_listings')
       .select('*')
@@ -719,6 +708,7 @@ function initMarketplace() {
   }
 
   function renderGrid(listings) {
+    if (!gridListings) return;
     if (listings.length === 0) {
       gridListings.innerHTML = '<div class="market-empty-state">No hay publicaciones activas en este momento.</div>';
       return;
@@ -770,8 +760,8 @@ function initMarketplace() {
   }
 
   function aplicarFiltros() {
-    const q = searchInput.value.toLowerCase();
-    const cat = filterCat.value;
+    const q = searchInput ? searchInput.value.toLowerCase() : '';
+    const cat = filterCat ? filterCat.value : 'all';
 
     const filtrados = allListings.filter(item => {
       const matchText = item.dino_name.toLowerCase().includes(q) || item.discord_username.toLowerCase().includes(q);
@@ -785,170 +775,10 @@ function initMarketplace() {
   if (filterCat) filterCat.addEventListener('change', aplicarFiltros);
 }
 
-  // 2. Control de Modal y Permiso de Login
-  if (btnOpenPublish) {
-    btnOpenPublish.addEventListener('click', () => {
-      if (!currentUser) {
-        alert('Debes iniciar sesión con Discord para publicar en el mercado.');
-        return;
-      }
-      modalPublish.classList.remove('hidden');
-    });
-  }
-
-  if (btnCloseModal) {
-    btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
-  }
-
-  // 3. Validación de precio piso en vivo dentro del modal
-  function validarPrecios() {
-    const minP = Number(minPriceInput.value || 0);
-    const sellP = Number(sellPriceInput.value || 0);
-    if (sellP > 0 && sellP < minP) {
-      priceError.style.display = 'block';
-      return false;
-    }
-    priceError.style.display = 'none';
-    return true;
-  }
-
-  minPriceInput.addEventListener('input', validarPrecios);
-  sellPriceInput.addEventListener('input', validarPrecios);
-
-  // 4. Guardar publicación en Supabase
-  if (formPublish) {
-    formPublish.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!currentUser) return;
-
-      const minP = Number(minPriceInput.value);
-      const sellP = Number(sellPriceInput.value);
-
-      if (sellP < minP) {
-        alert('Error: No puedes publicar a un precio inferior al mínimo oficial.');
-        return;
-      }
-
-      const meta = currentUser.user_metadata || {};
-      const username = meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
-      const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
-
-      const payload = {
-        user_id: currentUser.id,
-        discord_username: username,
-        discord_avatar: avatar,
-        dino_name: document.getElementById('pub-dino-name').value.trim(),
-        category: document.getElementById('pub-category').value,
-        details: { desc: document.getElementById('pub-details').value.trim() },
-        min_price: minP,
-        selling_price: sellP,
-        status: 'active'
-      };
-
-      const { error } = await supabaseClient.from('market_listings').insert([payload]);
-
-      if (error) {
-        alert('Error al publicar: ' + error.message);
-      } else {
-        formPublish.reset();
-        modalPublish.classList.add('hidden');
-        cargarPublicaciones();
-      }
-    });
-  }
-
-  // 5. Cargar y pintar publicaciones desde Supabase
-  async function cargarPublicaciones() {
-    if (!supabaseClient) return;
-    const { data, error } = await supabaseClient
-      .from('market_listings')
-      .select('*')
-      .eq('status', 'active')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      gridListings.innerHTML = '<div class="market-empty-state">Error al conectar con el mercado.</div>';
-      return;
-    }
-
-    allListings = data || [];
-    renderGrid(allListings);
-  }
-
-  function renderGrid(listings) {
-    if (listings.length === 0) {
-      gridListings.innerHTML = '<div class="market-empty-state">No hay publicaciones activas en este momento. ¡Sé el primero en vender!</div>';
-      return;
-    }
-
-    gridListings.innerHTML = '';
-    listings.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'market-card';
-
-      const isOwner = currentUser && currentUser.id === item.user_id;
-
-      card.innerHTML = `
-        <div>
-          <div class="market-card-seller">
-            <img class="seller-avatar" src="${item.discord_avatar}" alt="Avatar">
-            <span class="seller-name">${item.discord_username}</span>
-            <span class="market-badge-cat" style="margin-left:auto;">${item.category}</span>
-          </div>
-          <h4 class="market-card-dino" style="margin-top: 10px;">${item.dino_name}</h4>
-          <p class="market-card-details">${item.details?.desc || ''}</p>
-        </div>
-
-        <div>
-          <div class="market-card-price-box">
-            <span style="font-size: 0.75rem; color: var(--text-muted);">PRECIO</span>
-            <span class="market-card-price">${Number(item.selling_price).toLocaleString()} DDC</span>
-          </div>
-
-          <div style="margin-top: 10px;">
-            ${isOwner 
-              ? `<button class="btn-delete-item" data-id="${item.id}">Marcar Vendido / Borrar</button>`
-              : `<div class="btn-contact-seller">Vendedor: ${item.discord_username}</div>`
-            }
-          </div>
-        </div>
-      `;
-
-      if (isOwner) {
-        card.querySelector('.btn-delete-item').addEventListener('click', async () => {
-          if (confirm('¿Deseas retirar esta publicación del mercado?')) {
-            await supabaseClient.from('market_listings').delete().eq('id', item.id);
-            cargarPublicaciones();
-          }
-        });
-      }
-
-      gridListings.appendChild(card);
-    });
-  }
-
-  // 6. Filtros en vivo
-  function aplicarFiltros() {
-    const q = searchInput.value.toLowerCase();
-    const cat = filterCat.value;
-
-    const filtrados = allListings.filter(item => {
-      const matchText = item.dino_name.toLowerCase().includes(q) || item.discord_username.toLowerCase().includes(q);
-      const matchCat = cat === 'all' || item.category === cat;
-      return matchText && matchCat;
-    });
-    renderGrid(filtrados);
-  }
-
-  if (searchInput) searchInput.addEventListener('input', aplicarFiltros);
-  if (filterCat) filterCat.addEventListener('change', aplicarFiltros);
-}
-
+// Inicialización de la aplicación
+initAuth();
 initMarketplace();
-
-// Ejecutar al cargar
 initEspecialesBase();
-// Inicialización general
 initMutated();
 initBase();
 initRecursos();
