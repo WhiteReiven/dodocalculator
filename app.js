@@ -550,14 +550,17 @@ function initMarketplace() {
   if (catSelect) {
     catSelect.addEventListener('change', () => {
       const cat = catSelect.value;
-      if (dinoGroup) dinoGroup.classList.toggle('hidden', cat === 'gacha');
+      const isFixedItem = (cat === 'gacha' || cat === 'mek');
+
+      // Oculta el buscador de criatura si es Gacha o MEK
+      if (dinoGroup) dinoGroup.classList.toggle('hidden', isFixedItem);
       if (groupStatsMutated) groupStatsMutated.classList.toggle('hidden', cat !== 'mutated');
       if (groupStatsBase) groupStatsBase.classList.toggle('hidden', cat !== 'base');
       if (gachaGroup) gachaGroup.classList.toggle('hidden', cat !== 'gacha');
       if (mekGroup) mekGroup.classList.toggle('hidden', cat !== 'mek');
 
       if (dinoInput) {
-        if (cat === 'gacha') dinoInput.removeAttribute('required');
+        if (isFixedItem) dinoInput.removeAttribute('required');
         else dinoInput.setAttribute('required', 'true');
       }
 
