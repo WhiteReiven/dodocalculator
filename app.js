@@ -396,6 +396,14 @@ function initEspecialesBase() {
   calcularGacha();
 }
 
+// Aviso provisional de Marketplace
+const marketBtn = document.getElementById('tab-market-preview');
+if (marketBtn) {
+  marketBtn.addEventListener('click', () => {
+    alert('🛒 Mercado Comunitario Wild Dodo en desarrollo.\n\nPróximamente podrás iniciar sesión con Discord para publicar y comprar dinos asegurando el precio mínimo oficial.');
+  });
+}
+
 // Ejecutar al cargar
 initEspecialesBase();
 // Inicialización general
