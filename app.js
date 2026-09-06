@@ -855,7 +855,7 @@ function initMarketplace() {
     renderGrid(allListings);
   }
 
-  function renderGrid(listings) {
+ function renderGrid(listings) {
     if (!gridListings) return;
     if (listings.length === 0) {
       gridListings.innerHTML = '<div class="market-empty-state">No hay publicaciones activas en este momento.</div>';
@@ -867,6 +867,12 @@ function initMarketplace() {
       const card = document.createElement('div');
       card.className = 'market-card';
       const isOwner = currentUser && currentUser.id === item.user_id;
+
+      const sellerDiscord = item.discord_username;
+      const sellerDiscordId = item.details?.discord_id;
+      const discordLink = sellerDiscordId 
+        ? `https://discord.com/users/${sellerDiscordId}` 
+        : `https://discord.com/app`;
 
       card.innerHTML = `
         <div>
@@ -888,7 +894,14 @@ function initMarketplace() {
           <div style="margin-top: 10px;">
             ${isOwner 
               ? `<button class="btn-delete-item" data-id="${item.id}">Marcar Vendido / Retirar</button>`
-              : `<div class="btn-contact-seller">Vendedor: ${item.discord_username}</div>`
+              : `<div style="display: flex; gap: 6px;">
+                   <a href="${discordLink}" target="_blank" rel="noopener noreferrer" class="btn-contact-seller" style="flex: 1; text-decoration: none;">
+                     Abrir Discord
+                   </a>
+                   <button class="btn-copy-discord" data-user="${sellerDiscord}" title="Copiar usuario">
+                     Copiar User
+                   </button>
+                 </div>`
             }
           </div>
         </div>
@@ -901,6 +914,16 @@ function initMarketplace() {
             cargarPublicaciones();
           }
         });
+      } else {
+        const btnCopy = card.querySelector('.btn-copy-discord');
+        if (btnCopy) {
+          btnCopy.addEventListener('click', () => {
+            navigator.clipboard.writeText(sellerDiscord);
+            const originalText = btnCopy.textContent;
+            btnCopy.textContent = '¡Copiado!';
+            setTimeout(() => { btnCopy.textContent = originalText; }, 1800);
+          });
+        }
       }
 
       gridListings.appendChild(card);
