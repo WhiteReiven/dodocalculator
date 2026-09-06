@@ -405,7 +405,7 @@ if (marketBtn) {
 }
 
 // --- AUTENTICACIÓN SUPABASE Y DISCORD ---
-const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co";
+const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co/rest/v1/o";
 const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx"; // Pega la clave que empieza con sb_publishable_...
 
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
