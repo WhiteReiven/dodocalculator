@@ -471,6 +471,196 @@ async function initAuth() {
 
 initAuth();
 
+// --- SISTEMA DE MARKETPLACE ---
+function initMarketplace() {
+  const tabMarket = document.getElementById('tab-marketplace');
+  const secMarket = document.getElementById('section-marketplace');
+  const btnOpenPublish = document.getElementById('btn-open-publish');
+  const modalPublish = document.getElementById('modal-publish');
+  const btnCloseModal = document.getElementById('btn-close-modal');
+  const formPublish = document.getElementById('form-publish-listing');
+  const gridListings = document.getElementById('market-listings-grid');
+  const searchInput = document.getElementById('market-search-input');
+  const filterCat = document.getElementById('market-filter-cat');
+
+  const minPriceInput = document.getElementById('pub-min-price');
+  const sellPriceInput = document.getElementById('pub-selling-price');
+  const priceError = document.getElementById('pub-price-error');
+
+  let allListings = [];
+
+  // 1. Integración en el cambio de pestañas existente
+  if (tabMarket && secMarket) {
+    tabMarket.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.calculator-section, #section-base, #section-mutated, #section-recursos, #section-bp').forEach(s => s.classList.add('hidden'));
+      tabMarket.classList.add('active');
+      secMarket.classList.remove('hidden');
+      cargarPublicaciones();
+    });
+  }
+
+  // 2. Control de Modal y Permiso de Login
+  if (btnOpenPublish) {
+    btnOpenPublish.addEventListener('click', () => {
+      if (!currentUser) {
+        alert('Debes iniciar sesión con Discord para publicar en el mercado.');
+        return;
+      }
+      modalPublish.classList.remove('hidden');
+    });
+  }
+
+  if (btnCloseModal) {
+    btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
+  }
+
+  // 3. Validación de precio piso en vivo dentro del modal
+  function validarPrecios() {
+    const minP = Number(minPriceInput.value || 0);
+    const sellP = Number(sellPriceInput.value || 0);
+    if (sellP > 0 && sellP < minP) {
+      priceError.style.display = 'block';
+      return false;
+    }
+    priceError.style.display = 'none';
+    return true;
+  }
+
+  minPriceInput.addEventListener('input', validarPrecios);
+  sellPriceInput.addEventListener('input', validarPrecios);
+
+  // 4. Guardar publicación en Supabase
+  if (formPublish) {
+    formPublish.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const minP = Number(minPriceInput.value);
+      const sellP = Number(sellPriceInput.value);
+
+      if (sellP < minP) {
+        alert('Error: No puedes publicar a un precio inferior al mínimo oficial.');
+        return;
+      }
+
+      const meta = currentUser.user_metadata || {};
+      const username = meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
+      const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+      const payload = {
+        user_id: currentUser.id,
+        discord_username: username,
+        discord_avatar: avatar,
+        dino_name: document.getElementById('pub-dino-name').value.trim(),
+        category: document.getElementById('pub-category').value,
+        details: { desc: document.getElementById('pub-details').value.trim() },
+        min_price: minP,
+        selling_price: sellP,
+        status: 'active'
+      };
+
+      const { error } = await supabaseClient.from('market_listings').insert([payload]);
+
+      if (error) {
+        alert('Error al publicar: ' + error.message);
+      } else {
+        formPublish.reset();
+        modalPublish.classList.add('hidden');
+        cargarPublicaciones();
+      }
+    });
+  }
+
+  // 5. Cargar y pintar publicaciones desde Supabase
+  async function cargarPublicaciones() {
+    if (!supabaseClient) return;
+    const { data, error } = await supabaseClient
+      .from('market_listings')
+      .select('*')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      gridListings.innerHTML = '<div class="market-empty-state">Error al conectar con el mercado.</div>';
+      return;
+    }
+
+    allListings = data || [];
+    renderGrid(allListings);
+  }
+
+  function renderGrid(listings) {
+    if (listings.length === 0) {
+      gridListings.innerHTML = '<div class="market-empty-state">No hay publicaciones activas en este momento. ¡Sé el primero en vender!</div>';
+      return;
+    }
+
+    gridListings.innerHTML = '';
+    listings.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'market-card';
+
+      const isOwner = currentUser && currentUser.id === item.user_id;
+
+      card.innerHTML = `
+        <div>
+          <div class="market-card-seller">
+            <img class="seller-avatar" src="${item.discord_avatar}" alt="Avatar">
+            <span class="seller-name">${item.discord_username}</span>
+            <span class="market-badge-cat" style="margin-left:auto;">${item.category}</span>
+          </div>
+          <h4 class="market-card-dino" style="margin-top: 10px;">${item.dino_name}</h4>
+          <p class="market-card-details">${item.details?.desc || ''}</p>
+        </div>
+
+        <div>
+          <div class="market-card-price-box">
+            <span style="font-size: 0.75rem; color: var(--text-muted);">PRECIO</span>
+            <span class="market-card-price">${Number(item.selling_price).toLocaleString()} DDC</span>
+          </div>
+
+          <div style="margin-top: 10px;">
+            ${isOwner 
+              ? `<button class="btn-delete-item" data-id="${item.id}">Marcar Vendido / Borrar</button>`
+              : `<div class="btn-contact-seller">Vendedor: ${item.discord_username}</div>`
+            }
+          </div>
+        </div>
+      `;
+
+      if (isOwner) {
+        card.querySelector('.btn-delete-item').addEventListener('click', async () => {
+          if (confirm('¿Deseas retirar esta publicación del mercado?')) {
+            await supabaseClient.from('market_listings').delete().eq('id', item.id);
+            cargarPublicaciones();
+          }
+        });
+      }
+
+      gridListings.appendChild(card);
+    });
+  }
+
+  // 6. Filtros en vivo
+  function aplicarFiltros() {
+    const q = searchInput.value.toLowerCase();
+    const cat = filterCat.value;
+
+    const filtrados = allListings.filter(item => {
+      const matchText = item.dino_name.toLowerCase().includes(q) || item.discord_username.toLowerCase().includes(q);
+      const matchCat = cat === 'all' || item.category === cat;
+      return matchText && matchCat;
+    });
+    renderGrid(filtrados);
+  }
+
+  if (searchInput) searchInput.addEventListener('input', aplicarFiltros);
+  if (filterCat) filterCat.addEventListener('change', aplicarFiltros);
+}
+
+initMarketplace();
+
 // Ejecutar al cargar
 initEspecialesBase();
 // Inicialización general
