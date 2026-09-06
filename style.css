@@ -896,3 +896,23 @@ body {
   background: rgba(0, 229, 255, 0.15);
   color: var(--neon-cyan);
 }
+
+/* Modal grande con soporte de scroll para stats */
+.modal-large {
+  max-width: 600px!important;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding-right: 12px;
+}
+
+.market-stats-box {
+  background: rgba(11, 17, 36, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+.market-stats-box .stat-row {
+  margin-bottom: 8px;
+}
