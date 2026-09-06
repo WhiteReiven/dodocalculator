@@ -460,6 +460,7 @@ async function initAuth() {
   }
 }
 
+// --- SISTEMA DE MARKETPLACE CON FORMULARIO INTEGRAL ---
 function initMarketplace() {
   const tabMarket = document.getElementById('tab-marketplace');
   const btnOpenPublish = document.getElementById('btn-open-publish');
@@ -470,16 +471,30 @@ function initMarketplace() {
   const searchInput = document.getElementById('market-search-input');
   const filterCat = document.getElementById('market-filter-cat');
 
+  // Elementos generales del modal
   const catSelect = document.getElementById('pub-category');
+  const dinoGroup = document.getElementById('group-pub-dino');
   const dinoInput = document.getElementById('pub-dino-name');
   const dinoDropdown = document.getElementById('dropdown-pub-dino');
   const tierBadge = document.getElementById('pub-tier-badge');
+
+  // Paneles de Stats
+  const groupStatsMutated = document.getElementById('group-stats-mutated');
+  const mutStatsList = document.getElementById('pub-mutated-stats-list');
+  const mutCastradoChk = document.getElementById('pub-mut-castrado');
+
+  const groupStatsBase = document.getElementById('group-stats-base');
+  const baseStatsGridModal = document.getElementById('pub-base-stats-grid');
+  const baseLvlCountEl = document.getElementById('pub-base-lvl-count');
+
+  // Gacha & MEK
   const gachaGroup = document.getElementById('group-pub-gacha');
   const gachaSelect = document.getElementById('pub-gacha-res');
   const mekGroup = document.getElementById('group-pub-mek');
   const mekLvlInput = document.getElementById('pub-mek-lvl');
   const mekTypeRadios = document.getElementsByName('mek-type');
 
+  // Precios
   const calculatedFloorSpan = document.getElementById('pub-calculated-floor');
   const floorLegend = document.getElementById('pub-floor-legend');
   const sellPriceInput = document.getElementById('pub-selling-price');
@@ -488,48 +503,64 @@ function initMarketplace() {
   let activeFloorPrice = 0;
   let allListings = [];
 
-  // Obtener lista completa unificada de criaturas desde data.js
-  const officialDinos = Array.from(new Set([
-    ...Object.keys(MUTATED_DINOS || {}),
-    ...Object.keys(BASE_DINOS || {})
-  ])).sort();
-
-  if (tabMarket) {
-    tabMarket.addEventListener('click', () => {
-      cargarPublicaciones();
+  // Construir filas de stats mutadas en el modal
+  if (mutStatsList) {
+    mutStatsList.innerHTML = '';
+    STATS_MUTADOS.forEach(stat => {
+      const row = document.createElement('div');
+      row.className = 'stat-row';
+      row.innerHTML = `
+        <input type="checkbox" id="pub-chk-mut-${stat.key}" class="stat-checkbox">
+        <label for="pub-chk-mut-${stat.key}">${stat.label}</label>
+        <input type="number" id="pub-val-mut-${stat.key}" class="stat-input" value="0" min="0">
+        <span class="stat-badge ${stat.type}">${stat.type.toUpperCase()}</span>
+      `;
+      mutStatsList.appendChild(row);
+      row.querySelector('.stat-checkbox').addEventListener('change', recalcularPiso);
+      row.querySelector('.stat-input').addEventListener('input', recalcularPiso);
     });
   }
 
-  if (btnOpenPublish) {
-    btnOpenPublish.addEventListener('click', () => {
-      if (!currentUser) {
-        alert('Debes iniciar sesión con Discord para publicar en el mercado.');
-        return;
-      }
-      modalPublish.classList.remove('hidden');
-      recalcularPiso();
+  // Construir cards de stats base en el modal
+  if (baseStatsGridModal) {
+    baseStatsGridModal.innerHTML = '';
+    STATS_BASE.forEach(stat => {
+      const card = document.createElement('div');
+      card.className = 'stat-card-input';
+      card.innerHTML = `
+        <label for="pub-val-base-${stat.key}">${stat.label}</label>
+        <input type="number" id="pub-val-base-${stat.key}" class="stat-input" value="0" min="0">
+      `;
+      baseStatsGridModal.appendChild(card);
+      card.querySelector('input').addEventListener('input', recalcularPiso);
     });
   }
 
-  if (btnCloseModal) {
-    btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
+  if (mutCastradoChk) mutCastradoChk.addEventListener('change', recalcularPiso);
+
+  // Catálogo según categoría
+  function obtenerCatalogoActual() {
+    const cat = catSelect.value;
+    if (cat === 'mutated') return Object.keys(MUTATED_DINOS || {}).sort();
+    if (cat === 'base') return Object.keys(BASE_DINOS || {}).sort();
+    return Array.from(new Set([...Object.keys(MUTATED_DINOS || {}), ...Object.keys(BASE_DINOS || {})])).sort();
   }
 
+  // Alternar vista de paneles según categoría seleccionada
   if (catSelect) {
     catSelect.addEventListener('change', () => {
-      const val = catSelect.value;
-      const groupDino = document.getElementById('group-pub-dino');
-      if (groupDino) groupDino.classList.toggle('hidden', val === 'gacha');
-      if (gachaGroup) gachaGroup.classList.toggle('hidden', val !== 'gacha');
-      if (mekGroup) mekGroup.classList.toggle('hidden', val !== 'mek');
+      const cat = catSelect.value;
+      if (dinoGroup) dinoGroup.classList.toggle('hidden', cat === 'gacha');
+      if (groupStatsMutated) groupStatsMutated.classList.toggle('hidden', cat !== 'mutated');
+      if (groupStatsBase) groupStatsBase.classList.toggle('hidden', cat !== 'base');
+      if (gachaGroup) gachaGroup.classList.toggle('hidden', cat !== 'gacha');
+      if (mekGroup) mekGroup.classList.toggle('hidden', cat !== 'mek');
 
       if (dinoInput) {
-        if (val === 'gacha') {
-          dinoInput.removeAttribute('required');
-        } else {
-          dinoInput.setAttribute('required', 'true');
-        }
+        if (cat === 'gacha') dinoInput.removeAttribute('required');
+        else dinoInput.setAttribute('required', 'true');
       }
+
       recalcularPiso();
     });
   }
@@ -547,7 +578,8 @@ function initMarketplace() {
         return;
       }
 
-      const matches = officialDinos.filter(d => d.toLowerCase().includes(val));
+      const catalog = obtenerCatalogoActual();
+      const matches = catalog.filter(d => d.toLowerCase().includes(val));
 
       if (matches.length > 0) {
         matches.slice(0, 5).forEach(match => {
@@ -575,24 +607,94 @@ function initMarketplace() {
   }
 
   function verificarDino(nombre) {
-    const tier = BASE_DINOS[nombre];
-    if (tierBadge) {
-      tierBadge.textContent = tier ? `Oficial: Tier ${tier}` : 'Criatura oficial reconocida';
+    const cat = catSelect.value;
+    if (cat === 'base') {
+      const tier = BASE_DINOS[nombre];
+      if (tierBadge) tierBadge.textContent = tier ? `Oficial: Tier ${tier}` : '';
+    } else if (cat === 'mutated') {
+      const base = MUTATED_DINOS[nombre];
+      if (tierBadge) tierBadge.textContent = base ? `Precio Base: ${base.toLocaleString()} DDC` : '';
     }
     recalcularPiso();
   }
 
+  // --- MOTOR DE CÁLCULO DE PISO EN VIVO PARA EL MODAL ---
   function recalcularPiso() {
     if (!catSelect || !calculatedFloorSpan || !floorLegend) return;
     const cat = catSelect.value;
     activeFloorPrice = 0;
-    floorLegend.textContent = "Sin precio piso obligatorio";
+    floorLegend.textContent = "Calculado según stats oficiales";
 
-    if (cat === 'gacha') {
+    // 1. DINO MUTADO
+    if (cat === 'mutated') {
+      const dino = dinoInput ? dinoInput.value.trim() : '';
+      const basePrice = MUTATED_DINOS[dino] || 0;
+
+      if (basePrice > 0) {
+        const fPrin = ((basePrice / 4) * 1.5) / 254;
+        const fSecH = ((basePrice / 4) / 2) / 254;
+        const fSecI = ((basePrice / 4) * 1.25) / 254;
+
+        const chkVida = document.getElementById('pub-chk-mut-vida')?.checked;
+        const chkDano = document.getElementById('pub-chk-mut-dano')?.checked;
+        const hasPrin = chkVida || chkDano;
+
+        let total = 0;
+        if (chkVida) total += Number(document.getElementById('pub-val-mut-vida')?.value || 0) * fPrin;
+        if (chkDano) total += Number(document.getElementById('pub-val-mut-dano')?.value || 0) * fPrin;
+
+        const secKeys = ['peso', 'energia', 'comida', 'oxigeno', 'velocidad'];
+        let countSec = 0;
+
+        secKeys.forEach(k => {
+          if (document.getElementById(`pub-chk-mut-${k}`)?.checked) {
+            const val = Number(document.getElementById(`pub-val-mut-${k}`)?.value || 0);
+            if (hasPrin) total += val * fSecH;
+            else total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
+            countSec++;
+          }
+        });
+
+        if (mutCastradoChk?.checked) total *= 0.75;
+        activeFloorPrice = Math.round(total);
+        floorLegend.textContent = mutCastradoChk?.checked ? 'Piso oficial (Castrado)' : 'Piso oficial (Sin castrar)';
+      } else {
+        activeFloorPrice = 1000;
+        floorLegend.textContent = 'Dino sin tasa base fija';
+      }
+    }
+
+    // 2. DINO BASE
+    else if (cat === 'base') {
+      const dino = dinoInput ? dinoInput.value.trim() : '';
+      const tier = BASE_DINOS[dino] ?? 4;
+      const rates = BASE_TIER_RATES[tier] || BASE_TIER_RATES[4];
+
+      let totalPrice = 0;
+      let totalLvl = 1;
+
+      STATS_BASE.forEach(stat => {
+        const val = Number(document.getElementById(`pub-val-base-${stat.key}`)?.value || 0);
+        totalLvl += val;
+        if (stat.type === 'hp_dmg') totalPrice += val * rates.hp_dmg;
+        else if (stat.type === 'eng_wgt') totalPrice += val * rates.eng_wgt;
+        else totalPrice += val * rates.other;
+      });
+
+      if (baseLvlCountEl) baseLvlCountEl.textContent = totalLvl.toString();
+      activeFloorPrice = Math.round(totalPrice);
+      floorLegend.textContent = `Piso oficial Tier ${tier} (${totalLvl} Lvl)`;
+    }
+
+    // 3. GACHA
+    else if (cat === 'gacha') {
       const rec = gachaSelect ? gachaSelect.value : "ELEMENTO";
       activeFloorPrice = GACHA_PRECIOS[rec] || 4000;
       floorLegend.textContent = `Piso oficial Gacha ${rec}`;
-    } else if (cat === 'mek') {
+    }
+
+    // 4. MEK
+    else if (cat === 'mek') {
       const lvl = Math.min(540, Math.max(150, Number(mekLvlInput?.value || 150)));
       let tipo = 'fab';
       if (mekTypeRadios) {
@@ -606,26 +708,17 @@ function initMarketplace() {
         if (lvl <= 250) activeFloorPrice = 5000 + (lvl - 150) * 70;
         else if (lvl <= 300) activeFloorPrice = 12000 + (lvl - 250) * 100;
         else activeFloorPrice = 17000 + (lvl - 300) * 137.5;
-        floorLegend.textContent = `Piso oficial MEK Fabricado (Lvl ${lvl})`;
+        floorLegend.textContent = `Piso oficial MEK Fab (Lvl ${lvl})`;
       }
-    } else if (cat === 'base' || cat === 'mutated') {
-      const dino = dinoInput?.value.trim() || '';
-      const tier = BASE_DINOS[dino];
-      const mutBasePrice = MUTATED_DINOS[dino];
-
-      if (cat === 'mutated' && mutBasePrice) {
-        activeFloorPrice = Math.round(mutBasePrice * 0.75); // Precio mínimo base castrado
-        floorLegend.textContent = `Piso oficial base mutado (${dino})`;
-      } else if (tier) {
-        activeFloorPrice = (tier === 6) ? 1000 : (tier === 5 ? 2500 : 5000);
-        floorLegend.textContent = `Piso base Tier ${tier}`;
-      } else {
-        activeFloorPrice = 1000;
-        floorLegend.textContent = "Piso mínimo por defecto";
-      }
+      activeFloorPrice = Math.round(activeFloorPrice);
     }
 
-    activeFloorPrice = Math.round(activeFloorPrice);
+    // 5. OTRO
+    else {
+      activeFloorPrice = 0;
+      floorLegend.textContent = "Libre fijación de precio";
+    }
+
     calculatedFloorSpan.textContent = `${activeFloorPrice.toLocaleString()} DDC`;
     validarPrecioFinal();
   }
@@ -646,7 +739,23 @@ function initMarketplace() {
   if (mekLvlInput) mekLvlInput.addEventListener('input', recalcularPiso);
   if (mekTypeRadios) mekTypeRadios.forEach(r => r.addEventListener('change', recalcularPiso));
 
-  // Enviar a Supabase
+  // Abrir / Cerrar Modal
+  if (btnOpenPublish) {
+    btnOpenPublish.addEventListener('click', () => {
+      if (!currentUser) {
+        alert('Debes iniciar sesión con Discord para publicar en el mercado.');
+        return;
+      }
+      modalPublish.classList.remove('hidden');
+      recalcularPiso();
+    });
+  }
+
+  if (btnCloseModal) {
+    btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
+  }
+
+  // Guardar publicación en Supabase
   if (formPublish) {
     formPublish.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -654,16 +763,43 @@ function initMarketplace() {
 
       const sellP = Number(sellPriceInput.value);
       if (sellP < activeFloorPrice) {
-        alert(`Tu precio (${sellP.toLocaleString()} DDC) es inferior al mínimo oficial permitido (${activeFloorPrice.toLocaleString()} DDC).`);
+        alert(`Error: El precio no puede ser inferior a ${activeFloorPrice.toLocaleString()} DDC.`);
         return;
       }
 
       const cat = catSelect.value;
-      const dinoName = (cat === 'gacha') ? `Gacha de ${gachaSelect.value}` : dinoInput.value.trim();
+      let dinoName = dinoInput ? dinoInput.value.trim() : '';
+      let statsSummary = [];
+
+      if (cat === 'mutated') {
+        STATS_MUTADOS.forEach(s => {
+          if (document.getElementById(`pub-chk-mut-${s.key}`)?.checked) {
+            const val = document.getElementById(`pub-val-mut-${s.key}`)?.value || 0;
+            statsSummary.push(`${s.label}: ${val}`);
+          }
+        });
+        if (mutCastradoChk?.checked) statsSummary.push('(Castrado)');
+      } else if (cat === 'base') {
+        STATS_BASE.forEach(s => {
+          const val = Number(document.getElementById(`pub-val-base-${statKey(s.key)}`)?.value || document.getElementById(`pub-val-base-${s.key}`)?.value || 0);
+          if (val > 0) statsSummary.push(`${s.label}: ${val}`);
+        });
+      } else if (cat === 'gacha') {
+        dinoName = `Gacha (${gachaSelect.value})`;
+      } else if (cat === 'mek') {
+        let tipo = 'Fabricado';
+        for (const r of mekTypeRadios) if (r.checked && r.value === 'bp') tipo = 'BP';
+        dinoName = `MEK Lvl ${mekLvlInput.value} (${tipo})`;
+      }
+
+      function statKey(k) { return k; }
 
       const meta = currentUser.user_metadata || {};
       const username = meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
       const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
+      const userDesc = document.getElementById('pub-details')?.value.trim() || '';
+
+      const fullDesc = [statsSummary.join(' · '), userDesc].filter(Boolean).join(' | ');
 
       const payload = {
         user_id: currentUser.id,
@@ -671,7 +807,7 @@ function initMarketplace() {
         discord_avatar: avatar,
         dino_name: dinoName,
         category: cat,
-        details: { desc: document.getElementById('pub-details')?.value.trim() || '' },
+        details: { desc: fullDesc },
         min_price: activeFloorPrice,
         selling_price: sellP,
         status: 'active'
@@ -689,7 +825,7 @@ function initMarketplace() {
     });
   }
 
-  // Cargar publicaciones
+  // Cargar y renderizar publicaciones
   async function cargarPublicaciones() {
     if (!supabaseClient || !gridListings) return;
     const { data, error } = await supabaseClient
@@ -699,7 +835,7 @@ function initMarketplace() {
       .order('created_at', { ascending: false });
 
     if (error) {
-      gridListings.innerHTML = '<div class="market-empty-state">Error al conectar con el mercado.</div>';
+      gridListings.innerHTML = '<div class="market-empty-state">Error al cargar publicaciones.</div>';
       return;
     }
 
@@ -773,6 +909,7 @@ function initMarketplace() {
 
   if (searchInput) searchInput.addEventListener('input', aplicarFiltros);
   if (filterCat) filterCat.addEventListener('change', aplicarFiltros);
+  if (tabMarket) tabMarket.addEventListener('click', cargarPublicaciones);
 }
 
 // Inicialización de la aplicación
