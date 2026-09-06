@@ -374,6 +374,37 @@
     </form>
   </div>
 </div>
+    <!-- MODAL DE IDENTIDAD / NOMBRE IN-GAME -->
+<div id="modal-identity" class="market-modal-overlay hidden">
+  <div class="card-calculator modal-card" style="max-width: 420px;">
+    <div class="modal-head">
+      <h3 class="side-card-title">TU IDENTIDAD EN EL MERCADO</h3>
+    </div>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+      Elige cómo quieres que los demás sobrevivientes te vean en las publicaciones:
+    </p>
+
+    <div class="form-group">
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 12px;">
+        <input type="radio" name="identity-type" value="discord" checked>
+        <span>Usar mi nombre de Discord (<strong id="identity-discord-preview"></strong>)</span>
+      </label>
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+        <input type="radio" name="identity-type" value="ingame">
+        <span>Usar nombre In-Game (PJ / Tribu)</span>
+      </label>
+    </div>
+
+    <div class="form-group hidden" id="group-ingame-input">
+      <label for="input-ingame-name">Nombre de Personaje / Tribu</label>
+      <input type="text" id="input-ingame-name" class="custom-search-input" placeholder="Ej: Ragnar [Alpha Tribe]">
+    </div>
+
+    <button id="btn-save-identity" class="btn-discord" style="width: 100%; justify-content: center; margin-top: 12px;">
+      Guardar Identidad
+    </button>
+  </div>
+</div>
 
   <script type="module" src="./app.js"></script>
 </body>
