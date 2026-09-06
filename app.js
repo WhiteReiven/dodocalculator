@@ -771,10 +771,11 @@ function initMarketplace() {
       }
 
       const cat = catSelect.value;
-      let dinoName = dinoInput ? dinoInput.value.trim() : '';
+      let dinoName = '';
       let statsSummary = [];
 
       if (cat === 'mutated') {
+        dinoName = dinoInput ? dinoInput.value.trim() : 'Dino Mutado';
         STATS_MUTADOS.forEach(s => {
           if (document.getElementById(`pub-chk-mut-${s.key}`)?.checked) {
             const val = document.getElementById(`pub-val-mut-${s.key}`)?.value || 0;
@@ -783,8 +784,9 @@ function initMarketplace() {
         });
         if (mutCastradoChk?.checked) statsSummary.push('(Castrado)');
       } else if (cat === 'base') {
+        dinoName = dinoInput ? dinoInput.value.trim() : 'Dino Base';
         STATS_BASE.forEach(s => {
-          const val = Number(document.getElementById(`pub-val-base-${statKey(s.key)}`)?.value || document.getElementById(`pub-val-base-${s.key}`)?.value || 0);
+          const val = Number(document.getElementById(`pub-val-base-${s.key}`)?.value || 0);
           if (val > 0) statsSummary.push(`${s.label}: ${val}`);
         });
       } else if (cat === 'gacha') {
@@ -793,6 +795,8 @@ function initMarketplace() {
         let tipo = 'Fabricado';
         for (const r of mekTypeRadios) if (r.checked && r.value === 'bp') tipo = 'BP';
         dinoName = `MEK Lvl ${mekLvlInput.value} (${tipo})`;
+      } else {
+        dinoName = dinoInput ? dinoInput.value.trim() : 'Objeto / Criatura';
       }
 
       function statKey(k) { return k; }
