@@ -244,6 +244,83 @@
         </div>
       </div>
     </section>
+    <!-- PESTAÑA 5: MARKETPLACE -->
+<section id="section-marketplace" class="calculator-section hidden">
+  <div class="market-header-bar">
+    <div>
+      <h2 class="market-title">MERCADO COMUNITARIO</h2>
+      <p class="market-subtitle">Compra y venta directa entre sobrevivientes · Precios piso auditados</p>
+    </div>
+    <button id="btn-open-publish" class="btn-publish-action">
+      + Publicar Criatura
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="market-filters-row">
+    <input type="text" id="market-search-input" class="custom-search-input" placeholder="Buscar por criatura o vendedor...">
+    <select id="market-filter-cat" class="custom-search-input custom-select" style="max-width: 200px;">
+      <option value="all">Todas las categorías</option>
+      <option value="mutated">Mutados</option>
+      <option value="base">Base</option>
+      <option value="mek">MEK</option>
+      <option value="gacha">Gacha</option>
+    </select>
+  </div>
+
+  <!-- Grid de publicaciones -->
+  <div id="market-listings-grid" class="market-grid">
+    <div class="market-empty-state">Cargando publicaciones del mercado...</div>
+  </div>
+</section>
+
+<!-- MODAL PARA PUBLICAR -->
+    <div id="modal-publish" class="market-modal-overlay hidden">
+      <div class="card-calculator modal-card">
+        <div class="modal-head">
+          <h3 class="side-card-title">PUBLICAR EN EL MERCADO</h3>
+          <button id="btn-close-modal" class="modal-close">&times;</button>
+        </div>
+
+        <form id="form-publish-listing">
+          <div class="form-group">
+            <label for="pub-category">Categoría</label>
+            <select id="pub-category" class="custom-search-input custom-select">
+              <option value="mutated">Dino Mutado</option>
+              <option value="base">Dino Base</option>
+              <option value="mek">MEK</option>
+              <option value="gacha">Gacha</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pub-dino-name">Nombre de Criatura / Recurso</label>
+            <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Ej: Rex, Giganotosaurio, Elemento..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="pub-details">Detalles / Stats relevantes</label>
+            <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: 254 Vida, 254 Daño / Nivel 500 / Full clones" required>
+          </div>
+
+          <div class="form-group">
+            <label for="pub-min-price">Precio Mínimo de Regla (DDC)</label>
+            <input type="number" id="pub-min-price" class="custom-search-input" placeholder="Calcula el valor en la calculadora oficial" min="0" required>
+            <span class="helper-text">Debes colocar el valor base de la calculadora oficial.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="pub-selling-price">Tu Precio de Venta (DDC)</label>
+            <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Mismo valor o superior" min="0" required>
+            <span class="helper-text" id="pub-price-error" style="display: none; color: #ef4444; font-weight: 700;">¡El precio no puede ser menor al precio oficial!</span>
+          </div>
+
+          <button type="submit" id="btn-submit-listing" class="btn-discord" style="width: 100%; justify-content: center; margin-top: 10px;">
+            Confirmar y Publicar
+          </button>
+        </form>
+      </div>
+    </div>
   </main>
 
   <script type="module" src="./app.js"></script>
