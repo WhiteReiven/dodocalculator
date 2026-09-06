@@ -274,9 +274,9 @@
   </div>
 </section>
 
-<!-- MODAL PARA PUBLICAR ESTANDARIZADO -->
+<!-- MODAL DE PUBLICACIÓN CON STATS OFICIALES -->
 <div id="modal-publish" class="market-modal-overlay hidden">
-  <div class="card-calculator modal-card">
+  <div class="card-calculator modal-card modal-large">
     <div class="modal-head">
       <h3 class="side-card-title">PUBLICAR EN EL MERCADO</h3>
       <button id="btn-close-modal" class="modal-close">&times;</button>
@@ -290,21 +290,41 @@
           <option value="base">Dino Base</option>
           <option value="mek">MEK</option>
           <option value="gacha">Gacha</option>
-          <option value="otro">Otro / No listado</option>
+          <option value="otro">Otro / Objeto</option>
         </select>
       </div>
 
       <!-- Input de Criatura con Dropdown híbrido -->
       <div class="form-group" id="group-pub-dino">
-        <label for="pub-dino-name">Criatura / Objeto</label>
+        <label for="pub-dino-name">Criatura</label>
         <div class="autocomplete-wrapper" style="position: relative;">
-          <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Escribe o busca (ej: Rex, Giga, Spino...)" autocomplete="off" required>
+          <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Buscar criatura..." autocomplete="off" required>
           <ul id="dropdown-pub-dino" class="autocomplete-list hidden"></ul>
         </div>
         <span id="pub-tier-badge" class="helper-text" style="color: var(--neon-cyan); font-weight: 600;"></span>
       </div>
 
-      <!-- Selector específico para Gacha -->
+      <!-- PANEL DINOS MUTADOS (Checkboxes + Inputs + Castrado) -->
+      <div id="group-stats-mutated" class="market-stats-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span class="side-res-label">STATS MUTADAS (MARCAR LAS ACTIVAS)</span>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; cursor: pointer; color: #facc15;">
+            <input type="checkbox" id="pub-mut-castrado"> Dino Castrado (-25%)
+          </label>
+        </div>
+        <div id="pub-mutated-stats-list" class="stats-list"></div>
+      </div>
+
+      <!-- PANEL DINOS BASE (Inputs numéricos por stat) -->
+      <div id="group-stats-base" class="market-stats-box hidden">
+        <span class="side-res-label" style="margin-bottom: 10px; display: block;">STATS BASE (PUNTOS)</span>
+        <div id="pub-base-stats-grid" class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));"></div>
+        <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted);">
+          Nivel total acumulado: <span id="pub-base-lvl-count" class="text-neon" style="font-weight: 700;">1</span>
+        </div>
+      </div>
+
+      <!-- SELECTOR GACHA -->
       <div class="form-group hidden" id="group-pub-gacha">
         <label for="pub-gacha-res">Recurso de Gacha</label>
         <select id="pub-gacha-res" class="custom-search-input custom-select">
@@ -318,7 +338,7 @@
         </select>
       </div>
 
-      <!-- Input de Nivel específico para MEK -->
+      <!-- SELECTOR MEK -->
       <div class="form-group hidden" id="group-pub-mek">
         <label for="pub-mek-lvl">Nivel del MEK (150 a 540)</label>
         <input type="number" id="pub-mek-lvl" class="custom-search-input" min="150" max="540" value="150">
@@ -328,23 +348,23 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="pub-details">Detalles / Stats / Colores</label>
-        <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: 254 Vida, 254 Melee / Clon / Pareja reproductora" required>
+      <div class="form-group" style="margin-top: 14px;">
+        <label for="pub-details">Detalles adicionales / Contacto / Notas</label>
+        <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: Full mutaciones de color, entrega en Obelisco Verde, etc.">
       </div>
 
-      <!-- Banner de Precio Mínimo Calculado -->
-      <div class="side-result-box" style="margin-bottom: 15px; border-color: rgba(0, 229, 255, 0.3);">
-        <span class="side-res-label">PRECIO PISO OFICIAL (CALCULADORA)</span>
+      <!-- BANNER DE PISO CALCULADO -->
+      <div class="side-result-box" style="margin: 15px 0; border-color: rgba(0, 229, 255, 0.3);">
+        <span class="side-res-label">PRECIO PISO OFICIAL OBLIGATORIO</span>
         <div style="display: flex; justify-content: space-between; align-items: baseline;">
           <span id="pub-calculated-floor" class="side-res-value text-cyan" style="font-size: 1.4rem;">0 DDC</span>
-          <span id="pub-floor-legend" style="font-size: 0.75rem; color: var(--text-muted);">Sin restricciones</span>
+          <span id="pub-floor-legend" style="font-size: 0.75rem; color: var(--text-muted);">Calculando piso...</span>
         </div>
       </div>
 
       <div class="form-group">
         <label for="pub-selling-price">Tu Precio de Venta (DDC)</label>
-        <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Indica el precio de venta" min="0" required>
+        <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Mismo valor o superior al piso" min="0" required>
         <span class="helper-text error" id="pub-price-error" style="display: none;">¡El precio no puede ser inferior al precio piso oficial!</span>
       </div>
 
