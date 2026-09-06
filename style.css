@@ -116,6 +116,7 @@ body {
 .card-calculator {
   background: var(--bg-card);
   border: 1px solid var(--bg-card-border);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-radius: 14px;
   padding: 28px;
@@ -169,26 +170,29 @@ body {
   border: 1px solid var(--neon-cyan);
   border-radius: 8px;
   list-style: none;
-  max-height: 220px;
+  max-height: 200px;
   overflow-y: auto;
-  z-index: 100;
+  z-index: 1050;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
 }
 
-.autocomplete-item {
+.autocomplete-item,
+.autocomplete-list li {
   padding: 10px 16px;
   color: #f8fafc;
   cursor: pointer;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   transition: background 0.15s;
+  font-size: 0.9rem;
 }
 
-.autocomplete-item:last-child {
+.autocomplete-item:last-child,
+.autocomplete-list li:last-child {
   border-bottom: none;
 }
 
 .autocomplete-item:hover,
-.autocomplete-item.selected {
+.autocomplete-list li:hover {
   background: rgba(0, 229, 255, 0.2);
   color: var(--neon-cyan);
 }
@@ -342,131 +346,7 @@ body {
   display: none !important;
 }
 
-/* ==========================================
-   OPTIMIZACIONES PARA DISPOSITIVOS MÓVILES
-   ========================================== */
-
-@media (max-width: 768px) {
-  /* Contenedor y espaciado general */
-  .container {
-    padding: 0 12px;
-  }
-
-  .site-header {
-    padding: 30px 12px 20px;
-  }
-
-  .brand-title {
-    font-size: 2rem;
-  }
-
-  .brand-subtitle {
-    font-size: 0.85rem;
-  }
-
-  .card-calculator {
-    padding: 18px 14px;
-    border-radius: 12px;
-  }
-
-  /* Pestañas: cuadrícula de 2x2 para no desbordar la pantalla */
-  .tabs-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 18px;
-  }
-
-  .tab-btn {
-    padding: 10px 8px;
-    font-size: 0.85rem;
-    text-align: center;
-  }
-
-  /* Info Banner flexible */
-  .info-banner {
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 0.85rem;
-    padding: 10px 14px;
-  }
-
-  .info-banner span[style*="margin-left"] {
-    margin-left: 0 !important;
-  }
-
-  /* Lista de estadísticas en Dinos Mutados */
-  .stats-table-header {
-    display: none; /* Oculta encabezados en móvil para ganar espacio */
-  }
-
-  .stat-row {
-    grid-template-columns: auto 1fr auto;
-    grid-template-areas:
-      "chk label badge"
-      "chk input input";
-    row-gap: 8px;
-    column-gap: 10px;
-    padding: 12px 10px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 8px;
-    margin-bottom: 8px;
-  }
-
-  .stat-checkbox {
-    grid-area: chk;
-    width: 22px;
-    height: 22px;
-    align-self: center;
-  }
-
-  .stat-row label {
-    grid-area: label;
-    font-size: 0.95rem;
-    font-weight: 600;
-  }
-
-  .stat-badge {
-    grid-area: badge;
-    justify-self: end;
-  }
-
-  .stat-input {
-    grid-area: input;
-    width: 100%;
-    font-size: 1rem;
-    padding: 10px 12px;
-  }
-
-  /* Grilla de Dinos Base */
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  /* Cajas de resultados a columna completa */
-  .results-container {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .result-value {
-    font-size: 1.5rem;
-  }
-
-  /* Entradas de texto táctiles */
-  .custom-search-input,
-  .custom-select {
-    font-size: 16px; /* Evita que Safari en iOS haga zoom automático */
-    padding: 12px 14px;
-  }
-
-  .autocomplete-item {
-    padding: 12px 16px;
-  }
-}
-
-/* Layout 2 columnas para Dinos Base + Especiales */
+/* Base Layout & Specials */
 .base-layout-container {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -481,7 +361,7 @@ body {
 }
 
 .side-card {
-  padding: 20px!important;
+  padding: 20px !important;
 }
 
 .side-card-header {
@@ -515,12 +395,12 @@ body {
 }
 
 .helper-text.error {
-  color: #ef4444!important;
+  color: #ef4444 !important;
   font-weight: 700;
 }
 
 .side-result-box {
-  background: #0b1124cc;
+  background: rgba(11, 17, 36, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   padding: 12px 16px;
@@ -561,42 +441,6 @@ body {
 
 .custom-select {
   cursor: pointer;
-}
-
-/* Responsivo para móviles */
-@media (max-width: 850px) {
-  .base-layout-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Botón Marketplace Coming Soon */
-.btn-market-soon {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border-color: rgba(168, 85, 247, 0.4)!important;
-  background: rgba(168, 85, 247, 0.1)!important;
-  color: #c084fc!important;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-market-soon:hover {
-  background: rgba(168, 85, 247, 0.2)!important;
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.35);
-  transform: translateY(-1px);
-}
-
-.badge-soon {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.8px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: #a855f7;
-  color: #060913;
 }
 
 /* Barra de Autenticación con Discord */
@@ -643,6 +487,7 @@ body {
   height: 32px;
   border-radius: 50%;
   border: 2px solid var(--neon-cyan);
+  object-fit: cover;
 }
 
 .discord-name {
@@ -666,7 +511,9 @@ body {
   background: rgba(239, 68, 68, 0.3);
 }
 
-/* MARKETPLACE VIEW */
+/* ==========================================
+   MARKETPLACE COMMUNITY VIEW & MODAL
+   ========================================== */
 .market-header-bar {
   display: flex;
   justify-content: space-between;
@@ -714,7 +561,7 @@ body {
 
 .market-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 18px;
 }
 
@@ -725,7 +572,7 @@ body {
   color: var(--text-muted);
 }
 
-/* Tarjeta individual de mercado */
+/* Tarjeta de publicación */
 .market-card {
   background: var(--bg-card);
   border: 1px solid var(--bg-card-border);
@@ -753,6 +600,8 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 50%;
+  border: 1px solid var(--neon-cyan);
+  object-fit: cover;
 }
 
 .seller-name {
@@ -772,6 +621,9 @@ body {
 .market-card-details {
   font-size: 0.85rem;
   color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 .market-card-price-box {
@@ -781,6 +633,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 10px;
 }
 
 .market-card-price {
@@ -801,46 +654,53 @@ body {
 }
 
 .btn-contact-seller {
-  display: block;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
   background: rgba(88, 101, 242, 0.2);
   border: 1px solid rgba(88, 101, 242, 0.5);
   color: #a5b4fc;
-  padding: 8px;
+  padding: 10px;
   border-radius: 6px;
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 600;
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .btn-contact-seller:hover {
   background: #5865F2;
   color: #fff;
+  box-shadow: 0 0 12px rgba(88, 101, 242, 0.4);
 }
 
 .btn-delete-item {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.4);
   color: #f87171;
-  padding: 6px;
+  padding: 8px;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
   width: 100%;
+  transition: all 0.2s;
 }
 
 .btn-delete-item:hover {
   background: rgba(239, 68, 68, 0.3);
 }
 
-/* MODAL */
+/* Modales */
 .market-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.8);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -848,9 +708,12 @@ body {
   padding: 16px;
 }
 
-.modal-card {
+.modal-large {
   width: 100%;
-  max-width: 480px;
+  max-width: 600px !important;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding-right: 14px;
 }
 
 .modal-head {
@@ -866,43 +729,11 @@ body {
   color: var(--text-muted);
   font-size: 1.8rem;
   cursor: pointer;
+  line-height: 1;
 }
 
-.autocomplete-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  max-height: 180px;
-  overflow-y: auto;
-  background: #0d1326;
-  border: 1px solid rgba(0, 229, 255, 0.3);
-  border-radius: 6px;
-  list-style: none;
-  padding: 0;
-  margin: 4px 0 0 0;
-  z-index: 1050;
-}
-
-.autocomplete-list li {
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 0.85rem;
+.modal-close:hover {
   color: #fff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.autocomplete-list li:hover {
-  background: rgba(0, 229, 255, 0.15);
-  color: var(--neon-cyan);
-}
-
-/* Modal grande con soporte de scroll para stats */
-.modal-large {
-  max-width: 600px!important;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding-right: 12px;
 }
 
 .market-stats-box {
@@ -917,20 +748,65 @@ body {
   margin-bottom: 8px;
 }
 
-.btn-copy-discord {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
+/* Móviles */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+  }
 
-.btn-copy-discord:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.3);
+  .site-header {
+    padding: 30px 12px 20px;
+  }
+
+  .brand-title {
+    font-size: 2rem;
+  }
+
+  .tabs-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .base-layout-container {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-row {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "chk label badge"
+      "chk input input";
+    row-gap: 8px;
+    column-gap: 10px;
+    padding: 12px 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
+  .stat-checkbox {
+    grid-area: chk;
+    width: 22px;
+    height: 22px;
+  }
+
+  .stat-row label {
+    grid-area: label;
+    font-size: 0.95rem;
+  }
+
+  .stat-badge {
+    grid-area: badge;
+  }
+
+  .stat-input {
+    grid-area: input;
+    width: 100%;
+  }
+
+  .results-container {
+    grid-template-columns: 1fr;
+  }
 }
