@@ -129,11 +129,8 @@ function calculateMutated() {
   secKeys.forEach(k => {
     if (document.getElementById(`chk-mut-${k}`).checked) {
       const val = Number(document.getElementById(`val-mut-${k}`).value || 0);
-      if (hasPrin) {
-        total += val * fSecH;
-      } else {
-        total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
-      }
+      if (hasPrin) total += val * fSecH;
+      else total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
       countSec++;
     }
   });
@@ -401,7 +398,7 @@ function initEspecialesBase() {
 }
 
 // ==========================================
-// 6. SUPABASE AUTH & MARKETPLACE
+// 6. SUPABASE AUTH & IDENTIDAD
 // ==========================================
 const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx";
@@ -409,14 +406,98 @@ const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx";
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 let currentUser = null;
 
+function getActiveDisplayName() {
+  const custom = localStorage.getItem('wd_ingame_name');
+  if (custom && custom.trim()) return custom.trim();
+
+  if (!currentUser) return 'Sobreviviente';
+  const meta = currentUser.user_metadata || {};
+  return meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
+}
+
+function updateHeaderBadge() {
+  const nameSpan = document.getElementById('user-discord-name');
+  if (nameSpan) {
+    nameSpan.textContent = getActiveDisplayName();
+  }
+}
+
+function initIdentityModal() {
+  const modal = document.getElementById('modal-identity');
+  const preview = document.getElementById('identity-discord-preview');
+  const groupInGame = document.getElementById('group-ingame-input');
+  const inputInGame = document.getElementById('input-ingame-name');
+  const btnSave = document.getElementById('btn-save-identity');
+  const radios = document.getElementsByName('identity-type');
+  const btnChange = document.getElementById('btn-change-identity');
+
+  if (!modal) return null;
+
+  radios.forEach(r => {
+    r.addEventListener('change', () => {
+      if (groupInGame) groupInGame.classList.toggle('hidden', r.value !== 'ingame');
+    });
+  });
+
+  if (btnChange) {
+    btnChange.addEventListener('click', () => {
+      openIdentityModal();
+    });
+  }
+
+  function openIdentityModal() {
+    if (!currentUser) return;
+    const meta = currentUser.user_metadata || {};
+    const discordName = meta.full_name || meta.custom_claims?.global_name || meta.name || 'Discord User';
+    if (preview) preview.textContent = discordName;
+
+    const saved = localStorage.getItem('wd_ingame_name');
+    if (saved) {
+      if (radios[1]) radios[1].checked = true;
+      if (groupInGame) groupInGame.classList.remove('hidden');
+      if (inputInGame) inputInGame.value = saved;
+    } else {
+      if (radios[0]) radios[0].checked = true;
+      if (groupInGame) groupInGame.classList.add('hidden');
+    }
+    modal.classList.remove('hidden');
+  }
+
+  if (btnSave) {
+    btnSave.addEventListener('click', () => {
+      let isIngame = false;
+      radios.forEach(r => { if (r.checked && r.value === 'ingame') isIngame = true; });
+
+      if (isIngame) {
+        const val = inputInGame.value.trim();
+        if (!val) {
+          alert('Por favor, ingresa tu nombre In-Game o selecciona usar tu usuario de Discord.');
+          return;
+        }
+        localStorage.setItem('wd_ingame_name', val);
+      } else {
+        localStorage.removeItem('wd_ingame_name');
+      }
+
+      modal.classList.add('hidden');
+      updateHeaderBadge();
+    });
+  }
+
+  return { openIdentityModal };
+}
+
+let identityManager = null;
+
 async function initAuth() {
   if (!supabaseClient) return;
+
+  identityManager = initIdentityModal();
 
   const btnLogin = document.getElementById('btn-login-discord');
   const btnLogout = document.getElementById('btn-logout');
   const userBadge = document.getElementById('user-profile-badge');
   const avatarImg = document.getElementById('user-discord-avatar');
-  const nameSpan = document.getElementById('user-discord-name');
 
   if (btnLogin) {
     btnLogin.addEventListener('click', async () => {
@@ -448,11 +529,16 @@ async function initAuth() {
       if (userBadge) userBadge.classList.remove('hidden');
 
       const meta = user.user_metadata || {};
-      const username = meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
       const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
 
-      if (nameSpan) nameSpan.textContent = username;
       if (avatarImg) avatarImg.src = avatar;
+      updateHeaderBadge();
+
+      // Solicitar nombre en primer login
+      if (!localStorage.getItem('wd_identity_prompted') && identityManager) {
+        localStorage.setItem('wd_identity_prompted', 'true');
+        identityManager.openIdentityModal();
+      }
     } else {
       if (btnLogin) btnLogin.classList.remove('hidden');
       if (userBadge) userBadge.classList.add('hidden');
@@ -460,7 +546,9 @@ async function initAuth() {
   }
 }
 
-// --- SISTEMA DE MARKETPLACE CON FORMULARIO INTEGRAL ---
+// ==========================================
+// 7. SISTEMA DE MARKETPLACE
+// ==========================================
 function initMarketplace() {
   const tabMarket = document.getElementById('tab-marketplace');
   const btnOpenPublish = document.getElementById('btn-open-publish');
@@ -471,14 +559,12 @@ function initMarketplace() {
   const searchInput = document.getElementById('market-search-input');
   const filterCat = document.getElementById('market-filter-cat');
 
-  // Elementos generales del modal
   const catSelect = document.getElementById('pub-category');
   const dinoGroup = document.getElementById('group-pub-dino');
   const dinoInput = document.getElementById('pub-dino-name');
   const dinoDropdown = document.getElementById('dropdown-pub-dino');
   const tierBadge = document.getElementById('pub-tier-badge');
 
-  // Paneles de Stats
   const groupStatsMutated = document.getElementById('group-stats-mutated');
   const mutStatsList = document.getElementById('pub-mutated-stats-list');
   const mutCastradoChk = document.getElementById('pub-mut-castrado');
@@ -487,14 +573,12 @@ function initMarketplace() {
   const baseStatsGridModal = document.getElementById('pub-base-stats-grid');
   const baseLvlCountEl = document.getElementById('pub-base-lvl-count');
 
-  // Gacha & MEK
   const gachaGroup = document.getElementById('group-pub-gacha');
   const gachaSelect = document.getElementById('pub-gacha-res');
   const mekGroup = document.getElementById('group-pub-mek');
   const mekLvlInput = document.getElementById('pub-mek-lvl');
   const mekTypeRadios = document.getElementsByName('mek-type');
 
-  // Precios
   const calculatedFloorSpan = document.getElementById('pub-calculated-floor');
   const floorLegend = document.getElementById('pub-floor-legend');
   const sellPriceInput = document.getElementById('pub-selling-price');
@@ -503,7 +587,7 @@ function initMarketplace() {
   let activeFloorPrice = 0;
   let allListings = [];
 
-  // Construir filas de stats mutadas en el modal
+  // Construir filas de stats mutadas
   if (mutStatsList) {
     mutStatsList.innerHTML = '';
     STATS_MUTADOS.forEach(stat => {
@@ -521,7 +605,7 @@ function initMarketplace() {
     });
   }
 
-  // Construir cards de stats base en el modal
+  // Construir cards de stats base
   if (baseStatsGridModal) {
     baseStatsGridModal.innerHTML = '';
     STATS_BASE.forEach(stat => {
@@ -538,7 +622,6 @@ function initMarketplace() {
 
   if (mutCastradoChk) mutCastradoChk.addEventListener('change', recalcularPiso);
 
-  // Catálogo según categoría
   function obtenerCatalogoActual() {
     const cat = catSelect.value;
     if (cat === 'mutated') return Object.keys(MUTATED_DINOS || {}).sort();
@@ -546,13 +629,12 @@ function initMarketplace() {
     return Array.from(new Set([...Object.keys(MUTATED_DINOS || {}), ...Object.keys(BASE_DINOS || {})])).sort();
   }
 
-  // Alternar vista de paneles según categoría seleccionada
+  // Alternar vista de paneles según categoría
   if (catSelect) {
     catSelect.addEventListener('change', () => {
       const cat = catSelect.value;
       const isFixedItem = (cat === 'gacha' || cat === 'mek');
 
-      // Oculta el buscador de criatura si es Gacha o MEK
       if (dinoGroup) dinoGroup.classList.toggle('hidden', isFixedItem);
       if (groupStatsMutated) groupStatsMutated.classList.toggle('hidden', cat !== 'mutated');
       if (groupStatsBase) groupStatsBase.classList.toggle('hidden', cat !== 'base');
@@ -621,7 +703,7 @@ function initMarketplace() {
     recalcularPiso();
   }
 
-  // --- MOTOR DE CÁLCULO DE PISO EN VIVO PARA EL MODAL ---
+  // Motor de cálculo de piso
   function recalcularPiso() {
     if (!catSelect || !calculatedFloorSpan || !floorLegend) return;
     const cat = catSelect.value;
@@ -799,26 +881,26 @@ function initMarketplace() {
         dinoName = dinoInput ? dinoInput.value.trim() : 'Objeto / Criatura';
       }
 
-      function statKey(k) { return k; }
+      const allowDiscord = document.getElementById('pub-allow-discord')?.checked ?? true;
+      const sellerDisplayName = getActiveDisplayName();
+      const discordId = allowDiscord ? (currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '') : '';
 
       const meta = currentUser.user_metadata || {};
-      const username = meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
       const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
       const userDesc = document.getElementById('pub-details')?.value.trim() || '';
 
       const fullDesc = [statsSummary.join(' · '), userDesc].filter(Boolean).join(' | ');
 
-     const discordId = currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '';
-
       const payload = {
         user_id: currentUser.id,
-        discord_username: username,
+        discord_username: sellerDisplayName,
         discord_avatar: avatar,
         dino_name: dinoName,
         category: cat,
         details: { 
           desc: fullDesc,
-          discord_id: discordId
+          discord_id: discordId,
+          allow_discord: allowDiscord
         },
         min_price: activeFloorPrice,
         selling_price: sellP,
@@ -855,7 +937,7 @@ function initMarketplace() {
     renderGrid(allListings);
   }
 
- function renderGrid(listings) {
+  function renderGrid(listings) {
     if (!gridListings) return;
     if (listings.length === 0) {
       gridListings.innerHTML = '<div class="market-empty-state">No hay publicaciones activas en este momento.</div>';
@@ -868,11 +950,8 @@ function initMarketplace() {
       card.className = 'market-card';
       const isOwner = currentUser && currentUser.id === item.user_id;
 
-      const sellerDiscord = item.discord_username;
-      const sellerDiscordId = item.details?.discord_id;
-      const discordLink = sellerDiscordId 
-        ? `https://discord.com/users/${sellerDiscordId}` 
-        : `https://discord.com/app`;
+      const allowDiscord = item.details?.allow_discord !== false && item.details?.discord_id;
+      const discordLink = `https://discord.com/users/${item.details?.discord_id}`;
 
       card.innerHTML = `
         <div>
@@ -894,14 +973,17 @@ function initMarketplace() {
           <div style="margin-top: 10px;">
             ${isOwner 
               ? `<button class="btn-delete-item" data-id="${item.id}">Marcar Vendido / Retirar</button>`
-              : `<div style="display: flex; gap: 6px;">
-                   <a href="${discordLink}" target="_blank" rel="noopener noreferrer" class="btn-contact-seller" style="flex: 1; text-decoration: none;">
-                     Abrir Discord
-                   </a>
-                   <button class="btn-copy-discord" data-user="${sellerDiscord}" title="Copiar usuario">
-                     Copiar User
-                   </button>
-                 </div>`
+              : (allowDiscord
+                  ? `<a href="${discordLink}" target="_blank" rel="noopener noreferrer" class="btn-contact-seller">
+                       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                         <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                         </svg>
+                         Enviar Mensaje
+                       </a>`
+                  : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">
+                       Contacto solo In-Game
+                     </div>`
+                )
             }
           </div>
         </div>
@@ -914,16 +996,6 @@ function initMarketplace() {
             cargarPublicaciones();
           }
         });
-      } else {
-        const btnCopy = card.querySelector('.btn-copy-discord');
-        if (btnCopy) {
-          btnCopy.addEventListener('click', () => {
-            navigator.clipboard.writeText(sellerDiscord);
-            const originalText = btnCopy.textContent;
-            btnCopy.textContent = '¡Copiado!';
-            setTimeout(() => { btnCopy.textContent = originalText; }, 1800);
-          });
-        }
       }
 
       gridListings.appendChild(card);
