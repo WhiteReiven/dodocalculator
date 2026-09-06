@@ -808,13 +808,18 @@ function initMarketplace() {
 
       const fullDesc = [statsSummary.join(' · '), userDesc].filter(Boolean).join(' | ');
 
+     const discordId = currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '';
+
       const payload = {
         user_id: currentUser.id,
         discord_username: username,
         discord_avatar: avatar,
         dino_name: dinoName,
         category: cat,
-        details: { desc: fullDesc },
+        details: { 
+          desc: fullDesc,
+          discord_id: discordId
+        },
         min_price: activeFloorPrice,
         selling_price: sellP,
         status: 'active'
