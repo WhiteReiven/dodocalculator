@@ -115,22 +115,25 @@ function calculateMutated() {
   const fSecH = ((basePrice / 4) / 2) / 254;
   const fSecI = ((basePrice / 4) * 1.25) / 254;
 
-  const chkVida = document.getElementById('chk-mut-vida').checked;
-  const chkDano = document.getElementById('chk-mut-dano').checked;
+  const chkVida = document.getElementById('chk-mut-vida')?.checked;
+  const chkDano = document.getElementById('chk-mut-dano')?.checked;
   const hasPrin = chkVida || chkDano;
 
   let total = 0;
-  if (chkVida) total += Number(document.getElementById('val-mut-vida').value || 0) * fPrin;
-  if (chkDano) total += Number(document.getElementById('val-mut-dano').value || 0) * fPrin;
+  if (chkVida) total += Number(document.getElementById('val-mut-vida')?.value || 0) * fPrin;
+  if (chkDano) total += Number(document.getElementById('val-mut-dano')?.value || 0) * fPrin;
 
   const secKeys = ['peso', 'energia', 'comida', 'oxigeno', 'velocidad'];
   let countSec = 0;
 
   secKeys.forEach(k => {
-    if (document.getElementById(`chk-mut-${k}`).checked) {
-      const val = Number(document.getElementById(`val-mut-${k}`).value || 0);
-      if (hasPrin) total += val * fSecH;
-      else total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
+    if (document.getElementById(`chk-mut-${k}`)?.checked) {
+      const val = Number(document.getElementById(`val-mut-${k}`)?.value || 0);
+      if (hasPrin) {
+        total += val * fSecH;
+      } else {
+        total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
+      }
       countSec++;
     }
   });
@@ -194,7 +197,7 @@ function calculateBase() {
   let totalLvl = 1;
 
   STATS_BASE.forEach(stat => {
-    const val = Number(document.getElementById(`val-base-${stat.key}`).value || 0);
+    const val = Number(document.getElementById(`val-base-${stat.key}`)?.value || 0);
     totalLvl += val;
     if (stat.type === 'hp_dmg') totalPrice += val * rates.hp_dmg;
     else if (stat.type === 'eng_wgt') totalPrice += val * rates.eng_wgt;
@@ -534,7 +537,7 @@ async function initAuth() {
       if (avatarImg) avatarImg.src = avatar;
       updateHeaderBadge();
 
-      // Solicitar nombre en primer login
+      // Solicitar preferencia de nombre en el primer login
       if (!localStorage.getItem('wd_identity_prompted') && identityManager) {
         localStorage.setItem('wd_identity_prompted', 'true');
         identityManager.openIdentityModal();
@@ -587,7 +590,7 @@ function initMarketplace() {
   let activeFloorPrice = 0;
   let allListings = [];
 
-  // Construir filas de stats mutadas
+  // Construir filas de stats mutadas en el modal
   if (mutStatsList) {
     mutStatsList.innerHTML = '';
     STATS_MUTADOS.forEach(stat => {
@@ -605,7 +608,7 @@ function initMarketplace() {
     });
   }
 
-  // Construir cards de stats base
+  // Construir cards de stats base en el modal
   if (baseStatsGridModal) {
     baseStatsGridModal.innerHTML = '';
     STATS_BASE.forEach(stat => {
@@ -650,7 +653,7 @@ function initMarketplace() {
     });
   }
 
-  // Autocompletado del modal
+  // Autocompletado interactivo en el modal
   if (dinoInput && dinoDropdown) {
     dinoInput.addEventListener('input', () => {
       const val = dinoInput.value.trim().toLowerCase();
@@ -703,7 +706,7 @@ function initMarketplace() {
     recalcularPiso();
   }
 
-  // Motor de cálculo de piso
+  // Motor de cálculo de precio piso oficial
   function recalcularPiso() {
     if (!catSelect || !calculatedFloorSpan || !floorLegend) return;
     const cat = catSelect.value;
@@ -824,7 +827,7 @@ function initMarketplace() {
   if (mekLvlInput) mekLvlInput.addEventListener('input', recalcularPiso);
   if (mekTypeRadios) mekTypeRadios.forEach(r => r.addEventListener('change', recalcularPiso));
 
-  // Abrir / Cerrar Modal
+  // Abrir y cerrar Modal de publicación
   if (btnOpenPublish) {
     btnOpenPublish.addEventListener('click', () => {
       if (!currentUser) {
@@ -950,8 +953,9 @@ function initMarketplace() {
       card.className = 'market-card';
       const isOwner = currentUser && currentUser.id === item.user_id;
 
-      const allowDiscord = item.details?.allow_discord !== false && item.details?.discord_id;
-      const discordLink = `https://discord.com/users/${item.details?.discord_id}`;
+      const allowDiscord = item.details?.allow_discord !== false;
+      const sellerName = item.discord_username;
+      const sellerDiscordId = item.details?.discord_id || '';
 
       card.innerHTML = `
         <div>
@@ -974,12 +978,15 @@ function initMarketplace() {
             ${isOwner 
               ? `<button class="btn-delete-item" data-id="${item.id}">Marcar Vendido / Retirar</button>`
               : (allowDiscord
-                  ? `<a href="${discordLink}" target="_blank" rel="noopener noreferrer" class="btn-contact-seller">
+                  ? `<button class="btn-contact-seller btn-open-discord-app" 
+                             data-id="${sellerDiscordId}" 
+                             data-user="${sellerName}" 
+                             data-item="${item.dino_name}">
                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
                          </svg>
-                         Enviar Mensaje
-                       </a>`
+                         <span>Contactar por Discord</span>
+                       </button>`
                   : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">
                        Contacto solo In-Game
                      </div>`
@@ -996,6 +1003,34 @@ function initMarketplace() {
             cargarPublicaciones();
           }
         });
+      } else if (allowDiscord) {
+        const btnContact = card.querySelector('.btn-open-discord-app');
+        if (btnContact) {
+          btnContact.addEventListener('click', () => {
+            const userTarget = btnContact.getAttribute('data-user');
+            const itemTarget = btnContact.getAttribute('data-item');
+            const discordId = btnContact.getAttribute('data-id');
+
+            // 1. Copiar al portapapeles el texto del mensaje listo para pegar
+            const copyText = `Hola @${userTarget}! Te contacto desde Wild Dodo por tu publicación de: ${itemTarget}`;
+            navigator.clipboard.writeText(copyText);
+
+            // 2. Feedback visual temporal en el botón
+            const originalHTML = btnContact.innerHTML;
+            btnContact.innerHTML = `<span>¡Mensaje copiado! Abriendo...</span>`;
+            setTimeout(() => { btnContact.innerHTML = originalHTML; }, 3000);
+
+            // 3. Abrir la aplicación Discord nativa con fallback web
+            if (discordId) {
+              window.location.href = `discord://-/users/${discordId}`;
+              setTimeout(() => {
+                window.open(`https://discord.com/users/${discordId}`, '_blank');
+              }, 600);
+            } else {
+              window.location.href = `discord://`;
+            }
+          });
+        }
       }
 
       gridListings.appendChild(card);
@@ -1019,7 +1054,7 @@ function initMarketplace() {
   if (tabMarket) tabMarket.addEventListener('click', cargarPublicaciones);
 }
 
-// Inicialización de la aplicación
+// Inicialización general
 initAuth();
 initMarketplace();
 initEspecialesBase();
