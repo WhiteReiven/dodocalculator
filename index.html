@@ -274,54 +274,86 @@
   </div>
 </section>
 
-<!-- MODAL PARA PUBLICAR -->
-    <div id="modal-publish" class="market-modal-overlay hidden">
-      <div class="card-calculator modal-card">
-        <div class="modal-head">
-          <h3 class="side-card-title">PUBLICAR EN EL MERCADO</h3>
-          <button id="btn-close-modal" class="modal-close">&times;</button>
-        </div>
-
-        <form id="form-publish-listing">
-          <div class="form-group">
-            <label for="pub-category">Categoría</label>
-            <select id="pub-category" class="custom-search-input custom-select">
-              <option value="mutated">Dino Mutado</option>
-              <option value="base">Dino Base</option>
-              <option value="mek">MEK</option>
-              <option value="gacha">Gacha</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="pub-dino-name">Nombre de Criatura / Recurso</label>
-            <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Ej: Rex, Giganotosaurio, Elemento..." required>
-          </div>
-
-          <div class="form-group">
-            <label for="pub-details">Detalles / Stats relevantes</label>
-            <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: 254 Vida, 254 Daño / Nivel 500 / Full clones" required>
-          </div>
-
-          <div class="form-group">
-            <label for="pub-min-price">Precio Mínimo de Regla (DDC)</label>
-            <input type="number" id="pub-min-price" class="custom-search-input" placeholder="Calcula el valor en la calculadora oficial" min="0" required>
-            <span class="helper-text">Debes colocar el valor base de la calculadora oficial.</span>
-          </div>
-
-          <div class="form-group">
-            <label for="pub-selling-price">Tu Precio de Venta (DDC)</label>
-            <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Mismo valor o superior" min="0" required>
-            <span class="helper-text" id="pub-price-error" style="display: none; color: #ef4444; font-weight: 700;">¡El precio no puede ser menor al precio oficial!</span>
-          </div>
-
-          <button type="submit" id="btn-submit-listing" class="btn-discord" style="width: 100%; justify-content: center; margin-top: 10px;">
-            Confirmar y Publicar
-          </button>
-        </form>
-      </div>
+<!-- MODAL PARA PUBLICAR ESTANDARIZADO -->
+<div id="modal-publish" class="market-modal-overlay hidden">
+  <div class="card-calculator modal-card">
+    <div class="modal-head">
+      <h3 class="side-card-title">PUBLICAR EN EL MERCADO</h3>
+      <button id="btn-close-modal" class="modal-close">&times;</button>
     </div>
-  </main>
+
+    <form id="form-publish-listing">
+      <div class="form-group">
+        <label for="pub-category">Categoría</label>
+        <select id="pub-category" class="custom-search-input custom-select">
+          <option value="mutated">Dino Mutado</option>
+          <option value="base">Dino Base</option>
+          <option value="mek">MEK</option>
+          <option value="gacha">Gacha</option>
+          <option value="otro">Otro / No listado</option>
+        </select>
+      </div>
+
+      <!-- Input de Criatura con Dropdown híbrido -->
+      <div class="form-group" id="group-pub-dino">
+        <label for="pub-dino-name">Criatura / Objeto</label>
+        <div class="autocomplete-wrapper" style="position: relative;">
+          <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Escribe o busca (ej: Rex, Giga, Spino...)" autocomplete="off" required>
+          <ul id="dropdown-pub-dino" class="autocomplete-list hidden"></ul>
+        </div>
+        <span id="pub-tier-badge" class="helper-text" style="color: var(--neon-cyan); font-weight: 600;"></span>
+      </div>
+
+      <!-- Selector específico para Gacha -->
+      <div class="form-group hidden" id="group-pub-gacha">
+        <label for="pub-gacha-res">Recurso de Gacha</label>
+        <select id="pub-gacha-res" class="custom-search-input custom-select">
+          <option value="ELEMENTO">ELEMENTO</option>
+          <option value="POLIMERO">POLIMERO</option>
+          <option value="PERLA NEGRA">PERLA NEGRA</option>
+          <option value="METAL">METAL</option>
+          <option value="CRISTAL">CRISTAL</option>
+          <option value="OBSIDIANA">OBSIDIANA</option>
+          <option value="VARIOS">VARIOS</option>
+        </select>
+      </div>
+
+      <!-- Input de Nivel específico para MEK -->
+      <div class="form-group hidden" id="group-pub-mek">
+        <label for="pub-mek-lvl">Nivel del MEK (150 a 540)</label>
+        <input type="number" id="pub-mek-lvl" class="custom-search-input" min="150" max="540" value="150">
+        <div style="margin-top: 8px; display: flex; gap: 15px;">
+          <label><input type="radio" name="mek-type" value="fab" checked> Fabricado</label>
+          <label><input type="radio" name="mek-type" value="bp"> Blueprint (BP)</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="pub-details">Detalles / Stats / Colores</label>
+        <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: 254 Vida, 254 Melee / Clon / Pareja reproductora" required>
+      </div>
+
+      <!-- Banner de Precio Mínimo Calculado -->
+      <div class="side-result-box" style="margin-bottom: 15px; border-color: rgba(0, 229, 255, 0.3);">
+        <span class="side-res-label">PRECIO PISO OFICIAL (CALCULADORA)</span>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <span id="pub-calculated-floor" class="side-res-value text-cyan" style="font-size: 1.4rem;">0 DDC</span>
+          <span id="pub-floor-legend" style="font-size: 0.75rem; color: var(--text-muted);">Sin restricciones</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="pub-selling-price">Tu Precio de Venta (DDC)</label>
+        <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Indica el precio de venta" min="0" required>
+        <span class="helper-text error" id="pub-price-error" style="display: none;">¡El precio no puede ser inferior al precio piso oficial!</span>
+      </div>
+
+      <button type="submit" id="btn-submit-listing" class="btn-discord" style="width: 100%; justify-content: center; margin-top: 10px;">
+        Confirmar y Publicar
+      </button>
+    </form>
+  </div>
+</div>
 
   <script type="module" src="./app.js"></script>
 </body>
