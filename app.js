@@ -404,6 +404,73 @@ if (marketBtn) {
   });
 }
 
+// --- AUTENTICACIÓN SUPABASE Y DISCORD ---
+const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx"; // Pega la clave que empieza con sb_publishable_...
+
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+let currentUser = null;
+
+async function initAuth() {
+  if (!supabaseClient) return;
+
+  const btnLogin = document.getElementById('btn-login-discord');
+  const btnLogout = document.getElementById('btn-logout');
+  const userBadge = document.getElementById('user-profile-badge');
+  const avatarImg = document.getElementById('user-discord-avatar');
+  const nameSpan = document.getElementById('user-discord-name');
+
+  // Iniciar sesión
+  if (btnLogin) {
+    btnLogin.addEventListener('click', async () => {
+      await supabaseClient.auth.signInWithOAuth({
+        provider: 'discord',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+    });
+  }
+
+  // Cerrar sesión
+  if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      window.location.reload();
+    });
+  }
+
+  // Sesión inicial
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  renderUser(session?.user || null);
+
+  // Escuchar cambios de estado
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    renderUser(session?.user || null);
+  });
+
+  function renderUser(user) {
+    currentUser = user;
+    if (user) {
+      if (btnLogin) btnLogin.classList.add('hidden');
+      if (userBadge) userBadge.classList.remove('hidden');
+
+      const meta = user.user_metadata || {};
+      const username = meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
+      const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+      if (nameSpan) nameSpan.textContent = username;
+      if (avatarImg) avatarImg.src = avatar;
+    } else {
+      if (btnLogin) btnLogin.classList.remove('hidden');
+      if (userBadge) userBadge.classList.add('hidden');
+    }
+  }
+}
+
+initAuth();
+
 // Ejecutar al cargar
 initEspecialesBase();
 // Inicialización general
