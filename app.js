@@ -567,6 +567,19 @@ function initMarketplace() {
   const searchInput = document.getElementById('market-search-input');
   const filterCat = document.getElementById('market-filter-cat');
 
+  // Modal Carga Masiva Excel
+  const btnOpenBulk = document.getElementById('btn-open-bulk');
+  const modalBulk = document.getElementById('modal-bulk');
+  const btnCloseBulk = document.getElementById('btn-close-bulk');
+  const btnDownloadTemplate = document.getElementById('btn-download-template');
+  const bulkFileInput = document.getElementById('bulk-excel-file');
+  const bulkStatusEl = document.getElementById('bulk-preview-status');
+  const btnProcessBulk = document.getElementById('btn-process-bulk');
+
+  // Parser Rápido
+  const quickInput = document.getElementById('quick-parse-input');
+  const btnQuick = document.getElementById('btn-apply-quick-parse');
+
   const catSelect = document.getElementById('pub-category');
   const dinoGroup = document.getElementById('group-pub-dino');
   const dinoInput = document.getElementById('pub-dino-name');
@@ -587,7 +600,7 @@ function initMarketplace() {
   const mekLvlInput = document.getElementById('pub-mek-lvl');
   const mekTypeRadios = document.getElementsByName('mek-type');
 
-  // Elementos de BP / Armas y Monturas
+  // Elementos BP / Armas y Monturas
   const bpGroup = document.getElementById('group-pub-bp');
   const bpSubcatSelect = document.getElementById('pub-bp-subcat');
   const bpItemInput = document.getElementById('pub-bp-item');
@@ -604,6 +617,7 @@ function initMarketplace() {
   let activeFloorPrice = 0;
   let allListings = [];
   let editingListingId = null;
+  let bulkValidatedRows = [];
 
   if (mutStatsList) {
     mutStatsList.innerHTML = '';
@@ -910,6 +924,270 @@ function initMarketplace() {
   if (mekLvlInput) mekLvlInput.addEventListener('input', recalcularPiso);
   if (mekTypeRadios) mekTypeRadios.forEach(r => r.addEventListener('change', recalcularPiso));
 
+  // --- PARSER RÁPIDO / ARK SMART BREEDING ---
+  if (btnQuick && quickInput) {
+    btnQuick.addEventListener('click', () => {
+      const raw = quickInput.value.trim();
+      if (!raw) return;
+
+      // 1. Detección de JSON (Ark Smart Breeding)
+      if (raw.startsWith('{') && raw.endsWith('}')) {
+        try {
+          const asb = JSON.parse(raw);
+          const species = asb.species || asb.name || '';
+          if (species) {
+            catSelect.value = 'mutated';
+            catSelect.dispatchEvent(new Event('change'));
+            dinoInput.value = species;
+
+            const levels = asb.levelsWild || asb.levelsMutated || {};
+            if (levels[0]) { document.getElementById('pub-chk-mut-vida').checked = true; document.getElementById('pub-val-mut-vida').value = levels[0]; }
+            if (levels[3]) { document.getElementById('pub-chk-mut-dano').checked = true; document.getElementById('pub-val-mut-dano').value = levels[3]; }
+            if (levels[1]) { document.getElementById('pub-chk-mut-energia').checked = true; document.getElementById('pub-val-mut-energia').value = levels[1]; }
+            if (levels[2]) { document.getElementById('pub-chk-mut-oxigeno').checked = true; document.getElementById('pub-val-mut-oxigeno').value = levels[2]; }
+            if (levels[4]) { document.getElementById('pub-chk-mut-comida').checked = true; document.getElementById('pub-val-mut-comida').value = levels[4]; }
+            if (levels[5]) { document.getElementById('pub-chk-mut-peso').checked = true; document.getElementById('pub-val-mut-peso').value = levels[5]; }
+
+            recalcularPiso();
+            alert('¡Criatura importada con éxito desde Ark Smart Breeding!');
+            quickInput.value = '';
+            return;
+          }
+        } catch (e) {
+          console.log("No es JSON válido de ASB, parseando como texto...");
+        }
+      }
+
+      // 2. Parser de texto plano tipo Discord
+      const texto = raw.toLowerCase();
+      const todosLosDinos = obtenerCatalogoActual();
+      const dinoEncontrado = todosLosDinos.find(d => texto.includes(d.toLowerCase()));
+      if (dinoEncontrado) dinoInput.value = dinoEncontrado;
+
+      const mVida = texto.match(/(?:vida|hp)\s*[:=]?\s*(\d+)/i);
+      const mDano = texto.match(/(?:daño|dmg|dano)\s*[:=]?\s*(\d+)/i);
+      const mPeso = texto.match(/(?:peso|weight)\s*[:=]?\s*(\d+)/i);
+      const mPrecio = texto.match(/(?:precio|ddc|\$)\s*[:=]?\s*(\d+)/i);
+
+      if (mVida) { document.getElementById('pub-chk-mut-vida').checked = true; document.getElementById('pub-val-mut-vida').value = mVida[1]; }
+      if (mDano) { document.getElementById('pub-chk-mut-dano').checked = true; document.getElementById('pub-val-mut-dano').value = mDano[1]; }
+      if (mPeso) { document.getElementById('pub-chk-mut-peso').checked = true; document.getElementById('pub-val-mut-peso').value = mPeso[1]; }
+      if (mPrecio) sellPriceInput.value = mPrecio[1];
+
+      recalcularPiso();
+      quickInput.value = '';
+    });
+  }
+
+  // --- CARGA MASIVA EXCEL (.XLSX) ---
+  if (btnOpenBulk) {
+    btnOpenBulk.addEventListener('click', () => {
+      if (!currentUser) {
+        alert('Debes iniciar sesión con Discord para usar la carga masiva.');
+        return;
+      }
+      bulkStatusEl.innerHTML = '';
+      if (bulkFileInput) bulkFileInput.value = '';
+      if (btnProcessBulk) btnProcessBulk.disabled = true;
+      modalBulk.classList.remove('hidden');
+    });
+  }
+
+  if (btnCloseBulk) {
+    btnCloseBulk.addEventListener('click', () => modalBulk.classList.add('hidden'));
+  }
+
+  if (btnDownloadTemplate) {
+    btnDownloadTemplate.addEventListener('click', () => {
+      const plantillaData = [
+        {
+          "CATEGORIA (mutated/base/mek/gacha/bp_arma/bp_montura/otro)": "mutated",
+          "NOMBRE": "Rex",
+          "SUBTIPO_O_RECURSO": "",
+          "VIDA": 54,
+          "DANO": 60,
+          "ENERGIA": 0,
+          "PESO": 40,
+          "CASTRADO (SI/NO)": "NO",
+          "STAT_ARMOR_O_LVL": 0,
+          "PRECIO_VENTA_DDC": 180000,
+          "NOTAS": "Color cian mutado, obelisco verde"
+        },
+        {
+          "CATEGORIA (mutated/base/mek/gacha/bp_arma/bp_montura/otro)": "bp_arma",
+          "NOMBRE": "ESCOPETA CORREDERA",
+          "SUBTIPO_O_RECURSO": "BP_ARMA_755",
+          "VIDA": 0,
+          "DANO": 0,
+          "ENERGIA": 0,
+          "PESO": 0,
+          "CASTRADO (SI/NO)": "NO",
+          "STAT_ARMOR_O_LVL": 720,
+          "PRECIO_VENTA_DDC": 120000,
+          "NOTAS": "Entrega inmediata"
+        },
+        {
+          "CATEGORIA (mutated/base/mek/gacha/bp_arma/bp_montura/otro)": "gacha",
+          "NOMBRE": "Gacha",
+          "SUBTIPO_O_RECURSO": "ELEMENTO",
+          "VIDA": 0,
+          "DANO": 0,
+          "ENERGIA": 0,
+          "PESO": 0,
+          "CASTRADO (SI/NO)": "NO",
+          "STAT_ARMOR_O_LVL": 0,
+          "PRECIO_VENTA_DDC": 15000,
+          "NOTAS": "Pareja reproductora"
+        }
+      ];
+
+      const ws = XLSX.utils.json_to_sheet(plantillaData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Plantilla_WildDodo");
+      XLSX.writeFile(wb, "plantilla_carga_masiva_wilddodo.xlsx");
+    });
+  }
+
+  if (bulkFileInput) {
+    bulkFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.SheetNames[0];
+          const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+          if (rows.length === 0) {
+            bulkStatusEl.innerHTML = '<span style="color:#ef4444;">El archivo está vacío.</span>';
+            btnProcessBulk.disabled = true;
+            return;
+          }
+
+          bulkValidatedRows = [];
+          let auditErrors = [];
+
+          rows.forEach((r, idx) => {
+            const cat = String(r["CATEGORIA (mutated/base/mek/gacha/bp_arma/bp_montura/otro)"] || '').trim().toLowerCase();
+            const nom = String(r["NOMBRE"] || '').trim();
+            const sellPrice = Number(r["PRECIO_VENTA_DDC"] || 0);
+            const notas = String(r["NOTAS"] || '').trim();
+            const statVal = Number(r["STAT_ARMOR_O_LVL"] || 0);
+            const subcat = String(r["SUBTIPO_O_RECURSO"] || '').trim();
+
+            if (!nom) return;
+
+            let floor = 0;
+            let descParts = [];
+
+            if (cat === 'mutated') {
+              const base = MUTATED_DINOS[nom] || 0;
+              const fPrin = ((base / 4) * 1.5) / 254;
+              const fSecH = ((base / 4) / 2) / 254;
+
+              const v = Number(r["VIDA"] || 0);
+              const d = Number(r["DANO"] || 0);
+              const p = Number(r["PESO"] || 0);
+              const en = Number(r["ENERGIA"] || 0);
+
+              let t = (v * fPrin) + (d * fPrin) + (p * fSecH) + (en * fSecH);
+              const castrado = String(r["CASTRADO (SI/NO)"] || '').toUpperCase().includes('SI');
+              if (castrado) t *= 0.75;
+              floor = Math.round(t) || 1000;
+
+              if (v) descParts.push(`VIDA: ${v}`);
+              if (d) descParts.push(`DAÑO: ${d}`);
+              if (p) descParts.push(`PESO: ${p}`);
+              if (castrado) descParts.push('(Castrado)');
+            } else if (cat === 'gacha') {
+              floor = GACHA_PRECIOS[subcat] || 4000;
+              descParts.push(`Recurso: ${subcat}`);
+            } else if (cat === 'bp_arma' || cat === 'bp_montura') {
+              const catData = BP_CATEGORIES[subcat];
+              if (catData && catData.items[nom]) {
+                const f3Price = catData.items[nom] || 0;
+                const ranges = catData.ranges;
+                const mults = catData.mults;
+                const prices = mults.map(m => f3Price * m);
+                let baseR = ranges[0];
+                if (statVal > ranges[0]) {
+                  const valid = ranges.filter(rg => rg <= statVal);
+                  baseR = valid[valid.length - 1];
+                }
+                const idxR = ranges.indexOf(baseR);
+                const diff = Math.max(0, statVal - baseR);
+                let totalBp = prices[idxR];
+                if (idxR < ranges.length - 1) {
+                  const ratePerUnit = (prices[idxR + 1] - totalBp) / (ranges[idxR + 1] - baseR);
+                  totalBp += diff * ratePerUnit;
+                }
+                floor = Math.round(totalBp);
+              }
+              descParts.push(`Stat: ${statVal}`);
+            } else {
+              floor = 0;
+            }
+
+            if (sellPrice < floor) {
+              auditErrors.push(`Fila ${idx + 2} (${nom}): Precio ${sellPrice.toLocaleString()} DDC es inferior al piso de ${floor.toLocaleString()} DDC.`);
+            } else {
+              if (notas) descParts.push(notas);
+              bulkValidatedRows.push({
+                user_id: currentUser.id,
+                discord_username: getActiveDisplayName(),
+                discord_avatar: currentUser.user_metadata?.avatar_url || currentUser.user_metadata?.picture || 'https://cdn.discordapp.com/embed/avatars/0.png',
+                dino_name: nom,
+                category: cat || 'otro',
+                details: {
+                  desc: descParts.join(' · '),
+                  discord_id: currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '',
+                  allow_discord: true
+                },
+                min_price: floor,
+                selling_price: sellPrice,
+                status: 'active'
+              });
+            }
+          });
+
+          if (auditErrors.length > 0) {
+            bulkStatusEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">Se detectaron infracciones de precio:</span><br><div style="max-height:100px; overflow-y:auto; font-size:0.75rem; color:#fca5a5; margin-top:4px;">${auditErrors.join('<br>')}</div>`;
+            btnProcessBulk.disabled = true;
+          } else {
+            bulkStatusEl.innerHTML = `<span style="color:#4ade80; font-weight:700;">✔ ${bulkValidatedRows.length} ítems validados correctamente y listos para publicar.</span>`;
+            btnProcessBulk.disabled = false;
+          }
+        } catch (err) {
+          bulkStatusEl.innerHTML = `<span style="color:#ef4444;">Error al procesar el archivo Excel: ${err.message}</span>`;
+          btnProcessBulk.disabled = true;
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  if (btnProcessBulk) {
+    btnProcessBulk.addEventListener('click', async () => {
+      if (bulkValidatedRows.length === 0) return;
+      btnProcessBulk.disabled = true;
+      btnProcessBulk.textContent = 'Subiendo publicaciones...';
+
+      const { error } = await supabaseClient.from('market_listings').insert(bulkValidatedRows);
+      if (error) {
+        alert('Error al publicar lote masivo: ' + error.message);
+        btnProcessBulk.disabled = false;
+        btnProcessBulk.textContent = 'Procesar y Publicar Lote';
+      } else {
+        alert(`¡Éxito! Se publicaron ${bulkValidatedRows.length} ítems en el mercado.`);
+        modalBulk.classList.add('hidden');
+        cargarPublicaciones();
+      }
+    });
+  }
+
   if (btnOpenPublish) {
     btnOpenPublish.addEventListener('click', () => {
       if (!currentUser) {
@@ -1107,9 +1385,10 @@ function initMarketplace() {
       let actionsHtml = '';
       if (isOwner) {
         actionsHtml = `
-          <div style="display: flex; gap: 8px;">
-            <button class="btn-edit-item btn-copy-discord" data-id="${item.id}" style="flex: 1; padding: 8px;">✏ Editar</button>
-            <button class="btn-delete-item" data-id="${item.id}" style="flex: 1;">Vendido / Retirar</button>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-edit-item btn-copy-discord" data-id="${item.id}" style="flex: 1; padding: 6px 8px; font-size: 0.78rem;">✏ Editar</button>
+            <button class="btn-clone-item btn-copy-discord" data-id="${item.id}" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; border-color: var(--neon-cyan);">📋 Clonar</button>
+            <button class="btn-delete-item" data-id="${item.id}" style="flex: 1; padding: 6px 8px; font-size: 0.78rem;">Retirar</button>
           </div>
         `;
       } else if (isAdmin) {
@@ -1160,6 +1439,18 @@ function initMarketplace() {
       const btnEdit = card.querySelector('.btn-edit-item');
       if (btnEdit) {
         btnEdit.addEventListener('click', () => abrirEdicion(item));
+      }
+
+      const btnClone = card.querySelector('.btn-clone-item');
+      if (btnClone) {
+        btnClone.addEventListener('click', () => {
+          abrirEdicion(item);
+          editingListingId = null;
+          const title = document.querySelector('#modal-publish .side-card-title');
+          if (title) title.textContent = "CLONAR PUBLICACIÓN";
+          const submitBtn = document.getElementById('btn-submit-listing');
+          if (submitBtn) submitBtn.textContent = "Confirmar y Publicar Copia";
+        });
       }
 
       const btnDel = card.querySelector('.btn-delete-item');
