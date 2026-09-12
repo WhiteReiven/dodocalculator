@@ -408,7 +408,7 @@
     </div>
   </div>
 
- <!-- BOTÓN FLOTANTE: APOYAR AL DEV -->
+<!-- BOTÓN FLOTANTE: APOYAR AL DEV -->
 <button id="btn-open-donate" class="btn-floating-donate" title="Apoyar desarrollo comunitario">
   <span class="donate-icon">☕</span>
   <span class="donate-text">Donaciones por Dev</span>
@@ -424,7 +424,7 @@
       <button id="btn-close-donate" class="modal-close">&times;</button>
     </div>
 
-    <!-- Disclaimer Proyecto Comunitario -->
+    <!-- Banner Proyecto Comunitario -->
     <div class="info-banner" style="border-color: rgba(250, 204, 21, 0.4); background: rgba(250, 204, 21, 0.08); margin-bottom: 16px;">
       <span style="font-size: 1.2rem; margin-right: 6px;">⚠️</span>
       <div style="font-size: 0.85rem; color: #fef08a; line-height: 1.4;">
@@ -439,6 +439,15 @@
 
     <!-- Métodos de donación -->
     <div style="display: flex; flex-direction: column; gap: 10px;">
+      <!-- Mercado Pago Argentina (Alias Copiable) -->
+      <div class="donate-copy-box">
+        <div style="display: flex; flex-direction: column; overflow: hidden;">
+          <span style="font-size: 0.72rem; color: #00b4d8; font-weight: 700; text-transform: uppercase;">Mercado Pago Argentina (Alias):</span>
+          <span id="donate-alias-text" style="font-family: monospace; font-size: 0.95rem; color: #fff; font-weight: 600;">frangayral</span>
+        </div>
+        <button id="btn-copy-alias" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Alias</button>
+      </div>
+
       <!-- PayPal -->
       <a href="https://paypal.me/whiteravenon" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(0, 121, 193, 0.15); border-color: #0079C1; color: #fff;">
         <span style="display: flex; align-items: center; gap: 8px;">
@@ -447,16 +456,16 @@
         <span style="font-size: 0.8rem; color: #38bdf8;">Abrir link ↗</span>
       </a>
 
-      <!-- LemonTag (Transferencia directa entre usuarios Lemon) -->
+      <!-- LemonTag -->
       <div class="donate-copy-box">
         <div style="display: flex; flex-direction: column; overflow: hidden;">
-          <span style="font-size: 0.72rem; color: #a3e635; font-weight: 700; text-transform: uppercase;">LemonTag (Lemon a Lemon - Sin comisión):</span>
+          <span style="font-size: 0.72rem; color: #a3e635; font-weight: 700; text-transform: uppercase;">LemonTag (Sin comisión entre usuarios):</span>
           <span id="donate-lemontag-text" style="font-family: monospace; font-size: 0.92rem; color: #fff; font-weight: 600;">$whiteraven</span>
         </div>
         <button id="btn-copy-lemontag" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Tag</button>
       </div>
 
-      <!-- Dirección USDT (Red BEP20 - Binance Smart Chain) -->
+      <!-- USDT (Red BEP20 - BSC) -->
       <div class="donate-copy-box" style="flex-direction: column; align-items: stretch; gap: 8px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span style="font-size: 0.72rem; color: #22c55e; font-weight: 700; text-transform: uppercase;">USDT Crypto (Red BEP20 - BSC):</span>
