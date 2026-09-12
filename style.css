@@ -899,3 +899,14 @@ body {
     font-size: 0.9rem !important;
   }
 }
+
+.donate-copy-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(11, 17, 36, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  gap: 8px;
+}
