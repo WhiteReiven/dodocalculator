@@ -1,5 +1,17 @@
 import { BASE_TIER_RATES, BASE_DINOS, MUTATED_DINOS, RECURSOS_DATA, BP_CATEGORIES } from './data.js';
 
+// --- ROLES DE ADMINISTRACIÓN ---
+const ADMIN_USERNAMES = ['cuervitoblanco']; 
+const ADMIN_DISCORD_IDS = []; // Puedes pegar aquí tu ID numérico cuando lo copies
+
+function isCurrentUserAdmin() {
+  if (!currentUser) return false;
+  const meta = currentUser.user_metadata || {};
+  const discordId = meta.provider_id || meta.sub || '';
+  const username = meta.name || meta.preferred_username || meta.user_name || '';
+  return ADMIN_DISCORD_IDS.includes(discordId) || ADMIN_USERNAMES.includes(username.toLowerCase());
+}
+
 // --- PESTAÑAS PRINCIPALES ---
 const tabs = {
   mutated: { btn: document.getElementById('tab-mutated'), sec: document.getElementById('section-mutated') },
@@ -129,11 +141,8 @@ function calculateMutated() {
   secKeys.forEach(k => {
     if (document.getElementById(`chk-mut-${k}`)?.checked) {
       const val = Number(document.getElementById(`val-mut-${k}`)?.value || 0);
-      if (hasPrin) {
-        total += val * fSecH;
-      } else {
-        total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
-      }
+      if (hasPrin) total += val * fSecH;
+      else total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
       countSec++;
     }
   });
@@ -368,19 +377,12 @@ function initEspecialesBase() {
     let bp = 6000;
     let fab = 5000;
 
-    if (lvl <= 250) {
-      bp = 6000 + (lvl - 150) * 125;
-    } else {
-      bp = 18500 + (lvl - 250) * 230;
-    }
+    if (lvl <= 250) bp = 6000 + (lvl - 150) * 125;
+    else bp = 18500 + (lvl - 250) * 230;
 
-    if (lvl <= 250) {
-      fab = 5000 + (lvl - 150) * 70;
-    } else if (lvl <= 300) {
-      fab = 12000 + (lvl - 250) * 100;
-    } else {
-      fab = 17000 + (lvl - 300) * 137.5;
-    }
+    if (lvl <= 250) fab = 5000 + (lvl - 150) * 70;
+    else if (lvl <= 300) fab = 12000 + (lvl - 250) * 100;
+    else fab = 17000 + (lvl - 300) * 137.5;
 
     if (mekPriceBp) mekPriceBp.textContent = Math.round(bp).toLocaleString();
     if (mekPriceFab) mekPriceFab.textContent = Math.round(fab).toLocaleString();
@@ -421,7 +423,11 @@ function getActiveDisplayName() {
 function updateHeaderBadge() {
   const nameSpan = document.getElementById('user-discord-name');
   if (nameSpan) {
-    nameSpan.textContent = getActiveDisplayName();
+    if (isCurrentUserAdmin()) {
+      nameSpan.innerHTML = `${getActiveDisplayName()} <span style="color:#ef4444; font-size:0.75rem; font-weight:800; border:1px solid #ef4444; border-radius:4px; padding:1px 5px; margin-left:4px;">ADMIN</span>`;
+    } else {
+      nameSpan.textContent = getActiveDisplayName();
+    }
   }
 }
 
@@ -588,6 +594,7 @@ function initMarketplace() {
 
   let activeFloorPrice = 0;
   let allListings = [];
+  let editingListingId = null;
 
   if (mutStatsList) {
     mutStatsList.innerHTML = '';
@@ -808,12 +815,17 @@ function initMarketplace() {
   if (mekLvlInput) mekLvlInput.addEventListener('input', recalcularPiso);
   if (mekTypeRadios) mekTypeRadios.forEach(r => r.addEventListener('change', recalcularPiso));
 
+  // Abrir para crear nueva publicación
   if (btnOpenPublish) {
     btnOpenPublish.addEventListener('click', () => {
       if (!currentUser) {
         alert('Debes iniciar sesión con Discord para publicar en el mercado.');
         return;
       }
+      editingListingId = null;
+      document.querySelector('#modal-publish .side-card-title').textContent = "PUBLICAR EN EL MERCADO";
+      document.getElementById('btn-submit-listing').textContent = "Confirmar y Publicar";
+      formPublish.reset();
       modalPublish.classList.remove('hidden');
       recalcularPiso();
     });
@@ -823,6 +835,33 @@ function initMarketplace() {
     btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
   }
 
+  // Función para abrir edición
+  function abrirEdicion(item) {
+    editingListingId = item.id;
+    document.querySelector('#modal-publish .side-card-title').textContent = "EDITAR PUBLICACIÓN";
+    document.getElementById('btn-submit-listing').textContent = "Guardar Cambios";
+
+    catSelect.value = item.category || 'otro';
+    catSelect.dispatchEvent(new Event('change'));
+
+    if (dinoInput) dinoInput.value = item.dino_name || '';
+    if (sellPriceInput) sellPriceInput.value = item.selling_price;
+    activeFloorPrice = item.min_price || 0;
+    if (calculatedFloorSpan) calculatedFloorSpan.textContent = `${activeFloorPrice.toLocaleString()} DDC`;
+
+    const descInput = document.getElementById('pub-details');
+    if (descInput) descInput.value = item.details?.desc || '';
+
+    const allowDiscordChk = document.getElementById('pub-allow-discord');
+    if (allowDiscordChk) {
+      allowDiscordChk.checked = item.details?.allow_discord !== false;
+    }
+
+    modalPublish.classList.remove('hidden');
+    validarPrecioFinal();
+  }
+
+  // Guardar o Actualizar publicación
   if (formPublish) {
     formPublish.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -889,6 +928,28 @@ function initMarketplace() {
         status: 'active'
       };
 
+      // Si estamos editando
+      if (editingListingId) {
+        const { error } = await supabaseClient
+          .from('market_listings')
+          .update({
+            selling_price: sellP,
+            details: payload.details
+          })
+          .eq('id', editingListingId);
+
+        if (error) {
+          alert('Error al actualizar: ' + error.message);
+        } else {
+          editingListingId = null;
+          formPublish.reset();
+          modalPublish.classList.add('hidden');
+          cargarPublicaciones();
+        }
+        return;
+      }
+
+      // Si es una publicación nueva
       const { error } = await supabaseClient.from('market_listings').insert([payload]);
 
       if (error) {
@@ -929,11 +990,43 @@ function initMarketplace() {
     listings.forEach(item => {
       const card = document.createElement('div');
       card.className = 'market-card';
+
       const isOwner = currentUser && currentUser.id === item.user_id;
+      const isAdmin = isCurrentUserAdmin();
 
       const allowDiscord = item.details?.allow_discord !== false;
       const sellerName = item.discord_username;
       const sellerDiscordId = item.details?.discord_id || '';
+
+      let actionsHtml = '';
+      if (isOwner) {
+        actionsHtml = `
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-edit-item btn-copy-discord" data-id="${item.id}" style="flex: 1; padding: 8px;">✏ Editar</button>
+            <button class="btn-delete-item" data-id="${item.id}" style="flex: 1;">Vendido / Retirar</button>
+          </div>
+        `;
+      } else if (isAdmin) {
+        actionsHtml = `
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            ${allowDiscord 
+              ? `<button class="btn-contact-seller btn-open-discord-app" data-id="${sellerDiscordId}" data-user="${sellerName}" data-item="${item.dino_name}">
+                   <span>Contactar por Discord</span>
+                 </button>`
+              : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">Contacto solo In-Game</div>`
+            }
+            <button class="btn-delete-item" data-id="${item.id}" style="background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #fff;">
+              🛡️ Eliminar (Mod/Admin)
+            </button>
+          </div>
+        `;
+      } else {
+        actionsHtml = allowDiscord
+          ? `<button class="btn-contact-seller btn-open-discord-app" data-id="${sellerDiscordId}" data-user="${sellerName}" data-item="${item.dino_name}">
+               <span>Contactar por Discord</span>
+             </button>`
+          : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">Contacto solo In-Game</div>`;
+      }
 
       card.innerHTML = `
         <div>
@@ -953,59 +1046,56 @@ function initMarketplace() {
           </div>
 
           <div style="margin-top: 10px;">
-            ${isOwner 
-              ? `<button class="btn-delete-item" data-id="${item.id}">Marcar Vendido / Retirar</button>`
-              : (allowDiscord
-                  ? `<button class="btn-contact-seller btn-open-discord-app" 
-                             data-id="${sellerDiscordId}" 
-                             data-user="${sellerName}" 
-                             data-item="${item.dino_name}">
-                       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                         <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                       </svg>
-                       <span>Contactar por Discord</span>
-                     </button>`
-                  : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">
-                       Contacto solo In-Game
-                     </div>`
-                )
-            }
+            ${actionsHtml}
           </div>
         </div>
       `;
 
-      if (isOwner) {
-        card.querySelector('.btn-delete-item').addEventListener('click', async () => {
-          if (confirm('¿Deseas retirar esta publicación del mercado?')) {
+      // Evento de Editar
+      const btnEdit = card.querySelector('.btn-edit-item');
+      if (btnEdit) {
+        btnEdit.addEventListener('click', () => abrirEdicion(item));
+      }
+
+      // Evento de Eliminar (Dueño o Admin)
+      const btnDel = card.querySelector('.btn-delete-item');
+      if (btnDel) {
+        btnDel.addEventListener('click', async () => {
+          const msg = isAdmin && !isOwner 
+            ? '¿ADMIN: Deseas eliminar forzosamente esta publicación del mercado?' 
+            : '¿Deseas retirar esta publicación del mercado?';
+
+          if (confirm(msg)) {
             await supabaseClient.from('market_listings').delete().eq('id', item.id);
             cargarPublicaciones();
           }
         });
-      } else if (allowDiscord) {
-        const btnContact = card.querySelector('.btn-open-discord-app');
-        if (btnContact) {
-          btnContact.addEventListener('click', () => {
-            const userTarget = btnContact.getAttribute('data-user');
-            const itemTarget = btnContact.getAttribute('data-item');
-            const discordId = btnContact.getAttribute('data-id');
+      }
 
-            const copyText = `Hola @${userTarget}! Te contacto desde Wild Dodo por tu publicación de: ${itemTarget}`;
-            navigator.clipboard.writeText(copyText);
+      // Evento de Contactar
+      const btnContact = card.querySelector('.btn-open-discord-app');
+      if (btnContact) {
+        btnContact.addEventListener('click', () => {
+          const userTarget = btnContact.getAttribute('data-user');
+          const itemTarget = btnContact.getAttribute('data-item');
+          const discordId = btnContact.getAttribute('data-id');
 
-            const originalHTML = btnContact.innerHTML;
-            btnContact.innerHTML = `<span>¡Mensaje copiado! Abriendo...</span>`;
-            setTimeout(() => { btnContact.innerHTML = originalHTML; }, 3000);
+          const copyText = `Hola @${userTarget}! Te contacto desde Wild Dodo por tu publicación de: ${itemTarget}`;
+          navigator.clipboard.writeText(copyText);
 
-            if (discordId) {
-              window.location.href = `discord://-/users/${discordId}`;
-              setTimeout(() => {
-                window.open(`https://discord.com/users/${discordId}`, '_blank');
-              }, 600);
-            } else {
-              window.location.href = `discord://`;
-            }
-          });
-        }
+          const originalHTML = btnContact.innerHTML;
+          btnContact.innerHTML = `<span>¡Mensaje copiado! Abriendo...</span>`;
+          setTimeout(() => { btnContact.innerHTML = originalHTML; }, 3000);
+
+          if (discordId) {
+            window.location.href = `discord://-/users/${discordId}`;
+            setTimeout(() => {
+              window.open(`https://discord.com/users/${discordId}`, '_blank');
+            }, 600);
+          } else {
+            window.location.href = `discord://`;
+          }
+        });
       }
 
       gridListings.appendChild(card);
@@ -1037,15 +1127,12 @@ function initDonateModal() {
   const btnClose = document.getElementById('btn-close-donate');
   const modal = document.getElementById('modal-donate');
 
-  // Mercado Pago Alias
   const btnCopyAlias = document.getElementById('btn-copy-alias');
   const aliasText = document.getElementById('donate-alias-text');
 
-  // LemonTag
   const btnCopyTag = document.getElementById('btn-copy-lemontag');
   const tagText = document.getElementById('donate-lemontag-text');
 
-  // Crypto USDT
   const btnCopyCrypto = document.getElementById('btn-copy-crypto');
   const cryptoText = document.getElementById('donate-crypto-address');
 
@@ -1084,9 +1171,7 @@ function initDonateModal() {
   setupCopy(btnCopyCrypto, cryptoText);
 }
 
-initDonateModal();
-
-// Inicialización general
+// Inicializaciones
 initAuth();
 initMarketplace();
 initEspecialesBase();
