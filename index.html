@@ -21,7 +21,7 @@
       <h1 class="brand-title">Calculadora de Mercado</h1>
       <p class="brand-subtitle">Cotizador oficial para Servidores ASA/ASE</p>
       
-      <!-- Barra de Login Discord -->
+      <!-- Barra de Perfil / Login + Donaciones -->
       <div class="auth-bar" id="auth-bar">
         <button id="btn-login-discord" class="btn-discord">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -36,6 +36,12 @@
           <button id="btn-change-identity" class="btn-logout" style="color: var(--neon-cyan); border-color: rgba(0, 229, 255, 0.3);" title="Cambiar nombre de visualización">✎</button>
           <button id="btn-logout" class="btn-logout" title="Cerrar sesión">Salir</button>
         </div>
+
+        <!-- Botón Donaciones por Dev en cabecera -->
+        <button id="btn-open-donate" class="btn-header-donate" title="Apoyar desarrollo comunitario">
+          <span class="donate-icon">☕</span>
+          <span class="donate-text">Donaciones por Dev</span>
+        </button>
       </div>
     </div>
   </header>
@@ -408,82 +414,74 @@
     </div>
   </div>
 
-<!-- BOTÓN FLOTANTE: APOYAR AL DEV -->
-<button id="btn-open-donate" class="btn-floating-donate" title="Apoyar desarrollo comunitario">
-  <span class="donate-icon">☕</span>
-  <span class="donate-text">Donaciones por Dev</span>
-</button>
-
-<!-- MODAL: INFORMACIÓN Y DONACIONES -->
-<div id="modal-donate" class="market-modal-overlay hidden">
-  <div class="card-calculator modal-card" style="max-width: 480px; position: relative;">
-    <div class="modal-head">
-      <h3 class="side-card-title" style="display: flex; align-items: center; gap: 8px;">
-        <span>☕</span> APOYAR AL DESARROLLADOR
-      </h3>
-      <button id="btn-close-donate" class="modal-close">&times;</button>
-    </div>
-
-    <!-- Banner Proyecto Comunitario -->
-    <div class="info-banner" style="border-color: rgba(250, 204, 21, 0.4); background: rgba(250, 204, 21, 0.08); margin-bottom: 16px;">
-      <span style="font-size: 1.2rem; margin-right: 6px;">⚠️</span>
-      <div style="font-size: 0.85rem; color: #fef08a; line-height: 1.4;">
-        <strong>PROYECTO COMUNITARIO INDEPENDIENTE:</strong><br>
-        Esta aplicación <strong>NO es la web oficial</strong> de Wild Dodo ni tiene vínculo administrativo con el staff. Es una herramienta desarrollada por un jugador para la comunidad.
+  <!-- MODAL: INFORMACIÓN Y DONACIONES -->
+  <div id="modal-donate" class="market-modal-overlay hidden">
+    <div class="card-calculator modal-card" style="max-width: 480px; position: relative;">
+      <div class="modal-head">
+        <h3 class="side-card-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>☕</span> APOYAR AL DESARROLLADOR
+        </h3>
+        <button id="btn-close-donate" class="modal-close">&times;</button>
       </div>
-    </div>
 
-    <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px;">
-      El desarrollo de las calculadoras y el Marketplace se realizó para facilitar el comercio justo entre jugadores. Si la herramienta te sirve y quieres colaborar con su mantenimiento y servidor, cualquier aporte suma un montón.
-    </p>
-
-    <!-- Métodos de donación -->
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <!-- Mercado Pago Argentina (Alias Copiable) -->
-      <div class="donate-copy-box">
-        <div style="display: flex; flex-direction: column; overflow: hidden;">
-          <span style="font-size: 0.72rem; color: #00b4d8; font-weight: 700; text-transform: uppercase;">Mercado Pago Argentina (Alias):</span>
-          <span id="donate-alias-text" style="font-family: monospace; font-size: 0.95rem; color: #fff; font-weight: 600;">frangayral</span>
+      <div class="info-banner" style="border-color: rgba(250, 204, 21, 0.4); background: rgba(250, 204, 21, 0.08); margin-bottom: 16px;">
+        <span style="font-size: 1.2rem; margin-right: 6px;">⚠️</span>
+        <div style="font-size: 0.85rem; color: #fef08a; line-height: 1.4;">
+          <strong>PROYECTO COMUNITARIO INDEPENDIENTE:</strong><br>
+          Esta aplicación <strong>NO es la web oficial</strong> de Wild Dodo ni tiene vínculo administrativo con el staff. Es una herramienta desarrollada por un jugador para la comunidad.
         </div>
-        <button id="btn-copy-alias" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Alias</button>
       </div>
 
-      <!-- PayPal -->
-      <a href="https://paypal.me/whiteravenon" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(0, 121, 193, 0.15); border-color: #0079C1; color: #fff;">
-        <span style="display: flex; align-items: center; gap: 8px;">
-          <span>💳</span> Donar por PayPal
+      <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px;">
+        El desarrollo de las calculadoras y el Marketplace se realizó para facilitar el comercio justo entre jugadores. Si la herramienta te sirve y quieres colaborar con su mantenimiento y servidor, cualquier aporte suma un montón.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <!-- Mercado Pago Argentina -->
+        <div class="donate-copy-box">
+          <div style="display: flex; flex-direction: column; overflow: hidden;">
+            <span style="font-size: 0.72rem; color: #00b4d8; font-weight: 700; text-transform: uppercase;">Mercado Pago Argentina (Alias):</span>
+            <span id="donate-alias-text" style="font-family: monospace; font-size: 0.95rem; color: #fff; font-weight: 600;">frangayral</span>
+          </div>
+          <button id="btn-copy-alias" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Alias</button>
+        </div>
+
+        <!-- PayPal -->
+        <a href="https://paypal.me/whiteravenon" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(0, 121, 193, 0.15); border-color: #0079C1; color: #fff;">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <span>💳</span> Donar por PayPal
+          </span>
+          <span style="font-size: 0.8rem; color: #38bdf8;">Abrir link ↗</span>
+        </a>
+
+        <!-- LemonTag -->
+        <div class="donate-copy-box">
+          <div style="display: flex; flex-direction: column; overflow: hidden;">
+            <span style="font-size: 0.72rem; color: #a3e635; font-weight: 700; text-transform: uppercase;">LemonTag (Sin comisión entre usuarios):</span>
+            <span id="donate-lemontag-text" style="font-family: monospace; font-size: 0.92rem; color: #fff; font-weight: 600;">$TU_LEMONTAG</span>
+          </div>
+          <button id="btn-copy-lemontag" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Tag</button>
+        </div>
+
+        <!-- USDT (Red BEP20 - BSC) -->
+        <div class="donate-copy-box" style="flex-direction: column; align-items: stretch; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.72rem; color: #22c55e; font-weight: 700; text-transform: uppercase;">USDT Crypto (Red BEP20 - BSC):</span>
+            <button id="btn-copy-crypto" class="btn-copy-discord" style="padding: 4px 10px; font-size: 0.75rem;">Copiar Dirección</button>
+          </div>
+          <span id="donate-crypto-address" style="font-family: monospace; font-size: 0.8rem; color: #cbd5e1; word-break: break-all; background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 4px;">
+            TU_DIRECCION_USDT_BEP20_DE_LEMON
+          </span>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 18px;">
+        <span style="font-size: 0.75rem; color: var(--text-muted);">
+          ¡Muchas gracias por bancar el proyecto! 🦖
         </span>
-        <span style="font-size: 0.8rem; color: #38bdf8;">Abrir link ↗</span>
-      </a>
-
-      <!-- LemonTag -->
-      <div class="donate-copy-box">
-        <div style="display: flex; flex-direction: column; overflow: hidden;">
-          <span style="font-size: 0.72rem; color: #a3e635; font-weight: 700; text-transform: uppercase;">LemonTag (Sin comisión entre usuarios):</span>
-          <span id="donate-lemontag-text" style="font-family: monospace; font-size: 0.92rem; color: #fff; font-weight: 600;">$whiteraven</span>
-        </div>
-        <button id="btn-copy-lemontag" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Tag</button>
       </div>
-
-      <!-- USDT (Red BEP20 - BSC) -->
-      <div class="donate-copy-box" style="flex-direction: column; align-items: stretch; gap: 8px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 0.72rem; color: #22c55e; font-weight: 700; text-transform: uppercase;">USDT Crypto (Red BEP20 - BSC):</span>
-          <button id="btn-copy-crypto" class="btn-copy-discord" style="padding: 4px 10px; font-size: 0.75rem;">Copiar Dirección</button>
-        </div>
-        <span id="donate-crypto-address" style="font-family: monospace; font-size: 0.8rem; color: #cbd5e1; word-break: break-all; background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 4px;">
-          0x02305eDA20a2AFCE2AF28CD9966B6F141aBFFE20
-        </span>
-      </div>
-    </div>
-
-    <div style="text-align: center; margin-top: 18px;">
-      <span style="font-size: 0.75rem; color: var(--text-muted);">
-        ¡Muchas gracias por bancar el proyecto! 🦖
-      </span>
     </div>
   </div>
-</div>
 
   <script type="module" src="./app.js"></script>
 </body>
