@@ -17,9 +17,9 @@
 
   <header class="site-header">
     <div class="brand">
-      <span class="brand-badge">HECHO POR Y PARA JUGADORES</span>
+      <span class="brand-badge">WILD DODO</span>
       <h1 class="brand-title">Calculadora de Mercado</h1>
-      <p class="brand-subtitle">Cotizador oficial para Servidores ASE</p>
+      <p class="brand-subtitle">Cotizador oficial para Servidores ASA/ASE</p>
       
       <!-- Barra de Perfil / Login + Donaciones -->
       <div class="auth-bar" id="auth-bar">
@@ -255,19 +255,22 @@
           <p class="market-subtitle">Compra y venta directa entre sobrevivientes · Precios piso auditados</p>
         </div>
         <button id="btn-open-publish" class="btn-publish-action">
-          + Publicar Criatura
+          + Publicar Ítem / Criatura
         </button>
       </div>
 
       <!-- Filtros -->
       <div class="market-filters-row">
         <input type="text" id="market-search-input" class="custom-search-input" placeholder="Buscar por criatura o vendedor...">
-        <select id="market-filter-cat" class="custom-search-input custom-select" style="max-width: 200px;">
+        <select id="market-filter-cat" class="custom-search-input custom-select" style="max-width: 220px;">
           <option value="all">Todas las categorías</option>
           <option value="mutated">Mutados</option>
           <option value="base">Base</option>
           <option value="mek">MEK</option>
           <option value="gacha">Gacha</option>
+          <option value="bp_arma">BP / Armas</option>
+          <option value="bp_montura">BP / Monturas</option>
+          <option value="otro">Otro / Objeto</option>
         </select>
       </div>
 
@@ -294,19 +297,23 @@
             <option value="base">Dino Base</option>
             <option value="mek">MEK</option>
             <option value="gacha">Gacha</option>
+            <option value="bp_arma">BP / Arma</option>
+            <option value="bp_montura">BP / Montura</option>
             <option value="otro">Otro / Objeto</option>
           </select>
         </div>
 
+        <!-- Selector de Dinos Mutados / Base / Otro -->
         <div class="form-group" id="group-pub-dino">
-          <label for="pub-dino-name">Criatura</label>
+          <label for="pub-dino-name">Criatura u Objeto</label>
           <div class="autocomplete-wrapper" style="position: relative;">
-            <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Buscar criatura..." autocomplete="off" required>
+            <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Buscar criatura u objeto..." autocomplete="off" required>
             <ul id="dropdown-pub-dino" class="autocomplete-list hidden"></ul>
           </div>
           <span id="pub-tier-badge" class="helper-text" style="color: var(--neon-cyan); font-weight: 600;"></span>
         </div>
 
+        <!-- Panel Dinos Mutados -->
         <div id="group-stats-mutated" class="market-stats-box">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <span class="side-res-label">STATS MUTADAS (MARCAR LAS ACTIVAS)</span>
@@ -317,6 +324,7 @@
           <div id="pub-mutated-stats-list" class="stats-list"></div>
         </div>
 
+        <!-- Panel Dinos Base -->
         <div id="group-stats-base" class="market-stats-box hidden">
           <span class="side-res-label" style="margin-bottom: 10px; display: block;">STATS BASE (PUNTOS)</span>
           <div id="pub-base-stats-grid" class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));"></div>
@@ -325,6 +333,7 @@
           </div>
         </div>
 
+        <!-- Panel Gacha -->
         <div class="form-group hidden" id="group-pub-gacha">
           <label for="pub-gacha-res">Recurso de Gacha</label>
           <select id="pub-gacha-res" class="custom-search-input custom-select">
@@ -338,6 +347,7 @@
           </select>
         </div>
 
+        <!-- Panel MEK -->
         <div class="form-group hidden" id="group-pub-mek">
           <label for="pub-mek-lvl">Nivel del MEK (150 a 540)</label>
           <input type="number" id="pub-mek-lvl" class="custom-search-input" min="150" max="540" value="150">
@@ -345,6 +355,26 @@
             <label><input type="radio" name="mek-type" value="fab" checked> Fabricado</label>
             <label><input type="radio" name="mek-type" value="bp"> Blueprint (BP)</label>
           </div>
+        </div>
+
+        <!-- Panel BP / Armas & Monturas -->
+        <div class="form-group hidden" id="group-pub-bp">
+          <label for="pub-bp-subcat">Subtipo de Ítem</label>
+          <select id="pub-bp-subcat" class="custom-search-input custom-select" style="margin-bottom: 12px;"></select>
+
+          <label for="pub-bp-item">Objeto / Ítem</label>
+          <div class="autocomplete-wrapper" style="position: relative; margin-bottom: 12px;">
+            <input type="text" id="pub-bp-item" class="custom-search-input" placeholder="Buscar arma o montura..." autocomplete="off">
+            <ul id="dropdown-pub-bp-item" class="autocomplete-list hidden"></ul>
+          </div>
+
+          <div class="info-banner" style="margin-bottom: 12px; padding: 8px 12px;">
+            <span style="font-size: 0.8rem;">Precio Tienda F3: </span>
+            <strong id="pub-bp-f3-price" class="text-neon" style="font-size: 0.85rem;">0 DDC</strong>
+          </div>
+
+          <label id="pub-label-bp-stat" for="pub-bp-stat">Indicar Daño / Armadura (%)</label>
+          <input type="number" id="pub-bp-stat" class="custom-search-input" value="200" min="0">
         </div>
 
         <div class="form-group" style="margin-top: 14px;">
@@ -433,8 +463,8 @@
       </div>
 
       <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px;">
-  El desarrollo de las calculadoras y el Marketplace se realizó con mucho esfuerzo y dedicación para facilitar el comercio justo entre jugadores. Si la herramienta te resulta útil y quieres apoyar el mantenimiento de la web y el tiempo invertido en su desarrollo, cualquier aporte suma un montón.
-</p>
+        El desarrollo de las calculadoras y el Marketplace se realizó con mucho esfuerzo y dedicación para facilitar el comercio justo entre jugadores. Si la herramienta te resulta útil y quieres apoyar el mantenimiento de la web y el tiempo invertido en su desarrollo, cualquier aporte suma un montón.
+      </p>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
         <!-- Mercado Pago Argentina -->
@@ -458,7 +488,7 @@
         <div class="donate-copy-box">
           <div style="display: flex; flex-direction: column; overflow: hidden;">
             <span style="font-size: 0.72rem; color: #a3e635; font-weight: 700; text-transform: uppercase;">LemonTag (Sin comisión entre usuarios):</span>
-            <span id="donate-lemontag-text" style="font-family: monospace; font-size: 0.92rem; color: #fff; font-weight: 600;">$TU_LEMONTAG</span>
+            <span id="donate-lemontag-text" style="font-family: monospace; font-size: 0.92rem; color: #fff; font-weight: 600;">$whiteraven</span>
           </div>
           <button id="btn-copy-lemontag" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Tag</button>
         </div>
@@ -470,7 +500,7 @@
             <button id="btn-copy-crypto" class="btn-copy-discord" style="padding: 4px 10px; font-size: 0.75rem;">Copiar Dirección</button>
           </div>
           <span id="donate-crypto-address" style="font-family: monospace; font-size: 0.8rem; color: #cbd5e1; word-break: break-all; background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 4px;">
-            TU_DIRECCION_USDT_BEP20_DE_LEMON
+            0x02305eDA20a2AFCE2AF28CD9966B6F141aBFFE20
           </span>
         </div>
       </div>
