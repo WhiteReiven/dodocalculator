@@ -1,8 +1,8 @@
 import { BASE_TIER_RATES, BASE_DINOS, MUTATED_DINOS, RECURSOS_DATA, BP_CATEGORIES } from './data.js';
 
 // --- ROLES DE ADMINISTRACIÓN ---
+const ADMIN_DISCORD_IDS = ['574721030732513306']; 
 const ADMIN_USERNAMES = ['cuervitoblanco']; 
-const ADMIN_DISCORD_IDS = []; // Puedes pegar aquí tu ID numérico cuando lo copies
 
 function isCurrentUserAdmin() {
   if (!currentUser) return false;
@@ -815,7 +815,6 @@ function initMarketplace() {
   if (mekLvlInput) mekLvlInput.addEventListener('input', recalcularPiso);
   if (mekTypeRadios) mekTypeRadios.forEach(r => r.addEventListener('change', recalcularPiso));
 
-  // Abrir para crear nueva publicación
   if (btnOpenPublish) {
     btnOpenPublish.addEventListener('click', () => {
       if (!currentUser) {
@@ -823,8 +822,11 @@ function initMarketplace() {
         return;
       }
       editingListingId = null;
-      document.querySelector('#modal-publish .side-card-title').textContent = "PUBLICAR EN EL MERCADO";
-      document.getElementById('btn-submit-listing').textContent = "Confirmar y Publicar";
+      const title = document.querySelector('#modal-publish .side-card-title');
+      if (title) title.textContent = "PUBLICAR EN EL MERCADO";
+      const submitBtn = document.getElementById('btn-submit-listing');
+      if (submitBtn) submitBtn.textContent = "Confirmar y Publicar";
+
       formPublish.reset();
       modalPublish.classList.remove('hidden');
       recalcularPiso();
@@ -835,11 +837,12 @@ function initMarketplace() {
     btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
   }
 
-  // Función para abrir edición
   function abrirEdicion(item) {
     editingListingId = item.id;
-    document.querySelector('#modal-publish .side-card-title').textContent = "EDITAR PUBLICACIÓN";
-    document.getElementById('btn-submit-listing').textContent = "Guardar Cambios";
+    const title = document.querySelector('#modal-publish .side-card-title');
+    if (title) title.textContent = "EDITAR PUBLICACIÓN";
+    const submitBtn = document.getElementById('btn-submit-listing');
+    if (submitBtn) submitBtn.textContent = "Guardar Cambios";
 
     catSelect.value = item.category || 'otro';
     catSelect.dispatchEvent(new Event('change'));
@@ -861,7 +864,6 @@ function initMarketplace() {
     validarPrecioFinal();
   }
 
-  // Guardar o Actualizar publicación
   if (formPublish) {
     formPublish.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -928,7 +930,6 @@ function initMarketplace() {
         status: 'active'
       };
 
-      // Si estamos editando
       if (editingListingId) {
         const { error } = await supabaseClient
           .from('market_listings')
@@ -949,7 +950,6 @@ function initMarketplace() {
         return;
       }
 
-      // Si es una publicación nueva
       const { error } = await supabaseClient.from('market_listings').insert([payload]);
 
       if (error) {
@@ -1015,7 +1015,7 @@ function initMarketplace() {
                  </button>`
               : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">Contacto solo In-Game</div>`
             }
-            <button class="btn-delete-item" data-id="${item.id}" style="background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #fff;">
+            <button class="btn-delete-item btn-admin-delete" data-id="${item.id}" style="background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #fff;">
               🛡️ Eliminar (Mod/Admin)
             </button>
           </div>
@@ -1051,13 +1051,11 @@ function initMarketplace() {
         </div>
       `;
 
-      // Evento de Editar
       const btnEdit = card.querySelector('.btn-edit-item');
       if (btnEdit) {
         btnEdit.addEventListener('click', () => abrirEdicion(item));
       }
 
-      // Evento de Eliminar (Dueño o Admin)
       const btnDel = card.querySelector('.btn-delete-item');
       if (btnDel) {
         btnDel.addEventListener('click', async () => {
@@ -1072,7 +1070,6 @@ function initMarketplace() {
         });
       }
 
-      // Evento de Contactar
       const btnContact = card.querySelector('.btn-open-discord-app');
       if (btnContact) {
         btnContact.addEventListener('click', () => {
