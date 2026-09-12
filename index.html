@@ -413,6 +413,67 @@
   </div>
 </div>
 
+    <!-- BOTÓN FLOTANTE: APOYAR AL DEV -->
+<button id="btn-open-donate" class="btn-floating-donate" title="Apoyar desarrollo comunitario">
+  <span class="donate-icon">☕</span>
+  <span class="donate-text">Donaciones por Dev</span>
+</button>
+
+<!-- MODAL: INFORMACIÓN Y DONACIONES -->
+<div id="modal-donate" class="market-modal-overlay hidden">
+  <div class="card-calculator modal-card" style="max-width: 480px; position: relative;">
+    <div class="modal-head">
+      <h3 class="side-card-title" style="display: flex; align-items: center; gap: 8px;">
+        <span>☕</span> APOYAR AL DESARROLLADOR
+      </h3>
+      <button id="btn-close-donate" class="modal-close">&times;</button>
+    </div>
+
+    <!-- Banner de Aclaración / No Oficial -->
+    <div class="info-banner" style="border-color: rgba(250, 204, 21, 0.4); background: rgba(250, 204, 21, 0.08); margin-bottom: 16px;">
+      <span style="font-size: 1.2rem; margin-right: 6px;">⚠️</span>
+      <div style="font-size: 0.85rem; color: #fef08a; line-height: 1.4;">
+        <strong>PROYECTO COMUNITARIO INDEPENDIENTE:</strong><br>
+        Esta aplicación <strong>NO es la web oficial</strong> de Wild Dodo ni tiene vínculo administrativo directo con el staff. Es una herramienta creada y mantenida por un jugador para la comunidad.
+      </div>
+    </div>
+
+    <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px;">
+      El desarrollo de las calculadoras de pisos oficiales y el Marketplace fue realizado de forma desinteresada para facilitar el comercio justo y transparente entre sobrevivientes. Si la web te resulta útil y quieres apoyar su mantenimiento y futuras actualizaciones, cualquier aporte es súper bienvenido.
+    </p>
+
+    <!-- Métodos de donación -->
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <!-- Cafecito / Mercado Pago -->
+      <a href="TU_LINK_DE_CAFECITO_O_MP" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(0, 229, 255, 0.12); border-color: var(--neon-cyan); color: #fff;">
+        <span>☕ Invítame un Cafecito (Argentina)</span>
+        <span style="font-size: 0.8rem; color: var(--neon-cyan);">Abrir link ↗</span>
+      </a>
+
+      <!-- Alias / CVU directo para copiar -->
+      <div class="donate-copy-box">
+        <div style="display: flex; flex-direction: column;">
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Alias Mercado Pago / CVU:</span>
+          <span id="donate-alias-text" style="font-family: monospace; font-size: 0.95rem; color: #fff; font-weight: 600;">TU.ALIAS.MP</span>
+        </div>
+        <button id="btn-copy-alias" class="btn-copy-discord" style="padding: 6px 12px;">Copiar Alias</button>
+      </div>
+
+      <!-- PayPal / Internacional (Opcional) -->
+      <a href="TU_LINK_DE_PAYPAL" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(88, 101, 242, 0.12); border-color: rgba(88, 101, 242, 0.4); color: #e2e8f0;">
+        <span>💳 Donar vía PayPal / Internacional</span>
+        <span style="font-size: 0.8rem; color: #a5b4fc;">Abrir link ↗</span>
+      </a>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <span style="font-size: 0.75rem; color: var(--text-muted);">
+        ¡Gracias por usar y compartir la plataforma! 🦖
+      </span>
+    </div>
+  </div>
+</div>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>
