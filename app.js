@@ -1037,9 +1037,15 @@ function initDonateModal() {
   const btnClose = document.getElementById('btn-close-donate');
   const modal = document.getElementById('modal-donate');
 
+  // Mercado Pago Alias
+  const btnCopyAlias = document.getElementById('btn-copy-alias');
+  const aliasText = document.getElementById('donate-alias-text');
+
+  // LemonTag
   const btnCopyTag = document.getElementById('btn-copy-lemontag');
   const tagText = document.getElementById('donate-lemontag-text');
 
+  // Crypto USDT
   const btnCopyCrypto = document.getElementById('btn-copy-crypto');
   const cryptoText = document.getElementById('donate-crypto-address');
 
@@ -1063,21 +1069,21 @@ function initDonateModal() {
     });
   }
 
-  function setupCopyButton(btn, textEl) {
-    if (!btn || !textEl) return;
+  function setupCopy(btn, targetEl) {
+    if (!btn || !targetEl) return;
     btn.addEventListener('click', () => {
-      navigator.clipboard.writeText(textEl.textContent.trim());
-      const original = btn.textContent;
+      navigator.clipboard.writeText(targetEl.textContent.trim());
+      const originalText = btn.textContent;
       btn.textContent = '¡Copiado!';
-      setTimeout(() => { btn.textContent = original; }, 1800);
+      setTimeout(() => { btn.textContent = originalText; }, 1800);
     });
   }
 
-  setupCopyButton(btnCopyTag, tagText);
-  setupCopyButton(btnCopyCrypto, cryptoText);
+  setupCopy(btnCopyAlias, aliasText);
+  setupCopy(btnCopyTag, tagText);
+  setupCopy(btnCopyCrypto, cryptoText);
 }
 
-// Inicialización
 initDonateModal();
 
 // Inicialización general
