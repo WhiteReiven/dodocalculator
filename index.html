@@ -20,6 +20,7 @@
       <span class="brand-badge">WILD DODO</span>
       <h1 class="brand-title">Calculadora de Mercado</h1>
       <p class="brand-subtitle">Cotizador oficial para Servidores ASA/ASE</p>
+      
       <!-- Barra de Login Discord -->
       <div class="auth-bar" id="auth-bar">
         <button id="btn-login-discord" class="btn-discord">
@@ -29,12 +30,14 @@
           <span>Iniciar sesión con Discord</span>
         </button>
 
-       <div id="user-profile-badge" class="user-profile-badge hidden">
+        <div id="user-profile-badge" class="user-profile-badge hidden">
           <img id="user-discord-avatar" class="discord-avatar" src="" alt="Avatar">
           <span id="user-discord-name" class="discord-name"></span>
           <button id="btn-change-identity" class="btn-logout" style="color: var(--neon-cyan); border-color: rgba(0, 229, 255, 0.3);" title="Cambiar nombre de visualización">✎</button>
           <button id="btn-logout" class="btn-logout" title="Cerrar sesión">Salir</button>
         </div>
+      </div>
+    </div>
   </header>
 
   <main class="container">
@@ -83,105 +86,99 @@
       </div>
     </section>
 
-    <!-- PESTAÑA 2: DINOS BASE (+ MEK & GACHA) -->
-<section id="section-base" class="calculator-section hidden">
-  <div class="base-layout-container">
-    
-    <!-- COLUMNA IZQUIERDA: CALCULADORA DINO BASE -->
-    <div class="card-calculator main-calc-card">
-      <div class="form-group">
-        <label for="search-base-dino">Seleccione Dino</label>
-        <div class="autocomplete-wrapper">
-          <input type="text" id="search-base-dino" class="custom-search-input" placeholder="Buscar dino base..." autocomplete="off">
-          <ul id="dropdown-base-dino" class="autocomplete-list hidden"></ul>
-        </div>
-      </div>
+    <!-- SECCIÓN DINOS BASE (+ MEK & GACHA) -->
+    <section id="section-base" class="calculator-section hidden">
+      <div class="base-layout-container">
+        <!-- COLUMNA IZQUIERDA: CALCULADORA DINO BASE -->
+        <div class="card-calculator main-calc-card">
+          <div class="form-group">
+            <label for="search-base-dino">Seleccione Dino</label>
+            <div class="autocomplete-wrapper">
+              <input type="text" id="search-base-dino" class="custom-search-input" placeholder="Buscar dino base..." autocomplete="off">
+              <ul id="dropdown-base-dino" class="autocomplete-list hidden"></ul>
+            </div>
+          </div>
 
-      <div class="info-banner">
-        <span>Categoría oficial:</span>
-        <span id="base-dino-tier" class="text-neon">Tier 4</span>
-      </div>
+          <div class="info-banner">
+            <span>Categoría oficial:</span>
+            <span id="base-dino-tier" class="text-neon">Tier 4</span>
+          </div>
 
-      <div class="stats-grid" id="base-stats-grid">
-        <!-- Generado dinámicamente por app.js -->
-      </div>
+          <div class="stats-grid" id="base-stats-grid"></div>
 
-      <div class="results-container">
-        <div class="result-box">
-          <span class="result-label">Nivel del Dino</span>
-          <span id="base-total-lvl" class="result-value">1</span>
-        </div>
-        <div class="result-box highlight">
-          <span class="result-label">Precio Final</span>
-          <span id="base-price-total" class="result-value">0 DodoCoins</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- COLUMNA DERECHA: TARJETAS FIJAS MEK Y GACHA -->
-    <div class="side-specials-column">
-      
-      <!-- TARJETA MEK -->
-      <div class="card-calculator side-card">
-        <div class="side-card-header">
-          <span class="side-icon">⚙️</span>
-          <div>
-            <h3 class="side-card-title">MEK</h3>
-            <span class="side-card-sub">Calculadora de precio</span>
+          <div class="results-container">
+            <div class="result-box">
+              <span class="result-label">Nivel del Dino</span>
+              <span id="base-total-lvl" class="result-value">1</span>
+            </div>
+            <div class="result-box highlight">
+              <span class="result-label">Precio Final</span>
+              <span id="base-price-total" class="result-value">0 DodoCoins</span>
+            </div>
           </div>
         </div>
 
-        <div class="form-group" style="margin-top: 14px;">
-          <label for="mek-level-input">Indicar LVL</label>
-          <input type="number" id="mek-level-input" class="custom-search-input" value="150" min="150" max="540">
-          <span class="helper-text" id="mek-helper-text">Nivel mínimo 150 · Máximo 540</span>
-        </div>
+        <!-- COLUMNA DERECHA: TARJETAS FIJAS MEK Y GACHA -->
+        <div class="side-specials-column">
+          <!-- TARJETA MEK -->
+          <div class="card-calculator side-card">
+            <div class="side-card-header">
+              <span class="side-icon">⚙️</span>
+              <div>
+                <h3 class="side-card-title">MEK</h3>
+                <span class="side-card-sub">Calculadora de precio</span>
+              </div>
+            </div>
 
-        <div class="mek-results-grid">
-          <div class="side-result-box">
-            <span class="side-res-label">PRECIO BP</span>
-            <span id="mek-price-bp" class="side-res-value text-yellow">6.000</span>
+            <div class="form-group" style="margin-top: 14px;">
+              <label for="mek-level-input">Indicar LVL</label>
+              <input type="number" id="mek-level-input" class="custom-search-input" value="150" min="150" max="540">
+              <span class="helper-text" id="mek-helper-text">Nivel mínimo 150 · Máximo 540</span>
+            </div>
+
+            <div class="mek-results-grid">
+              <div class="side-result-box">
+                <span class="side-res-label">PRECIO BP</span>
+                <span id="mek-price-bp" class="side-res-value text-yellow">6.000</span>
+              </div>
+              <div class="side-result-box">
+                <span class="side-res-label">PRECIO FABRICADO</span>
+                <span id="mek-price-fab" class="side-res-value text-cyan">5.000</span>
+              </div>
+            </div>
           </div>
-          <div class="side-result-box">
-            <span class="side-res-label">PRECIO FABRICADO</span>
-            <span id="mek-price-fab" class="side-res-value text-cyan">5.000</span>
+
+          <!-- TARJETA GACHA -->
+          <div class="card-calculator side-card">
+            <div class="side-card-header">
+              <span class="side-icon">💎</span>
+              <div>
+                <h3 class="side-card-title">GACHA</h3>
+                <span class="side-card-sub">Precio por recurso</span>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 14px;">
+              <label for="select-gacha-recurso">Recurso</label>
+              <select id="select-gacha-recurso" class="custom-search-input custom-select">
+                <option value="ELEMENTO">ELEMENTO</option>
+                <option value="POLIMERO">POLIMERO</option>
+                <option value="PERLA NEGRA">PERLA NEGRA</option>
+                <option value="METAL">METAL</option>
+                <option value="CRISTAL">CRISTAL</option>
+                <option value="OBSIDIANA">OBSIDIANA</option>
+                <option value="VARIOS">VARIOS</option>
+              </select>
+            </div>
+
+            <div class="side-result-box highlight-purple">
+              <span class="side-res-label">PRECIO</span>
+              <span id="gacha-price-total" class="side-res-value text-purple">15.000</span>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- TARJETA GACHA -->
-      <div class="card-calculator side-card">
-        <div class="side-card-header">
-          <span class="side-icon">💎</span>
-          <div>
-            <h3 class="side-card-title">GACHA</h3>
-            <span class="side-card-sub">Precio por recurso</span>
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-top: 14px;">
-          <label for="select-gacha-recurso">Recurso</label>
-          <select id="select-gacha-recurso" class="custom-search-input custom-select">
-            <option value="ELEMENTO">ELEMENTO</option>
-            <option value="POLIMERO">POLIMERO</option>
-            <option value="PERLA NEGRA">PERLA NEGRA</option>
-            <option value="METAL">METAL</option>
-            <option value="CRISTAL">CRISTAL</option>
-            <option value="OBSIDIANA">OBSIDIANA</option>
-            <option value="VARIOS">VARIOS</option>
-          </select>
-        </div>
-
-        <div class="side-result-box highlight-purple">
-          <span class="side-res-label">PRECIO</span>
-          <span id="gacha-price-total" class="side-res-value text-purple">15.000</span>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</section>
+    </section>
 
     <!-- SECCIÓN RECURSOS -->
     <section id="section-recursos" class="card-calculator hidden">
@@ -243,236 +240,229 @@
         </div>
       </div>
     </section>
-    <!-- PESTAÑA 5: MARKETPLACE -->
-<section id="section-marketplace" class="calculator-section hidden">
-  <div class="market-header-bar">
-    <div>
-      <h2 class="market-title">MERCADO COMUNITARIO</h2>
-      <p class="market-subtitle">Compra y venta directa entre sobrevivientes · Precios piso auditados</p>
-    </div>
-    <button id="btn-open-publish" class="btn-publish-action">
-      + Publicar Criatura
-    </button>
-  </div>
 
-  <!-- Filtros -->
-  <div class="market-filters-row">
-    <input type="text" id="market-search-input" class="custom-search-input" placeholder="Buscar por criatura o vendedor...">
-    <select id="market-filter-cat" class="custom-search-input custom-select" style="max-width: 200px;">
-      <option value="all">Todas las categorías</option>
-      <option value="mutated">Mutados</option>
-      <option value="base">Base</option>
-      <option value="mek">MEK</option>
-      <option value="gacha">Gacha</option>
-    </select>
-  </div>
+    <!-- SECCIÓN MARKETPLACE -->
+    <section id="section-marketplace" class="calculator-section hidden">
+      <div class="market-header-bar">
+        <div>
+          <h2 class="market-title">MERCADO COMUNITARIO</h2>
+          <p class="market-subtitle">Compra y venta directa entre sobrevivientes · Precios piso auditados</p>
+        </div>
+        <button id="btn-open-publish" class="btn-publish-action">
+          + Publicar Criatura
+        </button>
+      </div>
 
-  <!-- Grid de publicaciones -->
-  <div id="market-listings-grid" class="market-grid">
-    <div class="market-empty-state">Cargando publicaciones del mercado...</div>
-  </div>
-</section>
-
-<!-- MODAL DE PUBLICACIÓN CON STATS OFICIALES -->
-<div id="modal-publish" class="market-modal-overlay hidden">
-  <div class="card-calculator modal-card modal-large">
-    <div class="modal-head">
-      <h3 class="side-card-title">PUBLICAR EN EL MERCADO</h3>
-      <button id="btn-close-modal" class="modal-close">&times;</button>
-    </div>
-
-    <form id="form-publish-listing">
-      <div class="form-group">
-        <label for="pub-category">Categoría</label>
-        <select id="pub-category" class="custom-search-input custom-select">
-          <option value="mutated">Dino Mutado</option>
-          <option value="base">Dino Base</option>
+      <!-- Filtros -->
+      <div class="market-filters-row">
+        <input type="text" id="market-search-input" class="custom-search-input" placeholder="Buscar por criatura o vendedor...">
+        <select id="market-filter-cat" class="custom-search-input custom-select" style="max-width: 200px;">
+          <option value="all">Todas las categorías</option>
+          <option value="mutated">Mutados</option>
+          <option value="base">Base</option>
           <option value="mek">MEK</option>
           <option value="gacha">Gacha</option>
-          <option value="otro">Otro / Objeto</option>
         </select>
       </div>
 
-      <!-- Input de Criatura con Dropdown híbrido -->
-      <div class="form-group" id="group-pub-dino">
-        <label for="pub-dino-name">Criatura</label>
-        <div class="autocomplete-wrapper" style="position: relative;">
-          <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Buscar criatura..." autocomplete="off" required>
-          <ul id="dropdown-pub-dino" class="autocomplete-list hidden"></ul>
-        </div>
-        <span id="pub-tier-badge" class="helper-text" style="color: var(--neon-cyan); font-weight: 600;"></span>
+      <!-- Grid de publicaciones -->
+      <div id="market-listings-grid" class="market-grid">
+        <div class="market-empty-state">Cargando publicaciones del mercado...</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL DE PUBLICACIÓN CON STATS OFICIALES -->
+  <div id="modal-publish" class="market-modal-overlay hidden">
+    <div class="card-calculator modal-card modal-large">
+      <div class="modal-head">
+        <h3 class="side-card-title">PUBLICAR EN EL MERCADO</h3>
+        <button id="btn-close-modal" class="modal-close">&times;</button>
       </div>
 
-      <!-- PANEL DINOS MUTADOS (Checkboxes + Inputs + Castrado) -->
-      <div id="group-stats-mutated" class="market-stats-box">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <span class="side-res-label">STATS MUTADAS (MARCAR LAS ACTIVAS)</span>
-          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; cursor: pointer; color: #facc15;">
-            <input type="checkbox" id="pub-mut-castrado"> Dino Castrado (-25%)
+      <form id="form-publish-listing">
+        <div class="form-group">
+          <label for="pub-category">Categoría</label>
+          <select id="pub-category" class="custom-search-input custom-select">
+            <option value="mutated">Dino Mutado</option>
+            <option value="base">Dino Base</option>
+            <option value="mek">MEK</option>
+            <option value="gacha">Gacha</option>
+            <option value="otro">Otro / Objeto</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="group-pub-dino">
+          <label for="pub-dino-name">Criatura</label>
+          <div class="autocomplete-wrapper" style="position: relative;">
+            <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Buscar criatura..." autocomplete="off" required>
+            <ul id="dropdown-pub-dino" class="autocomplete-list hidden"></ul>
+          </div>
+          <span id="pub-tier-badge" class="helper-text" style="color: var(--neon-cyan); font-weight: 600;"></span>
+        </div>
+
+        <div id="group-stats-mutated" class="market-stats-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="side-res-label">STATS MUTADAS (MARCAR LAS ACTIVAS)</span>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; cursor: pointer; color: #facc15;">
+              <input type="checkbox" id="pub-mut-castrado"> Dino Castrado (-25%)
+            </label>
+          </div>
+          <div id="pub-mutated-stats-list" class="stats-list"></div>
+        </div>
+
+        <div id="group-stats-base" class="market-stats-box hidden">
+          <span class="side-res-label" style="margin-bottom: 10px; display: block;">STATS BASE (PUNTOS)</span>
+          <div id="pub-base-stats-grid" class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));"></div>
+          <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted);">
+            Nivel total acumulado: <span id="pub-base-lvl-count" class="text-neon" style="font-weight: 700;">1</span>
+          </div>
+        </div>
+
+        <div class="form-group hidden" id="group-pub-gacha">
+          <label for="pub-gacha-res">Recurso de Gacha</label>
+          <select id="pub-gacha-res" class="custom-search-input custom-select">
+            <option value="ELEMENTO">ELEMENTO</option>
+            <option value="POLIMERO">POLIMERO</option>
+            <option value="PERLA NEGRA">PERLA NEGRA</option>
+            <option value="METAL">METAL</option>
+            <option value="CRISTAL">CRISTAL</option>
+            <option value="OBSIDIANA">OBSIDIANA</option>
+            <option value="VARIOS">VARIOS</option>
+          </select>
+        </div>
+
+        <div class="form-group hidden" id="group-pub-mek">
+          <label for="pub-mek-lvl">Nivel del MEK (150 a 540)</label>
+          <input type="number" id="pub-mek-lvl" class="custom-search-input" min="150" max="540" value="150">
+          <div style="margin-top: 8px; display: flex; gap: 15px;">
+            <label><input type="radio" name="mek-type" value="fab" checked> Fabricado</label>
+            <label><input type="radio" name="mek-type" value="bp"> Blueprint (BP)</label>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label for="pub-details">Detalles adicionales / Contacto / Notas</label>
+          <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: Full mutaciones de color, entrega en Obelisco Verde, etc.">
+        </div>
+
+        <div class="side-result-box" style="margin: 15px 0; border-color: rgba(0, 229, 255, 0.3);">
+          <span class="side-res-label">PRECIO PISO OFICIAL OBLIGATORIO</span>
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span id="pub-calculated-floor" class="side-res-value text-cyan" style="font-size: 1.4rem;">0 DDC</span>
+            <span id="pub-floor-legend" style="font-size: 0.75rem; color: var(--text-muted);">Calculando piso...</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pub-selling-price">Tu Precio de Venta (DDC)</label>
+          <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Mismo valor o superior al piso" min="0" required>
+          <span class="helper-text error" id="pub-price-error" style="display: none;">¡El precio no puede ser inferior al precio piso oficial!</span>
+        </div>
+
+        <!-- Control de Privacidad Discord -->
+        <div class="form-group" style="margin-top: 10px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #a5b4fc; font-size: 0.85rem;">
+            <input type="checkbox" id="pub-allow-discord" checked style="width: 16px; height: 16px; accent-color: #5865F2;">
+            <span>Permitir contacto directo por Discord</span>
           </label>
+          <span class="helper-text">Si lo desmarcas, solo verán tu nombre sin enlace a tu perfil de Discord.</span>
         </div>
-        <div id="pub-mutated-stats-list" class="stats-list"></div>
-      </div>
 
-      <!-- PANEL DINOS BASE (Inputs numéricos por stat) -->
-      <div id="group-stats-base" class="market-stats-box hidden">
-        <span class="side-res-label" style="margin-bottom: 10px; display: block;">STATS BASE (PUNTOS)</span>
-        <div id="pub-base-stats-grid" class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));"></div>
-        <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted);">
-          Nivel total acumulado: <span id="pub-base-lvl-count" class="text-neon" style="font-weight: 700;">1</span>
-        </div>
-      </div>
+        <button type="submit" id="btn-submit-listing" class="btn-discord" style="width: 100%; justify-content: center; margin-top: 10px;">
+          Confirmar y Publicar
+        </button>
+      </form>
+    </div>
+  </div>
 
-      <!-- SELECTOR GACHA -->
-      <div class="form-group hidden" id="group-pub-gacha">
-        <label for="pub-gacha-res">Recurso de Gacha</label>
-        <select id="pub-gacha-res" class="custom-search-input custom-select">
-          <option value="ELEMENTO">ELEMENTO</option>
-          <option value="POLIMERO">POLIMERO</option>
-          <option value="PERLA NEGRA">PERLA NEGRA</option>
-          <option value="METAL">METAL</option>
-          <option value="CRISTAL">CRISTAL</option>
-          <option value="OBSIDIANA">OBSIDIANA</option>
-          <option value="VARIOS">VARIOS</option>
-        </select>
+  <!-- MODAL DE IDENTIDAD / NOMBRE IN-GAME -->
+  <div id="modal-identity" class="market-modal-overlay hidden">
+    <div class="card-calculator modal-card" style="max-width: 420px;">
+      <div class="modal-head">
+        <h3 class="side-card-title">TU IDENTIDAD EN EL MERCADO</h3>
       </div>
-
-      <!-- SELECTOR MEK -->
-      <div class="form-group hidden" id="group-pub-mek">
-        <label for="pub-mek-lvl">Nivel del MEK (150 a 540)</label>
-        <input type="number" id="pub-mek-lvl" class="custom-search-input" min="150" max="540" value="150">
-        <div style="margin-top: 8px; display: flex; gap: 15px;">
-          <label><input type="radio" name="mek-type" value="fab" checked> Fabricado</label>
-          <label><input type="radio" name="mek-type" value="bp"> Blueprint (BP)</label>
-        </div>
-      </div>
-
-      <div class="form-group" style="margin-top: 14px;">
-        <label for="pub-details">Detalles adicionales / Contacto / Notas</label>
-        <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: Full mutaciones de color, entrega en Obelisco Verde, etc.">
-      </div>
-
-      <!-- BANNER DE PISO CALCULADO -->
-      <div class="side-result-box" style="margin: 15px 0; border-color: rgba(0, 229, 255, 0.3);">
-        <span class="side-res-label">PRECIO PISO OFICIAL OBLIGATORIO</span>
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-          <span id="pub-calculated-floor" class="side-res-value text-cyan" style="font-size: 1.4rem;">0 DDC</span>
-          <span id="pub-floor-legend" style="font-size: 0.75rem; color: var(--text-muted);">Calculando piso...</span>
-        </div>
-      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+        Elige cómo quieres que los demás sobrevivientes te vean en las publicaciones:
+      </p>
 
       <div class="form-group">
-        <label for="pub-selling-price">Tu Precio de Venta (DDC)</label>
-        <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Mismo valor o superior al piso" min="0" required>
-        <span class="helper-text error" id="pub-price-error" style="display: none;">¡El precio no puede ser inferior al precio piso oficial!</span>
-      </div>
-
-      <button type="submit" id="btn-submit-listing" class="btn-discord" style="width: 100%; justify-content: center; margin-top: 10px;">
-        <!-- Control de Privacidad Discord -->
-      <div class="form-group" style="margin-top: 10px;">
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #a5b4fc; font-size: 0.85rem;">
-          <input type="checkbox" id="pub-allow-discord" checked style="width: 16px; height: 16px; accent-color: #5865F2;">
-          <span>Permitir contacto directo por Discord</span>
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 12px;">
+          <input type="radio" name="identity-type" value="discord" checked>
+          <span>Usar mi nombre de Discord (<strong id="identity-discord-preview"></strong>)</span>
         </label>
-        <span class="helper-text">Si lo desmarcas, solo verán tu nombre sin enlace a tu perfil de Discord.</span>
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="radio" name="identity-type" value="ingame">
+          <span>Usar nombre In-Game (PJ / Tribu)</span>
+        </label>
       </div>
-        Confirmar y Publicar
+
+      <div class="form-group hidden" id="group-ingame-input">
+        <label for="input-ingame-name">Nombre de Personaje / Tribu</label>
+        <input type="text" id="input-ingame-name" class="custom-search-input" placeholder="Ej: Ragnar [Alpha Tribe]">
+      </div>
+
+      <button id="btn-save-identity" class="btn-discord" style="width: 100%; justify-content: center; margin-top: 12px;">
+        Guardar Identidad
       </button>
-    </form>
+    </div>
   </div>
-</div>
-    <!-- MODAL DE IDENTIDAD / NOMBRE IN-GAME -->
-<div id="modal-identity" class="market-modal-overlay hidden">
-  <div class="card-calculator modal-card" style="max-width: 420px;">
-    <div class="modal-head">
-      <h3 class="side-card-title">TU IDENTIDAD EN EL MERCADO</h3>
-    </div>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-      Elige cómo quieres que los demás sobrevivientes te vean en las publicaciones:
-    </p>
 
-    <div class="form-group">
-      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 12px;">
-        <input type="radio" name="identity-type" value="discord" checked>
-        <span>Usar mi nombre de Discord (<strong id="identity-discord-preview"></strong>)</span>
-      </label>
-      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-        <input type="radio" name="identity-type" value="ingame">
-        <span>Usar nombre In-Game (PJ / Tribu)</span>
-      </label>
-    </div>
+  <!-- BOTÓN FLOTANTE: APOYAR AL DEV -->
+  <button id="btn-open-donate" class="btn-floating-donate" title="Apoyar desarrollo comunitario">
+    <span class="donate-icon">☕</span>
+    <span class="donate-text">Donaciones por Dev</span>
+  </button>
 
-    <div class="form-group hidden" id="group-ingame-input">
-      <label for="input-ingame-name">Nombre de Personaje / Tribu</label>
-      <input type="text" id="input-ingame-name" class="custom-search-input" placeholder="Ej: Ragnar [Alpha Tribe]">
-    </div>
-
-    <button id="btn-save-identity" class="btn-discord" style="width: 100%; justify-content: center; margin-top: 12px;">
-      Guardar Identidad
-    </button>
-  </div>
-</div>
-
-    <!-- BOTÓN FLOTANTE: APOYAR AL DEV -->
-<button id="btn-open-donate" class="btn-floating-donate" title="Apoyar desarrollo comunitario">
-  <span class="donate-icon">☕</span>
-  <span class="donate-text">Donaciones por Dev</span>
-</button>
-
-<!-- MODAL: INFORMACIÓN Y DONACIONES -->
-<div id="modal-donate" class="market-modal-overlay hidden">
-  <div class="card-calculator modal-card" style="max-width: 480px; position: relative;">
-    <div class="modal-head">
-      <h3 class="side-card-title" style="display: flex; align-items: center; gap: 8px;">
-        <span>☕</span> APOYAR AL DESARROLLADOR
-      </h3>
-      <button id="btn-close-donate" class="modal-close">&times;</button>
-    </div>
-
-    <!-- Banner de Aclaración / No Oficial -->
-    <div class="info-banner" style="border-color: rgba(250, 204, 21, 0.4); background: rgba(250, 204, 21, 0.08); margin-bottom: 16px;">
-      <span style="font-size: 1.2rem; margin-right: 6px;">⚠️</span>
-      <div style="font-size: 0.85rem; color: #fef08a; line-height: 1.4;">
-        <strong>PROYECTO COMUNITARIO INDEPENDIENTE:</strong><br>
-        Esta aplicación <strong>NO es la web oficial</strong> de Wild Dodo ni tiene vínculo administrativo directo con el staff. Es una herramienta creada y mantenida por un jugador para la comunidad.
+  <!-- MODAL: INFORMACIÓN Y DONACIONES -->
+  <div id="modal-donate" class="market-modal-overlay hidden">
+    <div class="card-calculator modal-card" style="max-width: 480px; position: relative;">
+      <div class="modal-head">
+        <h3 class="side-card-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>☕</span> APOYAR AL DESARROLLADOR
+        </h3>
+        <button id="btn-close-donate" class="modal-close">&times;</button>
       </div>
-    </div>
 
-    <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px;">
-      El desarrollo de las calculadoras de pisos oficiales y el Marketplace fue realizado de forma desinteresada para facilitar el comercio justo y transparente entre sobrevivientes. Si la web te resulta útil y quieres apoyar su mantenimiento y futuras actualizaciones, cualquier aporte es súper bienvenido.
-    </p>
-
-    <!-- Métodos de donación -->
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <!-- Cafecito / Mercado Pago -->
-      <a href="TU_LINK_DE_CAFECITO_O_MP" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(0, 229, 255, 0.12); border-color: var(--neon-cyan); color: #fff;">
-        <span>☕ Invítame un Cafecito (Argentina)</span>
-        <span style="font-size: 0.8rem; color: var(--neon-cyan);">Abrir link ↗</span>
-      </a>
-
-      <!-- Alias / CVU directo para copiar -->
-      <div class="donate-copy-box">
-        <div style="display: flex; flex-direction: column;">
-          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Alias Mercado Pago / CVU:</span>
-          <span id="donate-alias-text" style="font-family: monospace; font-size: 0.95rem; color: #fff; font-weight: 600;">TU.ALIAS.MP</span>
+      <div class="info-banner" style="border-color: rgba(250, 204, 21, 0.4); background: rgba(250, 204, 21, 0.08); margin-bottom: 16px;">
+        <span style="font-size: 1.2rem; margin-right: 6px;">⚠️</span>
+        <div style="font-size: 0.85rem; color: #fef08a; line-height: 1.4;">
+          <strong>PROYECTO COMUNITARIO INDEPENDIENTE:</strong><br>
+          Esta aplicación <strong>NO es la web oficial</strong> de Wild Dodo ni tiene vínculo administrativo directo con el staff. Es una herramienta creada y mantenida por un jugador para la comunidad.
         </div>
-        <button id="btn-copy-alias" class="btn-copy-discord" style="padding: 6px 12px;">Copiar Alias</button>
       </div>
 
-      <!-- PayPal / Internacional (Opcional) -->
-      <a href="TU_LINK_DE_PAYPAL" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(88, 101, 242, 0.12); border-color: rgba(88, 101, 242, 0.4); color: #e2e8f0;">
-        <span>💳 Donar vía PayPal / Internacional</span>
-        <span style="font-size: 0.8rem; color: #a5b4fc;">Abrir link ↗</span>
-      </a>
-    </div>
+      <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px;">
+        El desarrollo de las calculadoras de pisos oficiales y el Marketplace fue realizado de forma desinteresada para facilitar el comercio justo y transparente entre sobrevivientes. Si la web te resulta útil y quieres apoyar su mantenimiento y futuras actualizaciones, cualquier aporte es súper bienvenido.
+      </p>
 
-    <div style="text-align: center; margin-top: 20px;">
-      <span style="font-size: 0.75rem; color: var(--text-muted);">
-        ¡Gracias por usar y compartir la plataforma! 🦖
-      </span>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a href="TU_LINK_DE_CAFECITO_O_MP" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(0, 229, 255, 0.12); border-color: var(--neon-cyan); color: #fff;">
+          <span>☕ Invítame un Cafecito (Argentina)</span>
+          <span style="font-size: 0.8rem; color: var(--neon-cyan);">Abrir link ↗</span>
+        </a>
+
+        <div class="donate-copy-box">
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Alias Mercado Pago / CVU:</span>
+            <span id="donate-alias-text" style="font-family: monospace; font-size: 0.95rem; color: #fff; font-weight: 600;">TU.ALIAS.MP</span>
+          </div>
+          <button id="btn-copy-alias" class="btn-copy-discord" style="padding: 6px 12px;">Copiar Alias</button>
+        </div>
+
+        <a href="TU_LINK_DE_PAYPAL" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(88, 101, 242, 0.12); border-color: rgba(88, 101, 242, 0.4); color: #e2e8f0;">
+          <span>💳 Donar vía PayPal / Internacional</span>
+          <span style="font-size: 0.8rem; color: #a5b4fc;">Abrir link ↗</span>
+        </a>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px;">
+        <span style="font-size: 0.75rem; color: var(--text-muted);">
+          ¡Gracias por usar y compartir la plataforma! 🦖
+        </span>
+      </div>
     </div>
   </div>
-</div>
 
   <script type="module" src="./app.js"></script>
 </body>
