@@ -587,6 +587,15 @@ function initMarketplace() {
   const mekLvlInput = document.getElementById('pub-mek-lvl');
   const mekTypeRadios = document.getElementsByName('mek-type');
 
+  // Elementos de BP / Armas y Monturas
+  const bpGroup = document.getElementById('group-pub-bp');
+  const bpSubcatSelect = document.getElementById('pub-bp-subcat');
+  const bpItemInput = document.getElementById('pub-bp-item');
+  const bpItemDropdown = document.getElementById('dropdown-pub-bp-item');
+  const bpF3PriceEl = document.getElementById('pub-bp-f3-price');
+  const bpLabelStat = document.getElementById('pub-label-bp-stat');
+  const bpStatInput = document.getElementById('pub-bp-stat');
+
   const calculatedFloorSpan = document.getElementById('pub-calculated-floor');
   const floorLegend = document.getElementById('pub-floor-legend');
   const sellPriceInput = document.getElementById('pub-selling-price');
@@ -636,20 +645,67 @@ function initMarketplace() {
     return Array.from(new Set([...Object.keys(MUTATED_DINOS || {}), ...Object.keys(BASE_DINOS || {})])).sort();
   }
 
+  function configurarSubcategoriasBp(catPrincipal) {
+    if (!bpSubcatSelect) return;
+    bpSubcatSelect.innerHTML = '';
+
+    const claves = catPrincipal === 'bp_arma' 
+      ? ['BP_ARMA_755', 'BP_ARMA_325', 'ARMA_755', 'ARMA_325']
+      : ['BP_MONTURA', 'MONTURA'];
+
+    claves.forEach(k => {
+      if (BP_CATEGORIES[k]) {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = BP_CATEGORIES[k].label;
+        bpSubcatSelect.appendChild(opt);
+      }
+    });
+
+    actualizarItemsBp();
+  }
+
+  function actualizarItemsBp() {
+    const subcatKey = bpSubcatSelect.value;
+    const catData = BP_CATEGORIES[subcatKey];
+    if (!catData) return;
+
+    if (bpLabelStat) bpLabelStat.textContent = `Indicar ${catData.statLabel} (Máx ${catData.maxStat})`;
+    const items = Object.keys(catData.items).sort();
+    if (bpItemInput) bpItemInput.value = items[0] || '';
+    if (bpStatInput) bpStatInput.value = catData.ranges[0] || 100;
+
+    setupAutocomplete(bpItemInput, bpItemDropdown, items, (seleccionado) => {
+      bpItemInput.value = seleccionado;
+      recalcularPiso();
+    });
+
+    recalcularPiso();
+  }
+
+  if (bpSubcatSelect) bpSubcatSelect.addEventListener('change', actualizarItemsBp);
+  if (bpStatInput) bpStatInput.addEventListener('input', recalcularPiso);
+
   if (catSelect) {
     catSelect.addEventListener('change', () => {
       const cat = catSelect.value;
-      const isFixedItem = (cat === 'gacha' || cat === 'mek');
+      const isFixedItem = (cat === 'gacha' || cat === 'mek' || cat === 'bp_arma' || cat === 'bp_montura');
+      const isBp = (cat === 'bp_arma' || cat === 'bp_montura');
 
       if (dinoGroup) dinoGroup.classList.toggle('hidden', isFixedItem);
       if (groupStatsMutated) groupStatsMutated.classList.toggle('hidden', cat !== 'mutated');
       if (groupStatsBase) groupStatsBase.classList.toggle('hidden', cat !== 'base');
       if (gachaGroup) gachaGroup.classList.toggle('hidden', cat !== 'gacha');
       if (mekGroup) mekGroup.classList.toggle('hidden', cat !== 'mek');
+      if (bpGroup) bpGroup.classList.toggle('hidden', !isBp);
 
       if (dinoInput) {
         if (isFixedItem) dinoInput.removeAttribute('required');
         else dinoInput.setAttribute('required', 'true');
+      }
+
+      if (isBp) {
+        configurarSubcategoriasBp(cat);
       }
 
       recalcularPiso();
@@ -790,6 +846,45 @@ function initMarketplace() {
         floorLegend.textContent = `Piso oficial MEK Fab (Lvl ${lvl})`;
       }
       activeFloorPrice = Math.round(activeFloorPrice);
+    } else if (cat === 'bp_arma' || cat === 'bp_montura') {
+      const subcatKey = bpSubcatSelect ? bpSubcatSelect.value : '';
+      const catData = BP_CATEGORIES[subcatKey];
+      const itemNombre = bpItemInput ? bpItemInput.value.trim() : '';
+
+      if (catData && catData.items[itemNombre]) {
+        const f3Price = catData.items[itemNombre] || 0;
+        if (bpF3PriceEl) bpF3PriceEl.textContent = `${f3Price.toLocaleString()} DDC`;
+
+        const stat = Math.max(0, Number(bpStatInput?.value || 0));
+        const ranges = catData.ranges;
+        const mults = catData.mults;
+        const prices = mults.map(m => f3Price * m);
+
+        let baseR = ranges[0];
+        if (stat > ranges[0]) {
+          const valid = ranges.filter(r => r <= stat);
+          baseR = valid[valid.length - 1];
+        }
+
+        const idx = ranges.indexOf(baseR);
+        const diff = Math.max(0, stat - baseR);
+        const basePrice = prices[idx];
+
+        let total = basePrice;
+        if (idx < ranges.length - 1) {
+          const nextR = ranges[idx + 1];
+          const nextPrice = prices[idx + 1];
+          const ratePerUnit = (nextPrice - basePrice) / (nextR - baseR);
+          total = basePrice + (diff * ratePerUnit);
+        }
+
+        activeFloorPrice = Math.round(total);
+        floorLegend.textContent = `Piso oficial (${catData.statLabel}: ${stat})`;
+      } else {
+        activeFloorPrice = 0;
+        if (bpF3PriceEl) bpF3PriceEl.textContent = `0 DDC`;
+        floorLegend.textContent = 'Selecciona un ítem de la lista';
+      }
     } else {
       activeFloorPrice = 0;
       floorLegend.textContent = "Libre fijación de precio";
@@ -847,6 +942,10 @@ function initMarketplace() {
     catSelect.value = item.category || 'otro';
     catSelect.dispatchEvent(new Event('change'));
 
+    if (item.category === 'bp_arma' || item.category === 'bp_montura') {
+      configurarSubcategoriasBp(item.category);
+    }
+
     if (dinoInput) dinoInput.value = item.dino_name || '';
     if (sellPriceInput) sellPriceInput.value = item.selling_price;
     activeFloorPrice = item.min_price || 0;
@@ -900,6 +999,13 @@ function initMarketplace() {
         let tipo = 'Fabricado';
         for (const r of mekTypeRadios) if (r.checked && r.value === 'bp') tipo = 'BP';
         dinoName = `MEK Lvl ${mekLvlInput.value} (${tipo})`;
+      } else if (cat === 'bp_arma' || cat === 'bp_montura') {
+        const subcatKey = bpSubcatSelect.value;
+        const catData = BP_CATEGORIES[subcatKey];
+        const itemNom = bpItemInput.value.trim() || 'Ítem';
+        const statVal = bpStatInput.value || 0;
+        dinoName = `${itemNom} [${catData.statLabel}: ${statVal}]`;
+        statsSummary.push(catData.label);
       } else {
         dinoName = dinoInput ? dinoInput.value.trim() : 'Objeto / Criatura';
       }
