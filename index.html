@@ -9,7 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css" />
   <script defer src="/_vercel/insights/script.js"></script>
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- SheetJS para soporte nativo .xlsx de Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
   <div class="glow-bg top-left"></div>
@@ -254,9 +257,14 @@
           <h2 class="market-title">MERCADO COMUNITARIO</h2>
           <p class="market-subtitle">Compra y venta directa entre sobrevivientes · Precios piso auditados</p>
         </div>
-        <button id="btn-open-publish" class="btn-publish-action">
-          + Publicar Ítem / Criatura
-        </button>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button id="btn-open-bulk" class="btn-copy-discord" style="padding: 10px 16px; border-color: var(--neon-cyan); color: #fff; font-size: 0.95rem;">
+            📊 Carga Masiva (Excel)
+          </button>
+          <button id="btn-open-publish" class="btn-publish-action">
+            + Publicar Ítem / Criatura
+          </button>
+        </div>
       </div>
 
       <!-- Filtros -->
@@ -287,6 +295,15 @@
       <div class="modal-head">
         <h3 class="side-card-title">PUBLICAR EN EL MERCADO</h3>
         <button id="btn-close-modal" class="modal-close">&times;</button>
+      </div>
+
+      <!-- Rellenado Rápido (Texto / Ark Smart Breeding) -->
+      <div style="background: rgba(0, 229, 255, 0.05); border: 1px dashed rgba(0, 229, 255, 0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 16px;">
+        <span style="font-size: 0.78rem; font-weight: 700; color: var(--neon-cyan); display: block; margin-bottom: 6px;">⚡ RELLENADO RÁPIDO (TEXTO O EXPORT ASB)</span>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="quick-parse-input" class="custom-search-input" placeholder="Ej: Rex mutado vida 54 daño 60 precio 140000 o JSON de ASB" style="padding: 8px 12px; font-size: 0.85rem;">
+          <button type="button" id="btn-apply-quick-parse" class="btn-copy-discord" style="padding: 8px 14px;">Autocompletar</button>
+        </div>
       </div>
 
       <form id="form-publish-listing">
@@ -409,6 +426,41 @@
           Confirmar y Publicar
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE CARGA MASIVA EXCEL (.XLSX) -->
+  <div id="modal-bulk" class="market-modal-overlay hidden">
+    <div class="card-calculator modal-card modal-large" style="max-width: 650px;">
+      <div class="modal-head">
+        <h3 class="side-card-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>📊</span> IMPORTAR / EXPORTAR CATÁLOGO (EXCEL)
+        </h3>
+        <button id="btn-close-bulk" class="modal-close">&times;</button>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px;">
+        Carga múltiples criaturas, armas o planos al instante subiendo una plantilla de Excel (.xlsx). El sistema auditará automáticamente que cada precio cumpla con la normativa de precios mínimos.
+      </p>
+
+      <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+        <span style="font-size: 0.8rem; font-weight: 700; color: #fff; display: block; margin-bottom: 6px;">PASO 1: Descargar Plantilla Oficial</span>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">Descarga la plantilla con ejemplos listos para abrir y editar en Excel.</p>
+        <button id="btn-download-template" class="btn-copy-discord" style="padding: 8px 16px; background: rgba(0, 229, 255, 0.15); border-color: var(--neon-cyan); color: #fff;">
+          📥 Descargar Plantilla (.xlsx)
+        </button>
+      </div>
+
+      <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+        <span style="font-size: 0.8rem; font-weight: 700; color: #fff; display: block; margin-bottom: 6px;">PASO 2: Subir tu archivo Excel (.xlsx)</span>
+        <input type="file" id="bulk-excel-file" accept=".xlsx, .xls" class="custom-search-input" style="padding: 8px;">
+      </div>
+
+      <div id="bulk-preview-status" style="font-size: 0.85rem; margin-bottom: 14px; min-height: 20px;"></div>
+
+      <button id="btn-process-bulk" class="btn-discord" style="width: 100%; justify-content: center;" disabled>
+        Procesar y Publicar Lote
+      </button>
     </div>
   </div>
 
