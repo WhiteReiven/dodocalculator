@@ -1,1 +1,1080 @@
-const _0x2fa667=_0x27c6;(function(_0x1882a6,_0x1a6064){const _0x250cd6=_0x27c6,_0x37e98d=_0x1882a6();while(!![]){try{const _0x448851=-parseInt(_0x250cd6(0x1d3))/0x1+parseInt(_0x250cd6(0x1fe))/0x2+-parseInt(_0x250cd6(0x15b))/0x3+-parseInt(_0x250cd6(0x204))/0x4*(parseInt(_0x250cd6(0x1e2))/0x5)+parseInt(_0x250cd6(0x209))/0x6+-parseInt(_0x250cd6(0x18e))/0x7+parseInt(_0x250cd6(0x22e))/0x8;if(_0x448851===_0x1a6064)break;else _0x37e98d['push'](_0x37e98d['shift']());}catch(_0xcb7dff){_0x37e98d['push'](_0x37e98d['shift']());}}}(_0x58f2,0xa8fcf));import{BASE_TIER_RATES,BASE_DINOS,MUTATED_DINOS,RECURSOS_DATA,BP_CATEGORIES}from'./data.js';const tabs={'mutated':{'btn':document[_0x2fa667(0x193)]('tab-mutated'),'sec':document[_0x2fa667(0x193)](_0x2fa667(0x25f))},'base':{'btn':document['getElementById'](_0x2fa667(0x178)),'sec':document['getElementById'](_0x2fa667(0x176))},'recursos':{'btn':document[_0x2fa667(0x193)]('tab-recursos'),'sec':document[_0x2fa667(0x193)](_0x2fa667(0x16d))},'bp':{'btn':document['getElementById'](_0x2fa667(0x1f9)),'sec':document['getElementById'](_0x2fa667(0x1fc))},'market':{'btn':document[_0x2fa667(0x193)](_0x2fa667(0x26d)),'sec':document['getElementById'](_0x2fa667(0x1ce))}};Object[_0x2fa667(0x172)](tabs)[_0x2fa667(0x1d2)](_0x2e7724=>{const _0x11dc9e=_0x2fa667;tabs[_0x2e7724][_0x11dc9e(0x18d)]&&tabs[_0x2e7724]['sec']&&tabs[_0x2e7724]['btn'][_0x11dc9e(0x235)](_0x11dc9e(0x1d0),()=>{const _0x5b2f87=_0x11dc9e;Object[_0x5b2f87(0x172)](tabs)[_0x5b2f87(0x1d2)](_0x5c1502=>{const _0x882625=_0x5b2f87;if(tabs[_0x5c1502][_0x882625(0x18d)])tabs[_0x5c1502][_0x882625(0x18d)]['classList']['remove'](_0x882625(0x168));if(tabs[_0x5c1502][_0x882625(0x1f4)])tabs[_0x5c1502][_0x882625(0x1f4)][_0x882625(0x1b8)][_0x882625(0x198)](_0x882625(0x1f7));}),tabs[_0x2e7724]['btn']['classList']['add'](_0x5b2f87(0x168)),tabs[_0x2e7724]['sec'][_0x5b2f87(0x1b8)][_0x5b2f87(0x257)](_0x5b2f87(0x1f7));});});function setupAutocomplete(_0x10fd3d,_0x528b2d,_0xc091bf,_0x5181a5){const _0x1720c3=_0x2fa667;function _0x29283a(_0x577bbd=''){const _0x1c2443=_0x27c6;_0x528b2d[_0x1c2443(0x1d9)]='';const _0x90e9bf=_0x577bbd[_0x1c2443(0x25d)]()[_0x1c2443(0x253)](),_0xc9c7dd=_0xc091bf['filter'](_0x533038=>_0x533038[_0x1c2443(0x25d)]()[_0x1c2443(0x255)](_0x90e9bf));if(_0xc9c7dd[_0x1c2443(0x19a)]===0x0){const _0x2e4414=document['createElement']('li');_0x2e4414['className']=_0x1c2443(0x272),_0x2e4414['textContent']=_0x1c2443(0x164),_0x528b2d['appendChild'](_0x2e4414),_0x528b2d[_0x1c2443(0x1b8)]['remove'](_0x1c2443(0x1f7));return;}_0xc9c7dd[_0x1c2443(0x1d2)](_0x593a21=>{const _0x53ae01=_0x1c2443,_0x42e45f=document['createElement']('li');_0x42e45f[_0x53ae01(0x1e5)]=_0x53ae01(0x1c9),_0x42e45f[_0x53ae01(0x1c2)]=_0x593a21,_0x42e45f[_0x53ae01(0x235)]('mousedown',_0x490759=>{const _0x2878e5=_0x53ae01;_0x490759[_0x2878e5(0x1b5)](),_0x10fd3d[_0x2878e5(0x217)]=_0x593a21,_0x528b2d[_0x2878e5(0x1b8)][_0x2878e5(0x198)](_0x2878e5(0x1f7)),_0x5181a5(_0x593a21);}),_0x528b2d[_0x53ae01(0x17e)](_0x42e45f);}),_0x528b2d[_0x1c2443(0x1b8)][_0x1c2443(0x257)](_0x1c2443(0x1f7));}_0x10fd3d[_0x1720c3(0x235)](_0x1720c3(0x211),()=>_0x29283a(_0x10fd3d[_0x1720c3(0x217)])),_0x10fd3d['addEventListener']('focus',()=>_0x29283a(_0x10fd3d['value'])),_0x10fd3d['addEventListener'](_0x1720c3(0x1ad),()=>setTimeout(()=>_0x528b2d[_0x1720c3(0x1b8)][_0x1720c3(0x198)](_0x1720c3(0x1f7)),0x96));}const STATS_MUTADOS=[{'key':_0x2fa667(0x1df),'label':_0x2fa667(0x241),'type':_0x2fa667(0x240)},{'key':'dano','label':_0x2fa667(0x1c5),'type':_0x2fa667(0x240)},{'key':'peso','label':_0x2fa667(0x26e),'type':_0x2fa667(0x191)},{'key':_0x2fa667(0x210),'label':_0x2fa667(0x1a3),'type':_0x2fa667(0x191)},{'key':_0x2fa667(0x232),'label':_0x2fa667(0x22f),'type':_0x2fa667(0x191)},{'key':_0x2fa667(0x1aa),'label':'OXIGENO','type':_0x2fa667(0x191)},{'key':_0x2fa667(0x1a7),'label':_0x2fa667(0x23c),'type':_0x2fa667(0x191)}],inputMutated=document[_0x2fa667(0x193)](_0x2fa667(0x230)),dropdownMutated=document[_0x2fa667(0x193)](_0x2fa667(0x1ef)),mutatedStatsList=document[_0x2fa667(0x193)](_0x2fa667(0x225)),mutatedBasePriceEl=document['getElementById'](_0x2fa667(0x171)),priceUncasteredEl=document[_0x2fa667(0x193)](_0x2fa667(0x271)),priceCasteredEl=document[_0x2fa667(0x193)](_0x2fa667(0x275));let currentMutated=Object['keys'](MUTATED_DINOS)[0x0]||'';function initMutated(){const _0x468bfa=_0x2fa667,_0x16a342=Object['keys'](MUTATED_DINOS)[_0x468bfa(0x201)]();inputMutated[_0x468bfa(0x217)]=currentMutated,setupAutocomplete(inputMutated,dropdownMutated,_0x16a342,_0x2c094f=>{currentMutated=_0x2c094f,calculateMutated();}),STATS_MUTADOS[_0x468bfa(0x1d2)](_0x486cef=>{const _0x346a76=_0x468bfa,_0x365bea=document['createElement'](_0x346a76(0x1d8));_0x365bea[_0x346a76(0x1e5)]=_0x346a76(0x226),_0x365bea['innerHTML']='\x0a\x20\x20\x20\x20\x20\x20<input\x20type=\x22checkbox\x22\x20id=\x22chk-mut-'+_0x486cef['key']+_0x346a76(0x16b)+_0x486cef['key']+'\x22>'+_0x486cef[_0x346a76(0x179)]+'</label>\x0a\x20\x20\x20\x20\x20\x20<input\x20type=\x22number\x22\x20id=\x22val-mut-'+_0x486cef['key']+_0x346a76(0x258)+_0x486cef[_0x346a76(0x1f5)]+'\x22>'+_0x486cef[_0x346a76(0x1f5)][_0x346a76(0x214)]()+'</span>\x0a\x20\x20\x20\x20',mutatedStatsList['appendChild'](_0x365bea),_0x365bea[_0x346a76(0x170)](_0x346a76(0x1ea))[_0x346a76(0x235)]('change',calculateMutated),_0x365bea[_0x346a76(0x170)](_0x346a76(0x21a))[_0x346a76(0x235)]('input',calculateMutated);}),calculateMutated();}function calculateMutated(){const _0x100f77=_0x2fa667,_0x1fe476=MUTATED_DINOS[currentMutated]||0x0;mutatedBasePriceEl[_0x100f77(0x1c2)]=_0x1fe476[_0x100f77(0x16e)]()+_0x100f77(0x160);const _0x3a9e3e=_0x1fe476/0x4*1.5/0xfe,_0x3b0cc9=_0x1fe476/0x4/0x2/0xfe,_0x4e13f1=_0x1fe476/0x4*1.25/0xfe,_0x3b4e6=document[_0x100f77(0x193)](_0x100f77(0x25c))[_0x100f77(0x1fa)],_0x29bc9e=document[_0x100f77(0x193)]('chk-mut-dano')[_0x100f77(0x1fa)],_0xe47afc=_0x3b4e6||_0x29bc9e;let _0x11f12a=0x0;if(_0x3b4e6)_0x11f12a+=Number(document['getElementById']('val-mut-vida')[_0x100f77(0x217)]||0x0)*_0x3a9e3e;if(_0x29bc9e)_0x11f12a+=Number(document['getElementById']('val-mut-dano')[_0x100f77(0x217)]||0x0)*_0x3a9e3e;const _0xb2b035=[_0x100f77(0x222),_0x100f77(0x210),_0x100f77(0x232),'oxigeno',_0x100f77(0x1a7)];let _0x47ef01=0x0;_0xb2b035[_0x100f77(0x1d2)](_0x5a0e20=>{const _0x3b2403=_0x100f77;if(document[_0x3b2403(0x193)](_0x3b2403(0x245)+_0x5a0e20)[_0x3b2403(0x1fa)]){const _0x4617f8=Number(document[_0x3b2403(0x193)](_0x3b2403(0x26c)+_0x5a0e20)[_0x3b2403(0x217)]||0x0);if(_0xe47afc)_0x11f12a+=_0x4617f8*_0x3b0cc9;else _0x11f12a+=_0x47ef01===0x0?_0x4617f8*_0x4e13f1:_0x4617f8*_0x3b0cc9;_0x47ef01++;}});const _0x1fcc0d=Math[_0x100f77(0x1ac)](_0x11f12a);priceUncasteredEl['textContent']=_0x1fcc0d['toLocaleString']()+_0x100f77(0x160),priceCasteredEl[_0x100f77(0x1c2)]=Math['round'](_0x1fcc0d*0.75)[_0x100f77(0x16e)]()+_0x100f77(0x160);}function _0x58f2(){const _0x5dfc82=['mek-price-bp','\x20|\x20','2034076gVwvqp','mutated','pub-chk-mut-dano','join','Oficial:\x20Tier\x20','6068166vPyYcj','Piso\x20oficial\x20Tier\x20','reset','allow_discord','group-stats-mutated','\x20Lvl)','setAttribute','energia','input','custom_claims','onAuthStateChange','toUpperCase','items','identity-type','value','dano','<a\x20href=\x22','.stat-input','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20','submit','BP_ARMA_755','btn-close-modal','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22checkbox\x22\x20id=\x22pub-chk-mut-','user','avatar_url','peso','error','\x0a\x20\x20\x20\x20\x20\x20<label\x20for=\x22val-base-','mutated-stats-list','stat-row','none','search-recurso','https://cdn.discordapp.com/embed/avatars/0.png','removeAttribute','Dino\x20sin\x20tasa\x20base\x20fija','market-filter-cat','Debes\x20iniciar\x20sesión\x20con\x20Discord\x20para\x20publicar\x20en\x20el\x20mercado.','10064520Hyuvwc','COMIDA','search-mutated-dino','\x22\x20target=\x22_blank\x22\x20rel=\x22noopener\x20noreferrer\x22\x20class=\x22btn-contact-seller\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20width=\x2218\x22\x20height=\x2218\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20fill=\x22currentColor\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M20.317\x204.37a19.791\x2019.791\x200\x200\x200-4.885-1.515.074.074\x200\x200\x200-.079.037c-.21.375-.444.864-.608\x201.25a18.27\x2018.27\x200\x200\x200-5.487\x200\x2012.64\x2012.64\x200\x200\x200-.617-1.25.077.077\x200\x200\x200-.079-.037A19.736\x2019.736\x200\x200\x200\x203.677\x204.37a.07.07\x200\x200\x200-.032.027C.533\x209.046-.32\x2013.58.099\x2018.057a.082.082\x200\x200\x200\x20.031.057\x2019.9\x2019.9\x200\x200\x200\x205.993\x203.03.078.078\x200\x200\x200\x20.084-.028\x2014.09\x2014.09\x200\x200\x200\x201.226-1.994.076.076\x200\x200\x200-.041-.106\x2013.107\x2013.107\x200\x200\x201-1.872-.892.077.077\x200\x200\x201-.008-.128\x2010.2\x2010.2\x200\x200\x200\x20.372-.292.074.074\x200\x200\x201\x20.077-.01c3.929\x201.793\x208.18\x201.793\x2012.061\x200a.074.074\x200\x200\x201\x20.078.01c.12.098.246.198.373.292a.077.077\x200\x200\x201-.006.127\x2012.299\x2012.299\x200\x200\x201-1.873.894.077.077\x200\x200\x200-.041.107c.36.698.772\x201.362\x201.225\x201.993a.076.076\x200\x200\x200\x20.084.028\x2019.839\x2019.839\x200\x200\x200\x206.002-3.03.077.077\x200\x200\x200\x20.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061\x200\x200\x200-.031-.028zM8.02\x2015.33c-1.183\x200-2.157-1.085-2.157-2.419\x200-1.333.956-2.419\x202.157-2.419\x201.21\x200\x202.176\x201.096\x202.157\x202.42\x200\x201.333-.956\x202.418-2.157\x202.418zm7.975\x200c-1.183\x200-2.157-1.085-2.157-2.419\x200-1.333.955-2.419\x202.157-2.419\x201.21\x200\x202.176\x201.096\x202.157\x202.42\x200\x201.333-.946\x202.418-2.157\x202.418z\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Enviar\x20Mensaje\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>','comida','display','toString','addEventListener','createElement','\x20·\x20','SIERRA','ingame','pub-val-mut-vida','slice','VELOCIDAD','pub-val-mut-dano','getElementsByName','user-profile-badge','principal','VIDA','wd_ingame_name','picture','\x20=\x20','chk-mut-','stat-card-input','\x22\x20alt=\x22Avatar\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22seller-name\x22>','Piso\x20oficial\x20(Sin\x20castrar)','required','auth','<button\x20class=\x22btn-delete-item\x22\x20data-id=\x22','pub-base-lvl-count','Sobreviviente','mek','mek-price-fab','search-base-dino','pub-base-stats-grid','global_name','trim','PERLA\x20NEGRA','includes','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h4\x20class=\x22market-card-dino\x22\x20style=\x22margin-top:\x2010px;\x22>','remove','\x22\x20class=\x22stat-input\x22\x20value=\x220\x22\x20min=\x220\x22>\x0a\x20\x20\x20\x20\x20\x20<span\x20class=\x22stat-badge\x20','mek-level-input','Piso\x20oficial\x20MEK\x20BP\x20(Lvl\x20','Criatura\x20personalizada\x20/\x20No\x20listada','chk-mut-vida','toLowerCase','other','section-mutated','https://discord.com/users/','\x20DDC.','user_id','btn-logout','input-bp-stat','change','name','market-card','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22market-badge-cat\x22\x20style=\x22margin-left:auto;\x22>','dropdown-base-dino','fab','base-stats-grid','val-mut-','tab-marketplace','PESO','ddc','<div\x20class=\x22btn-contact-seller\x22\x20style=\x22background:\x20rgba(255,255,255,0.05);\x20color:\x20var(--text-muted);\x20cursor:\x20default;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Contacto\x20solo\x20In-Game\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','price-uncastered','autocomplete-empty','pub-val-mut-','pub-selling-price','price-castered','pub-price-error','1490802wyVXLB','map','discord_username','Calculado\x20según\x20stats\x20oficiales','signInWithOAuth','\x20DodoCoins','input-ingame-name','all','pub-mek-lvl','Sin\x20coincidencias','recurso-rate-info','base-price-total','Discord\x20User','active','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22market-card-seller\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20class=\x22seller-avatar\x22\x20src=\x22','removeItem','\x22\x20class=\x22stat-checkbox\x22>\x0a\x20\x20\x20\x20\x20\x20<label\x20for=\x22chk-mut-','true','section-recursos','toLocaleString','<div\x20class=\x22market-empty-state\x22>No\x20hay\x20publicaciones\x20activas\x20en\x20este\x20momento.</div>','querySelector','mutated-base-price','keys','Fabricado','pub-chk-mut-','pub-val-base-','section-base','Piso\x20oficial\x20MEK\x20Fab\x20(Lvl\x20','tab-base','label','---','style','delete','recurso-price-total','appendChild','btn-login-discord','option','Error:\x20El\x20precio\x20no\x20puede\x20ser\x20inferior\x20a\x20','toggle','category','select','mek-helper-text','user_metadata','filter','btn-change-identity','Piso\x20oficial\x20(Castrado)','discord_avatar','group-stats-base','modal-publish','btn','368144cZhXbx','\x22\x20class=\x22stat-input\x22\x20value=\x220\x22\x20min=\x220\x22>\x0a\x20\x20\x20\x20\x20\x20','market-search-input','secundaria','getSession','getElementById','select-bp-category','Objeto\x20/\x20Criatura','message','btn-open-publish','add','getItem','length','dropdown-recurso','¿Deseas\x20retirar\x20esta\x20publicación\x20del\x20mercado?','gacha','search-bp-item','location','dino_name','pub-calculated-floor','insert','ENERGIA','group-pub-dino','\x22\x20class=\x22stat-checkbox\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<label\x20for=\x22pub-chk-mut-','ranges','velocidad','Por\x20favor,\x20ingresa\x20tu\x20nombre\x20In-Game\x20o\x20selecciona\x20usar\x20tu\x20usuario\x20de\x20Discord.','src','oxigeno','\x20DDC','round','blur','form-publish-listing','Tier\x20','</label>\x0a\x20\x20\x20\x20\x20\x20<input\x20type=\x22number\x22\x20id=\x22val-base-','base','from','mousedown','\x22\x20class=\x22stat-input\x22\x20value=\x220\x22\x20min=\x220\x22>\x0a\x20\x20\x20\x20','preventDefault','pub-floor-legend','eng_wgt','classList','provider_id','selling_price','setItem','dropdown-bp-item','key','block','details','group-pub-gacha','Error\x20al\x20publicar:\x20','textContent','cant','full_name','DAÑO','createClient','pub-gacha-res','min','autocomplete-item','modal-identity','pub-dino-name','base-total-lvl','max','section-marketplace','.btn-delete-item','click','Indicar\x20','forEach','905742RndgZM','identity-discord-preview','created_at','mek-type','status','div','innerHTML','supabase','Dino\x20Base','pub-category','bp-price-total','user-discord-name','vida','sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx','base-dino-tier','10CRxNtr','</label>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22number\x22\x20id=\x22pub-val-mut-','mults','className','select-gacha-recurso','market-listings-grid','</label>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22number\x22\x20id=\x22pub-val-base-','user-discord-avatar','.stat-checkbox','hp_dmg','\x20DDC</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22margin-top:\x2010px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','label-bp-stat','openIdentityModal','dropdown-mutated-dino','Gacha\x20(','Precio\x20Base:\x20','push','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<label\x20for=\x22pub-val-base-','sec','type','order','hidden','wd_identity_prompted','tab-bp','checked','maxStat','section-bp','<div\x20class=\x22market-empty-state\x22>Error\x20al\x20cargar\x20publicaciones.</div>','1790110KWAfcS','OXIGENO','market_listings','sort'];_0x58f2=function(){return _0x5dfc82;};return _0x58f2();}const STATS_BASE=[{'key':_0x2fa667(0x1df),'label':_0x2fa667(0x241),'type':_0x2fa667(0x1eb)},{'key':_0x2fa667(0x218),'label':_0x2fa667(0x1c5),'type':_0x2fa667(0x1eb)},{'key':_0x2fa667(0x210),'label':_0x2fa667(0x1a3),'type':_0x2fa667(0x1b7)},{'key':_0x2fa667(0x222),'label':'PESO','type':_0x2fa667(0x1b7)},{'key':_0x2fa667(0x232),'label':_0x2fa667(0x22f),'type':'other'},{'key':_0x2fa667(0x1aa),'label':_0x2fa667(0x1ff),'type':'other'},{'key':_0x2fa667(0x1a7),'label':_0x2fa667(0x23c),'type':'other'}],inputBase=document[_0x2fa667(0x193)](_0x2fa667(0x250)),dropdownBase=document['getElementById'](_0x2fa667(0x269)),baseStatsGrid=document['getElementById'](_0x2fa667(0x26b)),baseDinoTierEl=document['getElementById'](_0x2fa667(0x1e1)),baseTotalLvlEl=document['getElementById'](_0x2fa667(0x1cc)),basePriceTotalEl=document['getElementById'](_0x2fa667(0x166));let currentBase=Object[_0x2fa667(0x172)](BASE_DINOS)[0x0]||'';function _0x27c6(_0x46fe64,_0x4b28c0){_0x46fe64=_0x46fe64-0x15b;const _0x58f288=_0x58f2();let _0x27c622=_0x58f288[_0x46fe64];return _0x27c622;}function initBase(){const _0x33918a=_0x2fa667,_0x4c5e3e=Object[_0x33918a(0x172)](BASE_DINOS)['sort']();inputBase['value']=currentBase,setupAutocomplete(inputBase,dropdownBase,_0x4c5e3e,_0x5dfd8b=>{currentBase=_0x5dfd8b,calculateBase();}),STATS_BASE[_0x33918a(0x1d2)](_0x15011a=>{const _0x18237b=_0x33918a,_0x59f4c9=document[_0x18237b(0x236)](_0x18237b(0x1d8));_0x59f4c9[_0x18237b(0x1e5)]=_0x18237b(0x246),_0x59f4c9['innerHTML']=_0x18237b(0x224)+_0x15011a[_0x18237b(0x1bd)]+'\x22>'+_0x15011a[_0x18237b(0x179)]+_0x18237b(0x1b0)+_0x15011a[_0x18237b(0x1bd)]+_0x18237b(0x1b4),baseStatsGrid[_0x18237b(0x17e)](_0x59f4c9),_0x59f4c9[_0x18237b(0x170)](_0x18237b(0x211))[_0x18237b(0x235)](_0x18237b(0x211),calculateBase);}),calculateBase();}function calculateBase(){const _0x51163e=_0x2fa667,_0x59482b=BASE_DINOS[currentBase]??0x4;baseDinoTierEl[_0x51163e(0x1c2)]=_0x51163e(0x1af)+_0x59482b;const _0x139f51=BASE_TIER_RATES[_0x59482b]||BASE_TIER_RATES[0x4];let _0x56dddc=0x0,_0x5a110d=0x1;STATS_BASE[_0x51163e(0x1d2)](_0x1a3f5b=>{const _0x1eb4a6=_0x51163e,_0xf6a593=Number(document[_0x1eb4a6(0x193)]('val-base-'+_0x1a3f5b[_0x1eb4a6(0x1bd)])[_0x1eb4a6(0x217)]||0x0);_0x5a110d+=_0xf6a593;if(_0x1a3f5b[_0x1eb4a6(0x1f5)]===_0x1eb4a6(0x1eb))_0x56dddc+=_0xf6a593*_0x139f51[_0x1eb4a6(0x1eb)];else{if(_0x1a3f5b[_0x1eb4a6(0x1f5)]===_0x1eb4a6(0x1b7))_0x56dddc+=_0xf6a593*_0x139f51['eng_wgt'];else _0x56dddc+=_0xf6a593*_0x139f51[_0x1eb4a6(0x25e)];}}),baseTotalLvlEl[_0x51163e(0x1c2)]=_0x5a110d[_0x51163e(0x234)](),basePriceTotalEl[_0x51163e(0x1c2)]=Math['round'](_0x56dddc)['toLocaleString']()+_0x51163e(0x160);}const inputRecurso=document[_0x2fa667(0x193)](_0x2fa667(0x228)),dropdownRecurso=document['getElementById'](_0x2fa667(0x19b)),inputRecursoCant=document[_0x2fa667(0x193)]('input-recurso-cant'),recursoRateEl=document[_0x2fa667(0x193)](_0x2fa667(0x165)),recursoPriceTotalEl=document[_0x2fa667(0x193)](_0x2fa667(0x17d));let currentRecurso=_0x2fa667(0x254);function initRecursos(){const _0x564a34=_0x2fa667,_0xa4a775=Object[_0x564a34(0x172)](RECURSOS_DATA)[_0x564a34(0x201)]();inputRecurso[_0x564a34(0x217)]=currentRecurso,setupAutocomplete(inputRecurso,dropdownRecurso,_0xa4a775,_0x24ec16=>{currentRecurso=_0x24ec16,calculateRecursos();}),inputRecursoCant['addEventListener'](_0x564a34(0x211),calculateRecursos),calculateRecursos();}function calculateRecursos(){const _0x170aa7=_0x2fa667,_0x37918d=RECURSOS_DATA[currentRecurso]||{'ddc':0x1,'cant':0x1},_0x4eb2a3=Math[_0x170aa7(0x1cd)](0x0,Number(inputRecursoCant[_0x170aa7(0x217)]||0x0));recursoRateEl[_0x170aa7(0x1c2)]=_0x37918d['cant']+'\x20'+currentRecurso+_0x170aa7(0x244)+_0x37918d[_0x170aa7(0x26f)]+'\x20DDC';const _0x213150=Math[_0x170aa7(0x1ac)](_0x4eb2a3*_0x37918d[_0x170aa7(0x26f)]/_0x37918d[_0x170aa7(0x1c3)]);recursoPriceTotalEl['textContent']=_0x213150[_0x170aa7(0x16e)]()+_0x170aa7(0x160);}const selectBpCategory=document[_0x2fa667(0x193)](_0x2fa667(0x194)),inputBpItem=document['getElementById'](_0x2fa667(0x19e)),dropdownBpItem=document['getElementById'](_0x2fa667(0x1bc)),bpF3PriceEl=document[_0x2fa667(0x193)]('bp-f3-price'),labelBpStat=document['getElementById'](_0x2fa667(0x1ed)),inputBpStat=document[_0x2fa667(0x193)](_0x2fa667(0x264)),bpPriceTotalEl=document[_0x2fa667(0x193)](_0x2fa667(0x1dd));let currentBpCatKey=_0x2fa667(0x21d),currentBpItem=_0x2fa667(0x238);function initBP(){const _0x222c9b=_0x2fa667;selectBpCategory['innerHTML']='',Object['keys'](BP_CATEGORIES)[_0x222c9b(0x1d2)](_0x8eaac1=>{const _0x4b2bc0=_0x222c9b,_0x192a9c=document[_0x4b2bc0(0x236)](_0x4b2bc0(0x180));_0x192a9c[_0x4b2bc0(0x217)]=_0x8eaac1,_0x192a9c[_0x4b2bc0(0x1c2)]=BP_CATEGORIES[_0x8eaac1][_0x4b2bc0(0x179)],selectBpCategory[_0x4b2bc0(0x17e)](_0x192a9c);}),selectBpCategory[_0x222c9b(0x235)](_0x222c9b(0x265),()=>{const _0x2abb4c=_0x222c9b;currentBpCatKey=selectBpCategory[_0x2abb4c(0x217)];const _0x1fd470=BP_CATEGORIES[currentBpCatKey];labelBpStat[_0x2abb4c(0x1c2)]=_0x2abb4c(0x1d1)+_0x1fd470['statLabel']+'\x20(Máx\x20'+_0x1fd470[_0x2abb4c(0x1fb)]+')';const _0x458c07=Object[_0x2abb4c(0x172)](_0x1fd470[_0x2abb4c(0x215)])['sort']();currentBpItem=_0x458c07[0x0]||'',inputBpItem[_0x2abb4c(0x217)]=currentBpItem,inputBpStat[_0x2abb4c(0x217)]=_0x1fd470[_0x2abb4c(0x1a6)][0x0]||0x64,updateBpAutocomplete(),calculateBP();}),inputBpStat['addEventListener'](_0x222c9b(0x211),calculateBP),updateBpAutocomplete(),calculateBP();}function updateBpAutocomplete(){const _0x1392a3=_0x2fa667,_0x5ce5a0=BP_CATEGORIES[currentBpCatKey],_0x4d9465=Object[_0x1392a3(0x172)](_0x5ce5a0[_0x1392a3(0x215)])[_0x1392a3(0x201)]();inputBpItem[_0x1392a3(0x217)]=currentBpItem,setupAutocomplete(inputBpItem,dropdownBpItem,_0x4d9465,_0x5acbfa=>{currentBpItem=_0x5acbfa,calculateBP();});}function calculateBP(){const _0x2bf246=_0x2fa667,_0x5abb08=BP_CATEGORIES[currentBpCatKey],_0x171b5d=_0x5abb08[_0x2bf246(0x215)][currentBpItem]||0x0;bpF3PriceEl[_0x2bf246(0x1c2)]=_0x171b5d[_0x2bf246(0x16e)]()+_0x2bf246(0x160);const _0x5de1fc=Math[_0x2bf246(0x1cd)](0x0,Number(inputBpStat['value']||0x0)),_0x2da5b4=_0x5abb08[_0x2bf246(0x1a6)],_0x1628c3=_0x5abb08[_0x2bf246(0x1e4)],_0x1a11b4=_0x1628c3[_0x2bf246(0x15c)](_0x5b060d=>_0x171b5d*_0x5b060d);let _0x4135e5=_0x2da5b4[0x0];if(_0x5de1fc>_0x2da5b4[0x0]){const _0x54d3f5=_0x2da5b4[_0x2bf246(0x187)](_0x318376=>_0x318376<=_0x5de1fc);_0x4135e5=_0x54d3f5[_0x54d3f5['length']-0x1];}const _0x56675a=_0x2da5b4['indexOf'](_0x4135e5),_0x2bf21c=Math[_0x2bf246(0x1cd)](0x0,_0x5de1fc-_0x4135e5),_0x4b2591=_0x1a11b4[_0x56675a];let _0x46636c=_0x4b2591;if(_0x56675a<_0x2da5b4[_0x2bf246(0x19a)]-0x1){const _0x44da2e=_0x2da5b4[_0x56675a+0x1],_0x487880=_0x1a11b4[_0x56675a+0x1],_0x1af497=(_0x487880-_0x4b2591)/(_0x44da2e-_0x4135e5);_0x46636c=_0x4b2591+_0x2bf21c*_0x1af497;}bpPriceTotalEl[_0x2bf246(0x1c2)]=Math[_0x2bf246(0x1ac)](_0x46636c)[_0x2bf246(0x16e)]()+_0x2bf246(0x160);}const GACHA_PRECIOS={'ELEMENTO':0x3a98,'POLIMERO':0x1f40,'PERLA\x20NEGRA':0x1f40,'METAL':0x1770,'CRISTAL':0x1770,'OBSIDIANA':0x1770,'VARIOS':0xfa0};function initEspecialesBase(){const _0x52cfdd=_0x2fa667,_0x5c1478=document[_0x52cfdd(0x193)](_0x52cfdd(0x259)),_0x255bba=document[_0x52cfdd(0x193)](_0x52cfdd(0x185)),_0x7f4f2b=document[_0x52cfdd(0x193)](_0x52cfdd(0x202)),_0x10c529=document[_0x52cfdd(0x193)](_0x52cfdd(0x24f)),_0x36bd16=document['getElementById'](_0x52cfdd(0x1e6)),_0x3cc284=document[_0x52cfdd(0x193)]('gacha-price-total');function _0x354d37(){const _0x9777f=_0x52cfdd;if(!_0x5c1478)return;const _0x1b70ce=Number(_0x5c1478[_0x9777f(0x217)]);if(isNaN(_0x1b70ce)||_0x1b70ce<0x96||_0x1b70ce>0x21c){_0x255bba&&(_0x255bba[_0x9777f(0x1c2)]='¡Error!\x20Nivel\x20permitido\x20entre\x20150\x20y\x20540',_0x255bba['classList'][_0x9777f(0x198)](_0x9777f(0x223)));if(_0x7f4f2b)_0x7f4f2b[_0x9777f(0x1c2)]=_0x9777f(0x17a);if(_0x10c529)_0x10c529[_0x9777f(0x1c2)]=_0x9777f(0x17a);return;}_0x255bba&&(_0x255bba[_0x9777f(0x1c2)]='Nivel\x20mínimo\x20150\x20·\x20Máximo\x20540',_0x255bba['classList']['remove'](_0x9777f(0x223)));let _0x3380b2=0x1770,_0xacbe97=0x1388;_0x1b70ce<=0xfa?_0x3380b2=0x1770+(_0x1b70ce-0x96)*0x7d:_0x3380b2=0x4844+(_0x1b70ce-0xfa)*0xe6;if(_0x1b70ce<=0xfa)_0xacbe97=0x1388+(_0x1b70ce-0x96)*0x46;else _0x1b70ce<=0x12c?_0xacbe97=0x2ee0+(_0x1b70ce-0xfa)*0x64:_0xacbe97=0x4268+(_0x1b70ce-0x12c)*137.5;if(_0x7f4f2b)_0x7f4f2b['textContent']=Math[_0x9777f(0x1ac)](_0x3380b2)[_0x9777f(0x16e)]();if(_0x10c529)_0x10c529['textContent']=Math['round'](_0xacbe97)[_0x9777f(0x16e)]();}function _0x30a03d(){const _0x53d340=_0x52cfdd;if(!_0x36bd16||!_0x3cc284)return;const _0x3545ed=_0x36bd16['value'],_0x334684=GACHA_PRECIOS[_0x3545ed]||0xfa0;_0x3cc284[_0x53d340(0x1c2)]=_0x334684[_0x53d340(0x16e)]();}if(_0x5c1478)_0x5c1478['addEventListener'](_0x52cfdd(0x211),_0x354d37);if(_0x36bd16)_0x36bd16['addEventListener'](_0x52cfdd(0x265),_0x30a03d);_0x354d37(),_0x30a03d();}const SUPABASE_URL='https://wuxsgpbynwrubemamfzb.supabase.co',SUPABASE_ANON_KEY=_0x2fa667(0x1e0),supabaseClient=window[_0x2fa667(0x1da)]?window[_0x2fa667(0x1da)][_0x2fa667(0x1c6)](SUPABASE_URL,SUPABASE_ANON_KEY):null;let currentUser=null;function getActiveDisplayName(){const _0x44dd5e=_0x2fa667,_0x52e654=localStorage['getItem'](_0x44dd5e(0x242));if(_0x52e654&&_0x52e654[_0x44dd5e(0x253)]())return _0x52e654['trim']();if(!currentUser)return _0x44dd5e(0x24d);const _0x41c74d=currentUser[_0x44dd5e(0x186)]||{};return _0x41c74d[_0x44dd5e(0x1c4)]||_0x41c74d[_0x44dd5e(0x212)]?.[_0x44dd5e(0x252)]||_0x41c74d[_0x44dd5e(0x266)]||_0x44dd5e(0x24d);}function updateHeaderBadge(){const _0x561852=_0x2fa667,_0x4303d4=document[_0x561852(0x193)](_0x561852(0x1de));_0x4303d4&&(_0x4303d4[_0x561852(0x1c2)]=getActiveDisplayName());}function initIdentityModal(){const _0xae7471=_0x2fa667,_0x1c4783=document['getElementById'](_0xae7471(0x1ca)),_0x957e3d=document[_0xae7471(0x193)](_0xae7471(0x1d4)),_0x461f6c=document[_0xae7471(0x193)]('group-ingame-input'),_0x19e036=document['getElementById'](_0xae7471(0x161)),_0x19ebdc=document[_0xae7471(0x193)]('btn-save-identity'),_0x1a25c8=document[_0xae7471(0x23e)](_0xae7471(0x216)),_0x40dcd7=document[_0xae7471(0x193)](_0xae7471(0x188));if(!_0x1c4783)return null;_0x1a25c8[_0xae7471(0x1d2)](_0x461e08=>{const _0x4b3a45=_0xae7471;_0x461e08[_0x4b3a45(0x235)](_0x4b3a45(0x265),()=>{const _0x104d84=_0x4b3a45;if(_0x461f6c)_0x461f6c[_0x104d84(0x1b8)]['toggle'](_0x104d84(0x1f7),_0x461e08[_0x104d84(0x217)]!==_0x104d84(0x239));});});_0x40dcd7&&_0x40dcd7[_0xae7471(0x235)](_0xae7471(0x1d0),()=>{_0x8b242b();});function _0x8b242b(){const _0x289916=_0xae7471;if(!currentUser)return;const _0x2168ef=currentUser[_0x289916(0x186)]||{},_0x581804=_0x2168ef['full_name']||_0x2168ef[_0x289916(0x212)]?.[_0x289916(0x252)]||_0x2168ef[_0x289916(0x266)]||_0x289916(0x167);if(_0x957e3d)_0x957e3d[_0x289916(0x1c2)]=_0x581804;const _0x1b1a6c=localStorage['getItem'](_0x289916(0x242));if(_0x1b1a6c){if(_0x1a25c8[0x1])_0x1a25c8[0x1][_0x289916(0x1fa)]=!![];if(_0x461f6c)_0x461f6c[_0x289916(0x1b8)][_0x289916(0x257)]('hidden');if(_0x19e036)_0x19e036[_0x289916(0x217)]=_0x1b1a6c;}else{if(_0x1a25c8[0x0])_0x1a25c8[0x0][_0x289916(0x1fa)]=!![];if(_0x461f6c)_0x461f6c[_0x289916(0x1b8)][_0x289916(0x198)](_0x289916(0x1f7));}_0x1c4783['classList'][_0x289916(0x257)]('hidden');}return _0x19ebdc&&_0x19ebdc[_0xae7471(0x235)](_0xae7471(0x1d0),()=>{const _0x51ebaa=_0xae7471;let _0x2b1746=![];_0x1a25c8[_0x51ebaa(0x1d2)](_0x15ff7a=>{const _0x44d7d9=_0x51ebaa;if(_0x15ff7a[_0x44d7d9(0x1fa)]&&_0x15ff7a[_0x44d7d9(0x217)]===_0x44d7d9(0x239))_0x2b1746=!![];});if(_0x2b1746){const _0x171c7b=_0x19e036[_0x51ebaa(0x217)]['trim']();if(!_0x171c7b){alert(_0x51ebaa(0x1a8));return;}localStorage[_0x51ebaa(0x1bb)](_0x51ebaa(0x242),_0x171c7b);}else localStorage[_0x51ebaa(0x16a)]('wd_ingame_name');_0x1c4783[_0x51ebaa(0x1b8)]['add']('hidden'),updateHeaderBadge();}),{'openIdentityModal':_0x8b242b};}let identityManager=null;async function initAuth(){const _0x29d284=_0x2fa667;if(!supabaseClient)return;identityManager=initIdentityModal();const _0x5eeee6=document[_0x29d284(0x193)](_0x29d284(0x17f)),_0x1127d9=document[_0x29d284(0x193)](_0x29d284(0x263)),_0x18651e=document[_0x29d284(0x193)](_0x29d284(0x23f)),_0x1bccae=document[_0x29d284(0x193)](_0x29d284(0x1e9));_0x5eeee6&&_0x5eeee6[_0x29d284(0x235)](_0x29d284(0x1d0),async()=>{const _0x32416d=_0x29d284;await supabaseClient[_0x32416d(0x24a)][_0x32416d(0x15f)]({'provider':'discord','options':{'redirectTo':window[_0x32416d(0x19f)]['origin']}});});_0x1127d9&&_0x1127d9[_0x29d284(0x235)](_0x29d284(0x1d0),async()=>{const _0x5e1cdd=_0x29d284;await supabaseClient[_0x5e1cdd(0x24a)]['signOut'](),window[_0x5e1cdd(0x19f)]['reload']();});const {data:{session:_0x322941}}=await supabaseClient[_0x29d284(0x24a)][_0x29d284(0x192)]();_0x4923a0(_0x322941?.[_0x29d284(0x220)]||null),supabaseClient['auth'][_0x29d284(0x213)]((_0x22e689,_0x223550)=>{_0x4923a0(_0x223550?.['user']||null);});function _0x4923a0(_0x5c0e66){const _0x3d439f=_0x29d284;currentUser=_0x5c0e66;if(_0x5c0e66){if(_0x5eeee6)_0x5eeee6['classList'][_0x3d439f(0x198)](_0x3d439f(0x1f7));if(_0x18651e)_0x18651e[_0x3d439f(0x1b8)][_0x3d439f(0x257)](_0x3d439f(0x1f7));const _0x3fb678=_0x5c0e66[_0x3d439f(0x186)]||{},_0x12f4d9=_0x3fb678[_0x3d439f(0x221)]||_0x3fb678['picture']||_0x3d439f(0x229);if(_0x1bccae)_0x1bccae[_0x3d439f(0x1a9)]=_0x12f4d9;updateHeaderBadge(),!localStorage[_0x3d439f(0x199)](_0x3d439f(0x1f8))&&identityManager&&(localStorage['setItem'](_0x3d439f(0x1f8),_0x3d439f(0x16c)),identityManager[_0x3d439f(0x1ee)]());}else{if(_0x5eeee6)_0x5eeee6[_0x3d439f(0x1b8)][_0x3d439f(0x257)](_0x3d439f(0x1f7));if(_0x18651e)_0x18651e[_0x3d439f(0x1b8)]['add'](_0x3d439f(0x1f7));}}}function initMarketplace(){const _0x4319df=_0x2fa667,_0x3b1dad=document[_0x4319df(0x193)](_0x4319df(0x26d)),_0x5283bf=document['getElementById'](_0x4319df(0x197)),_0xff65cd=document[_0x4319df(0x193)](_0x4319df(0x18c)),_0x42fd60=document['getElementById'](_0x4319df(0x21e)),_0x28677c=document[_0x4319df(0x193)](_0x4319df(0x1ae)),_0x32fc9f=document[_0x4319df(0x193)](_0x4319df(0x1e7)),_0x2bf33a=document['getElementById'](_0x4319df(0x190)),_0x530c22=document[_0x4319df(0x193)](_0x4319df(0x22c)),_0x3764b6=document[_0x4319df(0x193)](_0x4319df(0x1dc)),_0x2cf24e=document[_0x4319df(0x193)](_0x4319df(0x1a4)),_0x3acc48=document[_0x4319df(0x193)](_0x4319df(0x1cb)),_0x34bbc5=document[_0x4319df(0x193)]('dropdown-pub-dino'),_0x23f19f=document[_0x4319df(0x193)]('pub-tier-badge'),_0x4d621e=document[_0x4319df(0x193)](_0x4319df(0x20d)),_0x3096de=document[_0x4319df(0x193)]('pub-mutated-stats-list'),_0x5b6d08=document[_0x4319df(0x193)]('pub-mut-castrado'),_0x53de2e=document[_0x4319df(0x193)](_0x4319df(0x18b)),_0x20f00d=document['getElementById'](_0x4319df(0x251)),_0x1573a1=document[_0x4319df(0x193)](_0x4319df(0x24c)),_0x48ca01=document[_0x4319df(0x193)](_0x4319df(0x1c0)),_0x3982df=document[_0x4319df(0x193)](_0x4319df(0x1c7)),_0x3a6204=document[_0x4319df(0x193)]('group-pub-mek'),_0x2db350=document[_0x4319df(0x193)](_0x4319df(0x163)),_0x3c3bcf=document[_0x4319df(0x23e)](_0x4319df(0x1d6)),_0x5da591=document[_0x4319df(0x193)](_0x4319df(0x1a1)),_0x1ec149=document[_0x4319df(0x193)](_0x4319df(0x1b6)),_0x2de3d5=document['getElementById'](_0x4319df(0x274)),_0xbf9e7d=document['getElementById'](_0x4319df(0x276));let _0x1a133f=0x0,_0x280428=[];_0x3096de&&(_0x3096de[_0x4319df(0x1d9)]='',STATS_MUTADOS[_0x4319df(0x1d2)](_0x323c11=>{const _0x261775=_0x4319df,_0x332e39=document[_0x261775(0x236)](_0x261775(0x1d8));_0x332e39[_0x261775(0x1e5)]=_0x261775(0x226),_0x332e39['innerHTML']=_0x261775(0x21f)+_0x323c11[_0x261775(0x1bd)]+_0x261775(0x1a5)+_0x323c11[_0x261775(0x1bd)]+'\x22>'+_0x323c11[_0x261775(0x179)]+_0x261775(0x1e3)+_0x323c11[_0x261775(0x1bd)]+'\x22\x20class=\x22stat-input\x22\x20value=\x220\x22\x20min=\x220\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22stat-badge\x20'+_0x323c11[_0x261775(0x1f5)]+'\x22>'+_0x323c11[_0x261775(0x1f5)][_0x261775(0x214)]()+'</span>\x0a\x20\x20\x20\x20\x20\x20',_0x3096de[_0x261775(0x17e)](_0x332e39),_0x332e39[_0x261775(0x170)](_0x261775(0x1ea))['addEventListener'](_0x261775(0x265),_0x541345),_0x332e39[_0x261775(0x170)](_0x261775(0x21a))[_0x261775(0x235)](_0x261775(0x211),_0x541345);}));_0x20f00d&&(_0x20f00d[_0x4319df(0x1d9)]='',STATS_BASE[_0x4319df(0x1d2)](_0x155778=>{const _0x1e2be7=_0x4319df,_0x588d8c=document[_0x1e2be7(0x236)](_0x1e2be7(0x1d8));_0x588d8c[_0x1e2be7(0x1e5)]=_0x1e2be7(0x246),_0x588d8c['innerHTML']=_0x1e2be7(0x1f3)+_0x155778[_0x1e2be7(0x1bd)]+'\x22>'+_0x155778['label']+_0x1e2be7(0x1e8)+_0x155778[_0x1e2be7(0x1bd)]+_0x1e2be7(0x18f),_0x20f00d[_0x1e2be7(0x17e)](_0x588d8c),_0x588d8c[_0x1e2be7(0x170)]('input')[_0x1e2be7(0x235)](_0x1e2be7(0x211),_0x541345);}));if(_0x5b6d08)_0x5b6d08[_0x4319df(0x235)](_0x4319df(0x265),_0x541345);function _0x31a470(){const _0xcc1e45=_0x4319df,_0x5c239f=_0x3764b6['value'];if(_0x5c239f===_0xcc1e45(0x205))return Object[_0xcc1e45(0x172)](MUTATED_DINOS||{})['sort']();if(_0x5c239f===_0xcc1e45(0x1b1))return Object['keys'](BASE_DINOS||{})[_0xcc1e45(0x201)]();return Array[_0xcc1e45(0x1b2)](new Set([...Object['keys'](MUTATED_DINOS||{}),...Object[_0xcc1e45(0x172)](BASE_DINOS||{})]))[_0xcc1e45(0x201)]();}_0x3764b6&&_0x3764b6[_0x4319df(0x235)](_0x4319df(0x265),()=>{const _0x420675=_0x4319df,_0x6ff880=_0x3764b6['value'],_0x25090b=_0x6ff880===_0x420675(0x19d)||_0x6ff880===_0x420675(0x24e);if(_0x2cf24e)_0x2cf24e[_0x420675(0x1b8)][_0x420675(0x182)]('hidden',_0x25090b);if(_0x4d621e)_0x4d621e[_0x420675(0x1b8)]['toggle'](_0x420675(0x1f7),_0x6ff880!==_0x420675(0x205));if(_0x53de2e)_0x53de2e[_0x420675(0x1b8)][_0x420675(0x182)]('hidden',_0x6ff880!==_0x420675(0x1b1));if(_0x48ca01)_0x48ca01[_0x420675(0x1b8)][_0x420675(0x182)](_0x420675(0x1f7),_0x6ff880!==_0x420675(0x19d));if(_0x3a6204)_0x3a6204['classList'][_0x420675(0x182)](_0x420675(0x1f7),_0x6ff880!==_0x420675(0x24e));if(_0x3acc48){if(_0x25090b)_0x3acc48[_0x420675(0x22a)]('required');else _0x3acc48[_0x420675(0x20f)](_0x420675(0x249),_0x420675(0x16c));}_0x541345();});_0x3acc48&&_0x34bbc5&&(_0x3acc48[_0x4319df(0x235)](_0x4319df(0x211),()=>{const _0x4aa920=_0x4319df,_0x147a4d=_0x3acc48[_0x4aa920(0x217)][_0x4aa920(0x253)]()[_0x4aa920(0x25d)]();_0x34bbc5['innerHTML']='';if(!_0x147a4d){_0x34bbc5[_0x4aa920(0x1b8)][_0x4aa920(0x198)](_0x4aa920(0x1f7));if(_0x23f19f)_0x23f19f[_0x4aa920(0x1c2)]='';_0x541345();return;}const _0x2cc73c=_0x31a470(),_0x236489=_0x2cc73c['filter'](_0x22f332=>_0x22f332[_0x4aa920(0x25d)]()['includes'](_0x147a4d));if(_0x236489[_0x4aa920(0x19a)]>0x0)_0x236489[_0x4aa920(0x23b)](0x0,0x5)['forEach'](_0x22dd0d=>{const _0xa8b196=_0x4aa920,_0x57f418=document[_0xa8b196(0x236)]('li');_0x57f418['textContent']=_0x22dd0d,_0x57f418[_0xa8b196(0x235)](_0xa8b196(0x1b3),_0x5ade79=>{const _0x211b6b=_0xa8b196;_0x5ade79[_0x211b6b(0x1b5)](),_0x3acc48['value']=_0x22dd0d,_0x34bbc5[_0x211b6b(0x1b8)]['add'](_0x211b6b(0x1f7)),_0x14327a(_0x22dd0d);}),_0x34bbc5[_0xa8b196(0x17e)](_0x57f418);}),_0x34bbc5[_0x4aa920(0x1b8)][_0x4aa920(0x257)]('hidden');else{_0x34bbc5['classList'][_0x4aa920(0x198)]('hidden');if(_0x23f19f)_0x23f19f[_0x4aa920(0x1c2)]=_0x4aa920(0x25b);_0x541345();}}),_0x3acc48[_0x4319df(0x235)]('blur',()=>{const _0x168c22=_0x4319df;setTimeout(()=>_0x34bbc5[_0x168c22(0x1b8)][_0x168c22(0x198)](_0x168c22(0x1f7)),0xc8);}));function _0x14327a(_0x37126c){const _0x10a8e8=_0x4319df,_0x3da50e=_0x3764b6[_0x10a8e8(0x217)];if(_0x3da50e===_0x10a8e8(0x1b1)){const _0x448123=BASE_DINOS[_0x37126c];if(_0x23f19f)_0x23f19f[_0x10a8e8(0x1c2)]=_0x448123?_0x10a8e8(0x208)+_0x448123:'';}else{if(_0x3da50e===_0x10a8e8(0x205)){const _0x403057=MUTATED_DINOS[_0x37126c];if(_0x23f19f)_0x23f19f[_0x10a8e8(0x1c2)]=_0x403057?_0x10a8e8(0x1f1)+_0x403057['toLocaleString']()+_0x10a8e8(0x1ab):'';}}_0x541345();}function _0x541345(){const _0x5298bf=_0x4319df;if(!_0x3764b6||!_0x5da591||!_0x1ec149)return;const _0x3f2ae7=_0x3764b6[_0x5298bf(0x217)];_0x1a133f=0x0,_0x1ec149['textContent']=_0x5298bf(0x15e);if(_0x3f2ae7==='mutated'){const _0x1fc826=_0x3acc48?_0x3acc48[_0x5298bf(0x217)][_0x5298bf(0x253)]():'',_0x5e9cba=MUTATED_DINOS[_0x1fc826]||0x0;if(_0x5e9cba>0x0){const _0x59dd65=_0x5e9cba/0x4*1.5/0xfe,_0x1ac803=_0x5e9cba/0x4/0x2/0xfe,_0x1b2c2d=_0x5e9cba/0x4*1.25/0xfe,_0x130d38=document[_0x5298bf(0x193)]('pub-chk-mut-vida')?.[_0x5298bf(0x1fa)],_0xc659b7=document[_0x5298bf(0x193)](_0x5298bf(0x206))?.[_0x5298bf(0x1fa)],_0x2c307b=_0x130d38||_0xc659b7;let _0xc4f5d0=0x0;if(_0x130d38)_0xc4f5d0+=Number(document[_0x5298bf(0x193)](_0x5298bf(0x23a))?.[_0x5298bf(0x217)]||0x0)*_0x59dd65;if(_0xc659b7)_0xc4f5d0+=Number(document['getElementById'](_0x5298bf(0x23d))?.['value']||0x0)*_0x59dd65;const _0x5ae14d=[_0x5298bf(0x222),_0x5298bf(0x210),_0x5298bf(0x232),_0x5298bf(0x1aa),_0x5298bf(0x1a7)];let _0xdc86f1=0x0;_0x5ae14d[_0x5298bf(0x1d2)](_0x48c955=>{const _0x169e69=_0x5298bf;if(document[_0x169e69(0x193)](_0x169e69(0x174)+_0x48c955)?.[_0x169e69(0x1fa)]){const _0x5edc10=Number(document[_0x169e69(0x193)]('pub-val-mut-'+_0x48c955)?.[_0x169e69(0x217)]||0x0);if(_0x2c307b)_0xc4f5d0+=_0x5edc10*_0x1ac803;else _0xc4f5d0+=_0xdc86f1===0x0?_0x5edc10*_0x1b2c2d:_0x5edc10*_0x1ac803;_0xdc86f1++;}});if(_0x5b6d08?.[_0x5298bf(0x1fa)])_0xc4f5d0*=0.75;_0x1a133f=Math['round'](_0xc4f5d0),_0x1ec149[_0x5298bf(0x1c2)]=_0x5b6d08?.[_0x5298bf(0x1fa)]?_0x5298bf(0x189):_0x5298bf(0x248);}else _0x1a133f=0x3e8,_0x1ec149[_0x5298bf(0x1c2)]=_0x5298bf(0x22b);}else{if(_0x3f2ae7===_0x5298bf(0x1b1)){const _0x371bb3=_0x3acc48?_0x3acc48['value'][_0x5298bf(0x253)]():'',_0x10cc50=BASE_DINOS[_0x371bb3]??0x4,_0x21da57=BASE_TIER_RATES[_0x10cc50]||BASE_TIER_RATES[0x4];let _0x2c105f=0x0,_0xdd9fab=0x1;STATS_BASE[_0x5298bf(0x1d2)](_0x30199f=>{const _0x2cb9c4=_0x5298bf,_0xf938cf=Number(document['getElementById'](_0x2cb9c4(0x175)+_0x30199f[_0x2cb9c4(0x1bd)])?.['value']||0x0);_0xdd9fab+=_0xf938cf;if(_0x30199f['type']===_0x2cb9c4(0x1eb))_0x2c105f+=_0xf938cf*_0x21da57['hp_dmg'];else{if(_0x30199f[_0x2cb9c4(0x1f5)]===_0x2cb9c4(0x1b7))_0x2c105f+=_0xf938cf*_0x21da57[_0x2cb9c4(0x1b7)];else _0x2c105f+=_0xf938cf*_0x21da57['other'];}});if(_0x1573a1)_0x1573a1['textContent']=_0xdd9fab[_0x5298bf(0x234)]();_0x1a133f=Math[_0x5298bf(0x1ac)](_0x2c105f),_0x1ec149[_0x5298bf(0x1c2)]=_0x5298bf(0x20a)+_0x10cc50+'\x20('+_0xdd9fab+_0x5298bf(0x20e);}else{if(_0x3f2ae7===_0x5298bf(0x19d)){const _0x125be2=_0x3982df?_0x3982df[_0x5298bf(0x217)]:'ELEMENTO';_0x1a133f=GACHA_PRECIOS[_0x125be2]||0xfa0,_0x1ec149[_0x5298bf(0x1c2)]='Piso\x20oficial\x20Gacha\x20'+_0x125be2;}else{if(_0x3f2ae7==='mek'){const _0x400121=Math[_0x5298bf(0x1c8)](0x21c,Math[_0x5298bf(0x1cd)](0x96,Number(_0x2db350?.['value']||0x96)));let _0x5380c6=_0x5298bf(0x26a);if(_0x3c3bcf){for(const _0x26b2ed of _0x3c3bcf)if(_0x26b2ed[_0x5298bf(0x1fa)])_0x5380c6=_0x26b2ed[_0x5298bf(0x217)];}if(_0x5380c6==='bp')_0x1a133f=_0x400121<=0xfa?0x1770+(_0x400121-0x96)*0x7d:0x4844+(_0x400121-0xfa)*0xe6,_0x1ec149[_0x5298bf(0x1c2)]=_0x5298bf(0x25a)+_0x400121+')';else{if(_0x400121<=0xfa)_0x1a133f=0x1388+(_0x400121-0x96)*0x46;else{if(_0x400121<=0x12c)_0x1a133f=0x2ee0+(_0x400121-0xfa)*0x64;else _0x1a133f=0x4268+(_0x400121-0x12c)*137.5;}_0x1ec149['textContent']=_0x5298bf(0x177)+_0x400121+')';}_0x1a133f=Math[_0x5298bf(0x1ac)](_0x1a133f);}else _0x1a133f=0x0,_0x1ec149[_0x5298bf(0x1c2)]='Libre\x20fijación\x20de\x20precio';}}}_0x5da591[_0x5298bf(0x1c2)]=_0x1a133f[_0x5298bf(0x16e)]()+_0x5298bf(0x1ab),_0x1b6645();}function _0x1b6645(){const _0x5dfb12=_0x4319df;if(!_0x2de3d5||!_0xbf9e7d)return!![];const _0x5af540=Number(_0x2de3d5['value']||0x0);if(_0x5af540>0x0&&_0x5af540<_0x1a133f)return _0xbf9e7d[_0x5dfb12(0x17b)][_0x5dfb12(0x233)]=_0x5dfb12(0x1be),![];return _0xbf9e7d[_0x5dfb12(0x17b)]['display']=_0x5dfb12(0x227),!![];}if(_0x2de3d5)_0x2de3d5[_0x4319df(0x235)](_0x4319df(0x211),_0x1b6645);if(_0x3982df)_0x3982df[_0x4319df(0x235)]('change',_0x541345);if(_0x2db350)_0x2db350['addEventListener'](_0x4319df(0x211),_0x541345);if(_0x3c3bcf)_0x3c3bcf[_0x4319df(0x1d2)](_0x243039=>_0x243039[_0x4319df(0x235)](_0x4319df(0x265),_0x541345));_0x5283bf&&_0x5283bf['addEventListener']('click',()=>{const _0x30b9d8=_0x4319df;if(!currentUser){alert(_0x30b9d8(0x22d));return;}_0xff65cd[_0x30b9d8(0x1b8)][_0x30b9d8(0x257)](_0x30b9d8(0x1f7)),_0x541345();});_0x42fd60&&_0x42fd60[_0x4319df(0x235)]('click',()=>_0xff65cd['classList'][_0x4319df(0x198)]('hidden'));_0x28677c&&_0x28677c[_0x4319df(0x235)](_0x4319df(0x21c),async _0x37d612=>{const _0x1f06dd=_0x4319df;_0x37d612[_0x1f06dd(0x1b5)]();if(!currentUser)return;const _0x82f795=Number(_0x2de3d5[_0x1f06dd(0x217)]);if(_0x82f795<_0x1a133f){alert(_0x1f06dd(0x181)+_0x1a133f[_0x1f06dd(0x16e)]()+_0x1f06dd(0x261));return;}const _0x2e155c=_0x3764b6[_0x1f06dd(0x217)];let _0x59832e='',_0x55a19b=[];if(_0x2e155c===_0x1f06dd(0x205)){_0x59832e=_0x3acc48?_0x3acc48[_0x1f06dd(0x217)][_0x1f06dd(0x253)]():'Dino\x20Mutado',STATS_MUTADOS[_0x1f06dd(0x1d2)](_0x5a5a69=>{const _0x458fe3=_0x1f06dd;if(document['getElementById']('pub-chk-mut-'+_0x5a5a69[_0x458fe3(0x1bd)])?.[_0x458fe3(0x1fa)]){const _0x3db986=document[_0x458fe3(0x193)](_0x458fe3(0x273)+_0x5a5a69[_0x458fe3(0x1bd)])?.[_0x458fe3(0x217)]||0x0;_0x55a19b[_0x458fe3(0x1f2)](_0x5a5a69[_0x458fe3(0x179)]+':\x20'+_0x3db986);}});if(_0x5b6d08?.[_0x1f06dd(0x1fa)])_0x55a19b['push']('(Castrado)');}else{if(_0x2e155c===_0x1f06dd(0x1b1))_0x59832e=_0x3acc48?_0x3acc48['value'][_0x1f06dd(0x253)]():_0x1f06dd(0x1db),STATS_BASE[_0x1f06dd(0x1d2)](_0x145fcb=>{const _0x30c754=_0x1f06dd,_0xe5b654=Number(document[_0x30c754(0x193)](_0x30c754(0x175)+_0x145fcb[_0x30c754(0x1bd)])?.[_0x30c754(0x217)]||0x0);if(_0xe5b654>0x0)_0x55a19b['push'](_0x145fcb[_0x30c754(0x179)]+':\x20'+_0xe5b654);});else{if(_0x2e155c===_0x1f06dd(0x19d))_0x59832e=_0x1f06dd(0x1f0)+_0x3982df[_0x1f06dd(0x217)]+')';else{if(_0x2e155c==='mek'){let _0x56d1bf=_0x1f06dd(0x173);for(const _0x4895c2 of _0x3c3bcf)if(_0x4895c2['checked']&&_0x4895c2[_0x1f06dd(0x217)]==='bp')_0x56d1bf='BP';_0x59832e='MEK\x20Lvl\x20'+_0x2db350['value']+'\x20('+_0x56d1bf+')';}else _0x59832e=_0x3acc48?_0x3acc48[_0x1f06dd(0x217)][_0x1f06dd(0x253)]():_0x1f06dd(0x195);}}}const _0x16a2f4=document['getElementById']('pub-allow-discord')?.[_0x1f06dd(0x1fa)]??!![],_0x49f905=getActiveDisplayName(),_0x21f51a=_0x16a2f4?currentUser[_0x1f06dd(0x186)]?.[_0x1f06dd(0x1b9)]||currentUser['user_metadata']?.['sub']||'':'',_0x405e4b=currentUser['user_metadata']||{},_0x35f074=_0x405e4b['avatar_url']||_0x405e4b[_0x1f06dd(0x243)]||_0x1f06dd(0x229),_0x38b3d2=document[_0x1f06dd(0x193)]('pub-details')?.[_0x1f06dd(0x217)][_0x1f06dd(0x253)]()||'',_0x438b6e=[_0x55a19b[_0x1f06dd(0x207)](_0x1f06dd(0x237)),_0x38b3d2][_0x1f06dd(0x187)](Boolean)['join'](_0x1f06dd(0x203)),_0x122491={'user_id':currentUser['id'],'discord_username':_0x49f905,'discord_avatar':_0x35f074,'dino_name':_0x59832e,'category':_0x2e155c,'details':{'desc':_0x438b6e,'discord_id':_0x21f51a,'allow_discord':_0x16a2f4},'min_price':_0x1a133f,'selling_price':_0x82f795,'status':_0x1f06dd(0x168)},{error:_0x241fbc}=await supabaseClient[_0x1f06dd(0x1b2)]('market_listings')[_0x1f06dd(0x1a2)]([_0x122491]);_0x241fbc?alert(_0x1f06dd(0x1c1)+_0x241fbc[_0x1f06dd(0x196)]):(_0x28677c[_0x1f06dd(0x20b)](),_0xff65cd[_0x1f06dd(0x1b8)][_0x1f06dd(0x198)](_0x1f06dd(0x1f7)),_0x51a3c7());});async function _0x51a3c7(){const _0x57a180=_0x4319df;if(!supabaseClient||!_0x32fc9f)return;const {data:_0x460c34,error:_0x3b19fe}=await supabaseClient[_0x57a180(0x1b2)](_0x57a180(0x200))[_0x57a180(0x184)]('*')['eq'](_0x57a180(0x1d7),_0x57a180(0x168))[_0x57a180(0x1f6)](_0x57a180(0x1d5),{'ascending':![]});if(_0x3b19fe){_0x32fc9f['innerHTML']=_0x57a180(0x1fd);return;}_0x280428=_0x460c34||[],_0xda40ba(_0x280428);}function _0xda40ba(_0x166f74){const _0x50fa5f=_0x4319df;if(!_0x32fc9f)return;if(_0x166f74[_0x50fa5f(0x19a)]===0x0){_0x32fc9f['innerHTML']=_0x50fa5f(0x16f);return;}_0x32fc9f[_0x50fa5f(0x1d9)]='',_0x166f74[_0x50fa5f(0x1d2)](_0x4778c1=>{const _0x9386ea=_0x50fa5f,_0x4d3789=document[_0x9386ea(0x236)]('div');_0x4d3789['className']=_0x9386ea(0x267);const _0x19b2ce=currentUser&&currentUser['id']===_0x4778c1[_0x9386ea(0x262)],_0x274d25=_0x4778c1['details']?.[_0x9386ea(0x20c)]!==![]&&_0x4778c1[_0x9386ea(0x1bf)]?.['discord_id'],_0x19356b=_0x9386ea(0x260)+_0x4778c1[_0x9386ea(0x1bf)]?.['discord_id'];_0x4d3789[_0x9386ea(0x1d9)]=_0x9386ea(0x169)+_0x4778c1[_0x9386ea(0x18a)]+_0x9386ea(0x247)+_0x4778c1[_0x9386ea(0x15d)]+_0x9386ea(0x268)+_0x4778c1[_0x9386ea(0x183)]+_0x9386ea(0x256)+_0x4778c1[_0x9386ea(0x1a0)]+'</h4>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22market-card-details\x22>'+(_0x4778c1[_0x9386ea(0x1bf)]?.['desc']||'')+'</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22market-card-price-box\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20style=\x22font-size:\x200.75rem;\x20color:\x20var(--text-muted);\x22>PRECIO</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22market-card-price\x22>'+Number(_0x4778c1[_0x9386ea(0x1ba)])[_0x9386ea(0x16e)]()+_0x9386ea(0x1ec)+(_0x19b2ce?_0x9386ea(0x24b)+_0x4778c1['id']+'\x22>Marcar\x20Vendido\x20/\x20Retirar</button>':_0x274d25?_0x9386ea(0x219)+_0x19356b+_0x9386ea(0x231):_0x9386ea(0x270))+_0x9386ea(0x21b),_0x19b2ce&&_0x4d3789['querySelector'](_0x9386ea(0x1cf))['addEventListener'](_0x9386ea(0x1d0),async()=>{const _0x8b8340=_0x9386ea;confirm(_0x8b8340(0x19c))&&(await supabaseClient[_0x8b8340(0x1b2)](_0x8b8340(0x200))[_0x8b8340(0x17c)]()['eq']('id',_0x4778c1['id']),_0x51a3c7());}),_0x32fc9f[_0x9386ea(0x17e)](_0x4d3789);});}function _0xa6d897(){const _0x148412=_0x4319df,_0x32d108=_0x2bf33a?_0x2bf33a[_0x148412(0x217)]['toLowerCase']():'',_0x3de12f=_0x530c22?_0x530c22[_0x148412(0x217)]:'all',_0x4b13f3=_0x280428['filter'](_0x7d1551=>{const _0x33f53d=_0x148412,_0x2c0f8e=_0x7d1551['dino_name'][_0x33f53d(0x25d)]()['includes'](_0x32d108)||_0x7d1551[_0x33f53d(0x15d)][_0x33f53d(0x25d)]()[_0x33f53d(0x255)](_0x32d108),_0xfaecc7=_0x3de12f===_0x33f53d(0x162)||_0x7d1551[_0x33f53d(0x183)]===_0x3de12f;return _0x2c0f8e&&_0xfaecc7;});_0xda40ba(_0x4b13f3);}if(_0x2bf33a)_0x2bf33a[_0x4319df(0x235)](_0x4319df(0x211),_0xa6d897);if(_0x530c22)_0x530c22[_0x4319df(0x235)](_0x4319df(0x265),_0xa6d897);if(_0x3b1dad)_0x3b1dad[_0x4319df(0x235)](_0x4319df(0x1d0),_0x51a3c7);}initAuth(),initMarketplace(),initEspecialesBase(),initMutated(),initBase(),initRecursos(),initBP();
+import { BASE_TIER_RATES, BASE_DINOS, MUTATED_DINOS, RECURSOS_DATA, BP_CATEGORIES } from './data.js';
+
+// --- PESTAÑAS PRINCIPALES ---
+const tabs = {
+  mutated: { btn: document.getElementById('tab-mutated'), sec: document.getElementById('section-mutated') },
+  base: { btn: document.getElementById('tab-base'), sec: document.getElementById('section-base') },
+  recursos: { btn: document.getElementById('tab-recursos'), sec: document.getElementById('section-recursos') },
+  bp: { btn: document.getElementById('tab-bp'), sec: document.getElementById('section-bp') },
+  market: { btn: document.getElementById('tab-marketplace'), sec: document.getElementById('section-marketplace') }
+};
+
+Object.keys(tabs).forEach(k => {
+  if (tabs[k].btn && tabs[k].sec) {
+    tabs[k].btn.addEventListener('click', () => {
+      Object.keys(tabs).forEach(other => {
+        if (tabs[other].btn) tabs[other].btn.classList.remove('active');
+        if (tabs[other].sec) tabs[other].sec.classList.add('hidden');
+      });
+      tabs[k].btn.classList.add('active');
+      tabs[k].sec.classList.remove('hidden');
+    });
+  }
+});
+
+// Helper genérico para autocompletado
+function setupAutocomplete(inputEl, dropdownEl, listKeys, onSelect) {
+  function renderList(query = '') {
+    dropdownEl.innerHTML = '';
+    const clean = query.toLowerCase().trim();
+    const filtered = listKeys.filter(i => i.toLowerCase().includes(clean));
+
+    if (filtered.length === 0) {
+      const emptyLi = document.createElement('li');
+      emptyLi.className = 'autocomplete-empty';
+      emptyLi.textContent = 'Sin coincidencias';
+      dropdownEl.appendChild(emptyLi);
+      dropdownEl.classList.remove('hidden');
+      return;
+    }
+
+    filtered.forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'autocomplete-item';
+      li.textContent = item;
+      li.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        inputEl.value = item;
+        dropdownEl.classList.add('hidden');
+        onSelect(item);
+      });
+      dropdownEl.appendChild(li);
+    });
+
+    dropdownEl.classList.remove('hidden');
+  }
+
+  inputEl.addEventListener('input', () => renderList(inputEl.value));
+  inputEl.addEventListener('focus', () => renderList(inputEl.value));
+  inputEl.addEventListener('blur', () => setTimeout(() => dropdownEl.classList.add('hidden'), 150));
+}
+
+// ==========================================
+// 1. DINOS MUTADOS
+// ==========================================
+const STATS_MUTADOS = [
+  { key: 'vida', label: 'VIDA', type: 'principal' },
+  { key: 'dano', label: 'DAÑO', type: 'principal' },
+  { key: 'peso', label: 'PESO', type: 'secundaria' },
+  { key: 'energia', label: 'ENERGIA', type: 'secundaria' },
+  { key: 'comida', label: 'COMIDA', type: 'secundaria' },
+  { key: 'oxigeno', label: 'OXIGENO', type: 'secundaria' },
+  { key: 'velocidad', label: 'VELOCIDAD', type: 'secundaria' }
+];
+
+const inputMutated = document.getElementById('search-mutated-dino');
+const dropdownMutated = document.getElementById('dropdown-mutated-dino');
+const mutatedStatsList = document.getElementById('mutated-stats-list');
+const mutatedBasePriceEl = document.getElementById('mutated-base-price');
+const priceUncasteredEl = document.getElementById('price-uncastered');
+const priceCasteredEl = document.getElementById('price-castered');
+
+let currentMutated = Object.keys(MUTATED_DINOS)[0] || '';
+
+function initMutated() {
+  const dinos = Object.keys(MUTATED_DINOS).sort();
+  inputMutated.value = currentMutated;
+
+  setupAutocomplete(inputMutated, dropdownMutated, dinos, (val) => {
+    currentMutated = val;
+    calculateMutated();
+  });
+
+  STATS_MUTADOS.forEach(stat => {
+    const row = document.createElement('div');
+    row.className = 'stat-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-mut-${stat.key}" class="stat-checkbox">
+      <label for="chk-mut-${stat.key}">${stat.label}</label>
+      <input type="number" id="val-mut-${stat.key}" class="stat-input" value="0" min="0">
+      <span class="stat-badge ${stat.type}">${stat.type.toUpperCase()}</span>
+    `;
+    mutatedStatsList.appendChild(row);
+    row.querySelector('.stat-checkbox').addEventListener('change', calculateMutated);
+    row.querySelector('.stat-input').addEventListener('input', calculateMutated);
+  });
+
+  calculateMutated();
+}
+
+function calculateMutated() {
+  const basePrice = MUTATED_DINOS[currentMutated] || 0;
+  mutatedBasePriceEl.textContent = `${basePrice.toLocaleString()} DodoCoins`;
+
+  const fPrin = ((basePrice / 4) * 1.5) / 254;
+  const fSecH = ((basePrice / 4) / 2) / 254;
+  const fSecI = ((basePrice / 4) * 1.25) / 254;
+
+  const chkVida = document.getElementById('chk-mut-vida')?.checked;
+  const chkDano = document.getElementById('chk-mut-dano')?.checked;
+  const hasPrin = chkVida || chkDano;
+
+  let total = 0;
+  if (chkVida) total += Number(document.getElementById('val-mut-vida')?.value || 0) * fPrin;
+  if (chkDano) total += Number(document.getElementById('val-mut-dano')?.value || 0) * fPrin;
+
+  const secKeys = ['peso', 'energia', 'comida', 'oxigeno', 'velocidad'];
+  let countSec = 0;
+
+  secKeys.forEach(k => {
+    if (document.getElementById(`chk-mut-${k}`)?.checked) {
+      const val = Number(document.getElementById(`val-mut-${k}`)?.value || 0);
+      if (hasPrin) {
+        total += val * fSecH;
+      } else {
+        total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
+      }
+      countSec++;
+    }
+  });
+
+  const sinCastrar = Math.round(total);
+  priceUncasteredEl.textContent = `${sinCastrar.toLocaleString()} DodoCoins`;
+  priceCasteredEl.textContent = `${Math.round(sinCastrar * 0.75).toLocaleString()} DodoCoins`;
+}
+
+// ==========================================
+// 2. DINOS BASE
+// ==========================================
+const STATS_BASE = [
+  { key: 'vida', label: 'VIDA', type: 'hp_dmg' },
+  { key: 'dano', label: 'DAÑO', type: 'hp_dmg' },
+  { key: 'energia', label: 'ENERGIA', type: 'eng_wgt' },
+  { key: 'peso', label: 'PESO', type: 'eng_wgt' },
+  { key: 'comida', label: 'COMIDA', type: 'other' },
+  { key: 'oxigeno', label: 'OXIGENO', type: 'other' },
+  { key: 'velocidad', label: 'VELOCIDAD', type: 'other' }
+];
+
+const inputBase = document.getElementById('search-base-dino');
+const dropdownBase = document.getElementById('dropdown-base-dino');
+const baseStatsGrid = document.getElementById('base-stats-grid');
+const baseDinoTierEl = document.getElementById('base-dino-tier');
+const baseTotalLvlEl = document.getElementById('base-total-lvl');
+const basePriceTotalEl = document.getElementById('base-price-total');
+
+let currentBase = Object.keys(BASE_DINOS)[0] || '';
+
+function initBase() {
+  const dinos = Object.keys(BASE_DINOS).sort();
+  inputBase.value = currentBase;
+
+  setupAutocomplete(inputBase, dropdownBase, dinos, (val) => {
+    currentBase = val;
+    calculateBase();
+  });
+
+  STATS_BASE.forEach(stat => {
+    const card = document.createElement('div');
+    card.className = 'stat-card-input';
+    card.innerHTML = `
+      <label for="val-base-${stat.key}">${stat.label}</label>
+      <input type="number" id="val-base-${stat.key}" class="stat-input" value="0" min="0">
+    `;
+    baseStatsGrid.appendChild(card);
+    card.querySelector('input').addEventListener('input', calculateBase);
+  });
+
+  calculateBase();
+}
+
+function calculateBase() {
+  const tier = BASE_DINOS[currentBase] ?? 4;
+  baseDinoTierEl.textContent = `Tier ${tier}`;
+  const rates = BASE_TIER_RATES[tier] || BASE_TIER_RATES[4];
+
+  let totalPrice = 0;
+  let totalLvl = 1;
+
+  STATS_BASE.forEach(stat => {
+    const val = Number(document.getElementById(`val-base-${stat.key}`)?.value || 0);
+    totalLvl += val;
+    if (stat.type === 'hp_dmg') totalPrice += val * rates.hp_dmg;
+    else if (stat.type === 'eng_wgt') totalPrice += val * rates.eng_wgt;
+    else totalPrice += val * rates.other;
+  });
+
+  baseTotalLvlEl.textContent = totalLvl.toString();
+  basePriceTotalEl.textContent = `${Math.round(totalPrice).toLocaleString()} DodoCoins`;
+}
+
+// ==========================================
+// 3. RECURSOS
+// ==========================================
+const inputRecurso = document.getElementById('search-recurso');
+const dropdownRecurso = document.getElementById('dropdown-recurso');
+const inputRecursoCant = document.getElementById('input-recurso-cant');
+const recursoRateEl = document.getElementById('recurso-rate-info');
+const recursoPriceTotalEl = document.getElementById('recurso-price-total');
+
+let currentRecurso = "PERLA NEGRA";
+
+function initRecursos() {
+  const recursosList = Object.keys(RECURSOS_DATA).sort();
+  inputRecurso.value = currentRecurso;
+
+  setupAutocomplete(inputRecurso, dropdownRecurso, recursosList, (val) => {
+    currentRecurso = val;
+    calculateRecursos();
+  });
+
+  inputRecursoCant.addEventListener('input', calculateRecursos);
+  calculateRecursos();
+}
+
+function calculateRecursos() {
+  const rec = RECURSOS_DATA[currentRecurso] || { ddc: 1, cant: 1 };
+  const cant = Math.max(0, Number(inputRecursoCant.value || 0));
+
+  recursoRateEl.textContent = `${rec.cant} ${currentRecurso} = ${rec.ddc} DDC`;
+  const totalDDC = Math.round((cant * rec.ddc) / rec.cant);
+  recursoPriceTotalEl.textContent = `${totalDDC.toLocaleString()} DodoCoins`;
+}
+
+// ==========================================
+// 4. BP ARMAS & MONTURAS
+// ==========================================
+const selectBpCategory = document.getElementById('select-bp-category');
+const inputBpItem = document.getElementById('search-bp-item');
+const dropdownBpItem = document.getElementById('dropdown-bp-item');
+const bpF3PriceEl = document.getElementById('bp-f3-price');
+const labelBpStat = document.getElementById('label-bp-stat');
+const inputBpStat = document.getElementById('input-bp-stat');
+const bpPriceTotalEl = document.getElementById('bp-price-total');
+
+let currentBpCatKey = "BP_ARMA_755";
+let currentBpItem = "SIERRA";
+
+function initBP() {
+  selectBpCategory.innerHTML = '';
+  Object.keys(BP_CATEGORIES).forEach(catKey => {
+    const opt = document.createElement('option');
+    opt.value = catKey;
+    opt.textContent = BP_CATEGORIES[catKey].label;
+    selectBpCategory.appendChild(opt);
+  });
+
+  selectBpCategory.addEventListener('change', () => {
+    currentBpCatKey = selectBpCategory.value;
+    const cat = BP_CATEGORIES[currentBpCatKey];
+    labelBpStat.textContent = `Indicar ${cat.statLabel} (Máx ${cat.maxStat})`;
+    const items = Object.keys(cat.items).sort();
+    currentBpItem = items[0] || '';
+    inputBpItem.value = currentBpItem;
+    inputBpStat.value = cat.ranges[0] || 100;
+    updateBpAutocomplete();
+    calculateBP();
+  });
+
+  inputBpStat.addEventListener('input', calculateBP);
+  updateBpAutocomplete();
+  calculateBP();
+}
+
+function updateBpAutocomplete() {
+  const cat = BP_CATEGORIES[currentBpCatKey];
+  const items = Object.keys(cat.items).sort();
+  inputBpItem.value = currentBpItem;
+
+  setupAutocomplete(inputBpItem, dropdownBpItem, items, (val) => {
+    currentBpItem = val;
+    calculateBP();
+  });
+}
+
+function calculateBP() {
+  const cat = BP_CATEGORIES[currentBpCatKey];
+  const f3Price = cat.items[currentBpItem] || 0;
+  bpF3PriceEl.textContent = `${f3Price.toLocaleString()} DodoCoins`;
+
+  const stat = Math.max(0, Number(inputBpStat.value || 0));
+  const ranges = cat.ranges;
+  const mults = cat.mults;
+
+  const prices = mults.map(m => f3Price * m);
+
+  let baseR = ranges[0];
+  if (stat > ranges[0]) {
+    const valid = ranges.filter(r => r <= stat);
+    baseR = valid[valid.length - 1];
+  }
+
+  const idx = ranges.indexOf(baseR);
+  const diff = Math.max(0, stat - baseR);
+  const basePrice = prices[idx];
+
+  let total = basePrice;
+  if (idx < ranges.length - 1) {
+    const nextR = ranges[idx + 1];
+    const nextPrice = prices[idx + 1];
+    const ratePerUnit = (nextPrice - basePrice) / (nextR - baseR);
+    total = basePrice + (diff * ratePerUnit);
+  }
+
+  bpPriceTotalEl.textContent = `${Math.round(total).toLocaleString()} DodoCoins`;
+}
+
+// ==========================================
+// 5. ESPECIALES: MEK & GACHA
+// ==========================================
+const GACHA_PRECIOS = {
+  "ELEMENTO": 15000,
+  "POLIMERO": 8000,
+  "PERLA NEGRA": 8000,
+  "METAL": 6000,
+  "CRISTAL": 6000,
+  "OBSIDIANA": 6000,
+  "VARIOS": 4000
+};
+
+function initEspecialesBase() {
+  const mekInput = document.getElementById('mek-level-input');
+  const mekHelper = document.getElementById('mek-helper-text');
+  const mekPriceBp = document.getElementById('mek-price-bp');
+  const mekPriceFab = document.getElementById('mek-price-fab');
+
+  const gachaSelect = document.getElementById('select-gacha-recurso');
+  const gachaTotal = document.getElementById('gacha-price-total');
+
+  function calcularMek() {
+    if (!mekInput) return;
+    const lvl = Number(mekInput.value);
+
+    if (isNaN(lvl) || lvl < 150 || lvl > 540) {
+      if (mekHelper) {
+        mekHelper.textContent = "¡Error! Nivel permitido entre 150 y 540";
+        mekHelper.classList.add("error");
+      }
+      if (mekPriceBp) mekPriceBp.textContent = "---";
+      if (mekPriceFab) mekPriceFab.textContent = "---";
+      return;
+    }
+
+    if (mekHelper) {
+      mekHelper.textContent = "Nivel mínimo 150 · Máximo 540";
+      mekHelper.classList.remove("error");
+    }
+
+    let bp = 6000;
+    let fab = 5000;
+
+    if (lvl <= 250) {
+      bp = 6000 + (lvl - 150) * 125;
+    } else {
+      bp = 18500 + (lvl - 250) * 230;
+    }
+
+    if (lvl <= 250) {
+      fab = 5000 + (lvl - 150) * 70;
+    } else if (lvl <= 300) {
+      fab = 12000 + (lvl - 250) * 100;
+    } else {
+      fab = 17000 + (lvl - 300) * 137.5;
+    }
+
+    if (mekPriceBp) mekPriceBp.textContent = Math.round(bp).toLocaleString();
+    if (mekPriceFab) mekPriceFab.textContent = Math.round(fab).toLocaleString();
+  }
+
+  function calcularGacha() {
+    if (!gachaSelect || !gachaTotal) return;
+    const rec = gachaSelect.value;
+    const precio = GACHA_PRECIOS[rec] || 4000;
+    gachaTotal.textContent = precio.toLocaleString();
+  }
+
+  if (mekInput) mekInput.addEventListener('input', calcularMek);
+  if (gachaSelect) gachaSelect.addEventListener('change', calcularGacha);
+
+  calcularMek();
+  calcularGacha();
+}
+
+// ==========================================
+// 6. SUPABASE AUTH & IDENTIDAD
+// ==========================================
+const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx";
+
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+let currentUser = null;
+
+function getActiveDisplayName() {
+  const custom = localStorage.getItem('wd_ingame_name');
+  if (custom && custom.trim()) return custom.trim();
+
+  if (!currentUser) return 'Sobreviviente';
+  const meta = currentUser.user_metadata || {};
+  return meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
+}
+
+function updateHeaderBadge() {
+  const nameSpan = document.getElementById('user-discord-name');
+  if (nameSpan) {
+    nameSpan.textContent = getActiveDisplayName();
+  }
+}
+
+function initIdentityModal() {
+  const modal = document.getElementById('modal-identity');
+  const preview = document.getElementById('identity-discord-preview');
+  const groupInGame = document.getElementById('group-ingame-input');
+  const inputInGame = document.getElementById('input-ingame-name');
+  const btnSave = document.getElementById('btn-save-identity');
+  const radios = document.getElementsByName('identity-type');
+  const btnChange = document.getElementById('btn-change-identity');
+
+  if (!modal) return null;
+
+  radios.forEach(r => {
+    r.addEventListener('change', () => {
+      if (groupInGame) groupInGame.classList.toggle('hidden', r.value !== 'ingame');
+    });
+  });
+
+  if (btnChange) {
+    btnChange.addEventListener('click', () => {
+      openIdentityModal();
+    });
+  }
+
+  function openIdentityModal() {
+    if (!currentUser) return;
+    const meta = currentUser.user_metadata || {};
+    const discordName = meta.full_name || meta.custom_claims?.global_name || meta.name || 'Discord User';
+    if (preview) preview.textContent = discordName;
+
+    const saved = localStorage.getItem('wd_ingame_name');
+    if (saved) {
+      if (radios[1]) radios[1].checked = true;
+      if (groupInGame) groupInGame.classList.remove('hidden');
+      if (inputInGame) inputInGame.value = saved;
+    } else {
+      if (radios[0]) radios[0].checked = true;
+      if (groupInGame) groupInGame.classList.add('hidden');
+    }
+    modal.classList.remove('hidden');
+  }
+
+  if (btnSave) {
+    btnSave.addEventListener('click', () => {
+      let isIngame = false;
+      radios.forEach(r => { if (r.checked && r.value === 'ingame') isIngame = true; });
+
+      if (isIngame) {
+        const val = inputInGame.value.trim();
+        if (!val) {
+          alert('Por favor, ingresa tu nombre In-Game o selecciona usar tu usuario de Discord.');
+          return;
+        }
+        localStorage.setItem('wd_ingame_name', val);
+      } else {
+        localStorage.removeItem('wd_ingame_name');
+      }
+
+      modal.classList.add('hidden');
+      updateHeaderBadge();
+    });
+  }
+
+  return { openIdentityModal };
+}
+
+let identityManager = null;
+
+async function initAuth() {
+  if (!supabaseClient) return;
+
+  identityManager = initIdentityModal();
+
+  const btnLogin = document.getElementById('btn-login-discord');
+  const btnLogout = document.getElementById('btn-logout');
+  const userBadge = document.getElementById('user-profile-badge');
+  const avatarImg = document.getElementById('user-discord-avatar');
+
+  if (btnLogin) {
+    btnLogin.addEventListener('click', async () => {
+      await supabaseClient.auth.signInWithOAuth({
+        provider: 'discord',
+        options: { redirectTo: window.location.origin }
+      });
+    });
+  }
+
+  if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      window.location.reload();
+    });
+  }
+
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  renderUser(session?.user || null);
+
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    renderUser(session?.user || null);
+  });
+
+  function renderUser(user) {
+    currentUser = user;
+    if (user) {
+      if (btnLogin) btnLogin.classList.add('hidden');
+      if (userBadge) userBadge.classList.remove('hidden');
+
+      const meta = user.user_metadata || {};
+      const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+      if (avatarImg) avatarImg.src = avatar;
+      updateHeaderBadge();
+
+      if (!localStorage.getItem('wd_identity_prompted') && identityManager) {
+        localStorage.setItem('wd_identity_prompted', 'true');
+        identityManager.openIdentityModal();
+      }
+    } else {
+      if (btnLogin) btnLogin.classList.remove('hidden');
+      if (userBadge) userBadge.classList.add('hidden');
+    }
+  }
+}
+
+// ==========================================
+// 7. SISTEMA DE MARKETPLACE
+// ==========================================
+function initMarketplace() {
+  const tabMarket = document.getElementById('tab-marketplace');
+  const btnOpenPublish = document.getElementById('btn-open-publish');
+  const modalPublish = document.getElementById('modal-publish');
+  const btnCloseModal = document.getElementById('btn-close-modal');
+  const formPublish = document.getElementById('form-publish-listing');
+  const gridListings = document.getElementById('market-listings-grid');
+  const searchInput = document.getElementById('market-search-input');
+  const filterCat = document.getElementById('market-filter-cat');
+
+  const catSelect = document.getElementById('pub-category');
+  const dinoGroup = document.getElementById('group-pub-dino');
+  const dinoInput = document.getElementById('pub-dino-name');
+  const dinoDropdown = document.getElementById('dropdown-pub-dino');
+  const tierBadge = document.getElementById('pub-tier-badge');
+
+  const groupStatsMutated = document.getElementById('group-stats-mutated');
+  const mutStatsList = document.getElementById('pub-mutated-stats-list');
+  const mutCastradoChk = document.getElementById('pub-mut-castrado');
+
+  const groupStatsBase = document.getElementById('group-stats-base');
+  const baseStatsGridModal = document.getElementById('pub-base-stats-grid');
+  const baseLvlCountEl = document.getElementById('pub-base-lvl-count');
+
+  const gachaGroup = document.getElementById('group-pub-gacha');
+  const gachaSelect = document.getElementById('pub-gacha-res');
+  const mekGroup = document.getElementById('group-pub-mek');
+  const mekLvlInput = document.getElementById('pub-mek-lvl');
+  const mekTypeRadios = document.getElementsByName('mek-type');
+
+  const calculatedFloorSpan = document.getElementById('pub-calculated-floor');
+  const floorLegend = document.getElementById('pub-floor-legend');
+  const sellPriceInput = document.getElementById('pub-selling-price');
+  const priceError = document.getElementById('pub-price-error');
+
+  let activeFloorPrice = 0;
+  let allListings = [];
+
+  if (mutStatsList) {
+    mutStatsList.innerHTML = '';
+    STATS_MUTADOS.forEach(stat => {
+      const row = document.createElement('div');
+      row.className = 'stat-row';
+      row.innerHTML = `
+        <input type="checkbox" id="pub-chk-mut-${stat.key}" class="stat-checkbox">
+        <label for="pub-chk-mut-${stat.key}">${stat.label}</label>
+        <input type="number" id="pub-val-mut-${stat.key}" class="stat-input" value="0" min="0">
+        <span class="stat-badge ${stat.type}">${stat.type.toUpperCase()}</span>
+      `;
+      mutStatsList.appendChild(row);
+      row.querySelector('.stat-checkbox').addEventListener('change', recalcularPiso);
+      row.querySelector('.stat-input').addEventListener('input', recalcularPiso);
+    });
+  }
+
+  if (baseStatsGridModal) {
+    baseStatsGridModal.innerHTML = '';
+    STATS_BASE.forEach(stat => {
+      const card = document.createElement('div');
+      card.className = 'stat-card-input';
+      card.innerHTML = `
+        <label for="pub-val-base-${stat.key}">${stat.label}</label>
+        <input type="number" id="pub-val-base-${stat.key}" class="stat-input" value="0" min="0">
+      `;
+      baseStatsGridModal.appendChild(card);
+      card.querySelector('input').addEventListener('input', recalcularPiso);
+    });
+  }
+
+  if (mutCastradoChk) mutCastradoChk.addEventListener('change', recalcularPiso);
+
+  function obtenerCatalogoActual() {
+    const cat = catSelect.value;
+    if (cat === 'mutated') return Object.keys(MUTATED_DINOS || {}).sort();
+    if (cat === 'base') return Object.keys(BASE_DINOS || {}).sort();
+    return Array.from(new Set([...Object.keys(MUTATED_DINOS || {}), ...Object.keys(BASE_DINOS || {})])).sort();
+  }
+
+  if (catSelect) {
+    catSelect.addEventListener('change', () => {
+      const cat = catSelect.value;
+      const isFixedItem = (cat === 'gacha' || cat === 'mek');
+
+      if (dinoGroup) dinoGroup.classList.toggle('hidden', isFixedItem);
+      if (groupStatsMutated) groupStatsMutated.classList.toggle('hidden', cat !== 'mutated');
+      if (groupStatsBase) groupStatsBase.classList.toggle('hidden', cat !== 'base');
+      if (gachaGroup) gachaGroup.classList.toggle('hidden', cat !== 'gacha');
+      if (mekGroup) mekGroup.classList.toggle('hidden', cat !== 'mek');
+
+      if (dinoInput) {
+        if (isFixedItem) dinoInput.removeAttribute('required');
+        else dinoInput.setAttribute('required', 'true');
+      }
+
+      recalcularPiso();
+    });
+  }
+
+  if (dinoInput && dinoDropdown) {
+    dinoInput.addEventListener('input', () => {
+      const val = dinoInput.value.trim().toLowerCase();
+      dinoDropdown.innerHTML = '';
+
+      if (!val) {
+        dinoDropdown.classList.add('hidden');
+        if (tierBadge) tierBadge.textContent = '';
+        recalcularPiso();
+        return;
+      }
+
+      const catalog = obtenerCatalogoActual();
+      const matches = catalog.filter(d => d.toLowerCase().includes(val));
+
+      if (matches.length > 0) {
+        matches.slice(0, 5).forEach(match => {
+          const li = document.createElement('li');
+          li.textContent = match;
+          li.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            dinoInput.value = match;
+            dinoDropdown.classList.add('hidden');
+            verificarDino(match);
+          });
+          dinoDropdown.appendChild(li);
+        });
+        dinoDropdown.classList.remove('hidden');
+      } else {
+        dinoDropdown.classList.add('hidden');
+        if (tierBadge) tierBadge.textContent = 'Criatura personalizada / No listada';
+        recalcularPiso();
+      }
+    });
+
+    dinoInput.addEventListener('blur', () => {
+      setTimeout(() => dinoDropdown.classList.add('hidden'), 200);
+    });
+  }
+
+  function verificarDino(nombre) {
+    const cat = catSelect.value;
+    if (cat === 'base') {
+      const tier = BASE_DINOS[nombre];
+      if (tierBadge) tierBadge.textContent = tier ? `Oficial: Tier ${tier}` : '';
+    } else if (cat === 'mutated') {
+      const base = MUTATED_DINOS[nombre];
+      if (tierBadge) tierBadge.textContent = base ? `Precio Base: ${base.toLocaleString()} DDC` : '';
+    }
+    recalcularPiso();
+  }
+
+  function recalcularPiso() {
+    if (!catSelect || !calculatedFloorSpan || !floorLegend) return;
+    const cat = catSelect.value;
+    activeFloorPrice = 0;
+    floorLegend.textContent = "Calculado según stats oficiales";
+
+    if (cat === 'mutated') {
+      const dino = dinoInput ? dinoInput.value.trim() : '';
+      const basePrice = MUTATED_DINOS[dino] || 0;
+
+      if (basePrice > 0) {
+        const fPrin = ((basePrice / 4) * 1.5) / 254;
+        const fSecH = ((basePrice / 4) / 2) / 254;
+        const fSecI = ((basePrice / 4) * 1.25) / 254;
+
+        const chkVida = document.getElementById('pub-chk-mut-vida')?.checked;
+        const chkDano = document.getElementById('pub-chk-mut-dano')?.checked;
+        const hasPrin = chkVida || chkDano;
+
+        let total = 0;
+        if (chkVida) total += Number(document.getElementById('pub-val-mut-vida')?.value || 0) * fPrin;
+        if (chkDano) total += Number(document.getElementById('pub-val-mut-dano')?.value || 0) * fPrin;
+
+        const secKeys = ['peso', 'energia', 'comida', 'oxigeno', 'velocidad'];
+        let countSec = 0;
+
+        secKeys.forEach(k => {
+          if (document.getElementById(`pub-chk-mut-${k}`)?.checked) {
+            const val = Number(document.getElementById(`pub-val-mut-${k}`)?.value || 0);
+            if (hasPrin) total += val * fSecH;
+            else total += (countSec === 0) ? (val * fSecI) : (val * fSecH);
+            countSec++;
+          }
+        });
+
+        if (mutCastradoChk?.checked) total *= 0.75;
+        activeFloorPrice = Math.round(total);
+        floorLegend.textContent = mutCastradoChk?.checked ? 'Piso oficial (Castrado)' : 'Piso oficial (Sin castrar)';
+      } else {
+        activeFloorPrice = 1000;
+        floorLegend.textContent = 'Dino sin tasa base fija';
+      }
+    } else if (cat === 'base') {
+      const dino = dinoInput ? dinoInput.value.trim() : '';
+      const tier = BASE_DINOS[dino] ?? 4;
+      const rates = BASE_TIER_RATES[tier] || BASE_TIER_RATES[4];
+
+      let totalPrice = 0;
+      let totalLvl = 1;
+
+      STATS_BASE.forEach(stat => {
+        const val = Number(document.getElementById(`pub-val-base-${stat.key}`)?.value || 0);
+        totalLvl += val;
+        if (stat.type === 'hp_dmg') totalPrice += val * rates.hp_dmg;
+        else if (stat.type === 'eng_wgt') totalPrice += val * rates.eng_wgt;
+        else totalPrice += val * rates.other;
+      });
+
+      if (baseLvlCountEl) baseLvlCountEl.textContent = totalLvl.toString();
+      activeFloorPrice = Math.round(totalPrice);
+      floorLegend.textContent = `Piso oficial Tier ${tier} (${totalLvl} Lvl)`;
+    } else if (cat === 'gacha') {
+      const rec = gachaSelect ? gachaSelect.value : "ELEMENTO";
+      activeFloorPrice = GACHA_PRECIOS[rec] || 4000;
+      floorLegend.textContent = `Piso oficial Gacha ${rec}`;
+    } else if (cat === 'mek') {
+      const lvl = Math.min(540, Math.max(150, Number(mekLvlInput?.value || 150)));
+      let tipo = 'fab';
+      if (mekTypeRadios) {
+        for (const r of mekTypeRadios) if (r.checked) tipo = r.value;
+      }
+
+      if (tipo === 'bp') {
+        activeFloorPrice = (lvl <= 250) ? 6000 + (lvl - 150) * 125 : 18500 + (lvl - 250) * 230;
+        floorLegend.textContent = `Piso oficial MEK BP (Lvl ${lvl})`;
+      } else {
+        if (lvl <= 250) activeFloorPrice = 5000 + (lvl - 150) * 70;
+        else if (lvl <= 300) activeFloorPrice = 12000 + (lvl - 250) * 100;
+        else activeFloorPrice = 17000 + (lvl - 300) * 137.5;
+        floorLegend.textContent = `Piso oficial MEK Fab (Lvl ${lvl})`;
+      }
+      activeFloorPrice = Math.round(activeFloorPrice);
+    } else {
+      activeFloorPrice = 0;
+      floorLegend.textContent = "Libre fijación de precio";
+    }
+
+    calculatedFloorSpan.textContent = `${activeFloorPrice.toLocaleString()} DDC`;
+    validarPrecioFinal();
+  }
+
+  function validarPrecioFinal() {
+    if (!sellPriceInput || !priceError) return true;
+    const sellP = Number(sellPriceInput.value || 0);
+    if (sellP > 0 && sellP < activeFloorPrice) {
+      priceError.style.display = 'block';
+      return false;
+    }
+    priceError.style.display = 'none';
+    return true;
+  }
+
+  if (sellPriceInput) sellPriceInput.addEventListener('input', validarPrecioFinal);
+  if (gachaSelect) gachaSelect.addEventListener('change', recalcularPiso);
+  if (mekLvlInput) mekLvlInput.addEventListener('input', recalcularPiso);
+  if (mekTypeRadios) mekTypeRadios.forEach(r => r.addEventListener('change', recalcularPiso));
+
+  if (btnOpenPublish) {
+    btnOpenPublish.addEventListener('click', () => {
+      if (!currentUser) {
+        alert('Debes iniciar sesión con Discord para publicar en el mercado.');
+        return;
+      }
+      modalPublish.classList.remove('hidden');
+      recalcularPiso();
+    });
+  }
+
+  if (btnCloseModal) {
+    btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
+  }
+
+  if (formPublish) {
+    formPublish.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const sellP = Number(sellPriceInput.value);
+      if (sellP < activeFloorPrice) {
+        alert(`Error: El precio no puede ser inferior a ${activeFloorPrice.toLocaleString()} DDC.`);
+        return;
+      }
+
+      const cat = catSelect.value;
+      let dinoName = '';
+      let statsSummary = [];
+
+      if (cat === 'mutated') {
+        dinoName = dinoInput ? dinoInput.value.trim() : 'Dino Mutado';
+        STATS_MUTADOS.forEach(s => {
+          if (document.getElementById(`pub-chk-mut-${s.key}`)?.checked) {
+            const val = document.getElementById(`pub-val-mut-${s.key}`)?.value || 0;
+            statsSummary.push(`${s.label}: ${val}`);
+          }
+        });
+        if (mutCastradoChk?.checked) statsSummary.push('(Castrado)');
+      } else if (cat === 'base') {
+        dinoName = dinoInput ? dinoInput.value.trim() : 'Dino Base';
+        STATS_BASE.forEach(s => {
+          const val = Number(document.getElementById(`pub-val-base-${s.key}`)?.value || 0);
+          if (val > 0) statsSummary.push(`${s.label}: ${val}`);
+        });
+      } else if (cat === 'gacha') {
+        dinoName = `Gacha (${gachaSelect.value})`;
+      } else if (cat === 'mek') {
+        let tipo = 'Fabricado';
+        for (const r of mekTypeRadios) if (r.checked && r.value === 'bp') tipo = 'BP';
+        dinoName = `MEK Lvl ${mekLvlInput.value} (${tipo})`;
+      } else {
+        dinoName = dinoInput ? dinoInput.value.trim() : 'Objeto / Criatura';
+      }
+
+      const allowDiscord = document.getElementById('pub-allow-discord')?.checked ?? true;
+      const sellerDisplayName = getActiveDisplayName();
+      const discordId = allowDiscord ? (currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '') : '';
+
+      const meta = currentUser.user_metadata || {};
+      const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
+      const userDesc = document.getElementById('pub-details')?.value.trim() || '';
+
+      const fullDesc = [statsSummary.join(' · '), userDesc].filter(Boolean).join(' | ');
+
+      const payload = {
+        user_id: currentUser.id,
+        discord_username: sellerDisplayName,
+        discord_avatar: avatar,
+        dino_name: dinoName,
+        category: cat,
+        details: { 
+          desc: fullDesc,
+          discord_id: discordId,
+          allow_discord: allowDiscord
+        },
+        min_price: activeFloorPrice,
+        selling_price: sellP,
+        status: 'active'
+      };
+
+      const { error } = await supabaseClient.from('market_listings').insert([payload]);
+
+      if (error) {
+        alert('Error al publicar: ' + error.message);
+      } else {
+        formPublish.reset();
+        modalPublish.classList.add('hidden');
+        cargarPublicaciones();
+      }
+    });
+  }
+
+  async function cargarPublicaciones() {
+    if (!supabaseClient || !gridListings) return;
+    const { data, error } = await supabaseClient
+      .from('market_listings')
+      .select('*')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      gridListings.innerHTML = '<div class="market-empty-state">Error al cargar publicaciones.</div>';
+      return;
+    }
+
+    allListings = data || [];
+    renderGrid(allListings);
+  }
+
+  function renderGrid(listings) {
+    if (!gridListings) return;
+    if (listings.length === 0) {
+      gridListings.innerHTML = '<div class="market-empty-state">No hay publicaciones activas en este momento.</div>';
+      return;
+    }
+
+    gridListings.innerHTML = '';
+    listings.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'market-card';
+      const isOwner = currentUser && currentUser.id === item.user_id;
+
+      const allowDiscord = item.details?.allow_discord !== false;
+      const sellerName = item.discord_username;
+      const sellerDiscordId = item.details?.discord_id || '';
+
+      card.innerHTML = `
+        <div>
+          <div class="market-card-seller">
+            <img class="seller-avatar" src="${item.discord_avatar}" alt="Avatar">
+            <span class="seller-name">${item.discord_username}</span>
+            <span class="market-badge-cat" style="margin-left:auto;">${item.category}</span>
+          </div>
+          <h4 class="market-card-dino" style="margin-top: 10px;">${item.dino_name}</h4>
+          <p class="market-card-details">${item.details?.desc || ''}</p>
+        </div>
+
+        <div>
+          <div class="market-card-price-box">
+            <span style="font-size: 0.75rem; color: var(--text-muted);">PRECIO</span>
+            <span class="market-card-price">${Number(item.selling_price).toLocaleString()} DDC</span>
+          </div>
+
+          <div style="margin-top: 10px;">
+            ${isOwner 
+              ? `<button class="btn-delete-item" data-id="${item.id}">Marcar Vendido / Retirar</button>`
+              : (allowDiscord
+                  ? `<button class="btn-contact-seller btn-open-discord-app" 
+                             data-id="${sellerDiscordId}" 
+                             data-user="${sellerName}" 
+                             data-item="${item.dino_name}">
+                       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                         <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                       </svg>
+                       <span>Contactar por Discord</span>
+                     </button>`
+                  : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">
+                       Contacto solo In-Game
+                     </div>`
+                )
+            }
+          </div>
+        </div>
+      `;
+
+      if (isOwner) {
+        card.querySelector('.btn-delete-item').addEventListener('click', async () => {
+          if (confirm('¿Deseas retirar esta publicación del mercado?')) {
+            await supabaseClient.from('market_listings').delete().eq('id', item.id);
+            cargarPublicaciones();
+          }
+        });
+      } else if (allowDiscord) {
+        const btnContact = card.querySelector('.btn-open-discord-app');
+        if (btnContact) {
+          btnContact.addEventListener('click', () => {
+            const userTarget = btnContact.getAttribute('data-user');
+            const itemTarget = btnContact.getAttribute('data-item');
+            const discordId = btnContact.getAttribute('data-id');
+
+            const copyText = `Hola @${userTarget}! Te contacto desde Wild Dodo por tu publicación de: ${itemTarget}`;
+            navigator.clipboard.writeText(copyText);
+
+            const originalHTML = btnContact.innerHTML;
+            btnContact.innerHTML = `<span>¡Mensaje copiado! Abriendo...</span>`;
+            setTimeout(() => { btnContact.innerHTML = originalHTML; }, 3000);
+
+            if (discordId) {
+              window.location.href = `discord://-/users/${discordId}`;
+              setTimeout(() => {
+                window.open(`https://discord.com/users/${discordId}`, '_blank');
+              }, 600);
+            } else {
+              window.location.href = `discord://`;
+            }
+          });
+        }
+      }
+
+      gridListings.appendChild(card);
+    });
+  }
+
+  function aplicarFiltros() {
+    const q = searchInput ? searchInput.value.toLowerCase() : '';
+    const cat = filterCat ? filterCat.value : 'all';
+
+    const filtrados = allListings.filter(item => {
+      const matchText = item.dino_name.toLowerCase().includes(q) || item.discord_username.toLowerCase().includes(q);
+      const matchCat = cat === 'all' || item.category === cat;
+      return matchText && matchCat;
+    });
+    renderGrid(filtrados);
+  }
+
+  if (searchInput) searchInput.addEventListener('input', aplicarFiltros);
+  if (filterCat) filterCat.addEventListener('change', aplicarFiltros);
+  if (tabMarket) tabMarket.addEventListener('click', cargarPublicaciones);
+}
+
+// ==========================================
+// 8. MODAL DE DONACIONES POR DEV
+// ==========================================
+function initDonateModal() {
+  const btnOpen = document.getElementById('btn-open-donate');
+  const btnClose = document.getElementById('btn-close-donate');
+  const modal = document.getElementById('modal-donate');
+  const btnCopyAlias = document.getElementById('btn-copy-alias');
+  const aliasText = document.getElementById('donate-alias-text');
+
+  if (btnOpen && modal) {
+    btnOpen.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+    });
+  }
+
+  if (btnClose && modal) {
+    btnClose.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+  }
+
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  }
+
+  if (btnCopyAlias && aliasText) {
+    btnCopyAlias.addEventListener('click', () => {
+      navigator.clipboard.writeText(aliasText.textContent.trim());
+      const prev = btnCopyAlias.textContent;
+      btnCopyAlias.textContent = '¡Copiado!';
+      setTimeout(() => { btnCopyAlias.textContent = prev; }, 1800);
+    });
+  }
+}
+
+// Inicialización general
+initAuth();
+initMarketplace();
+initEspecialesBase();
+initMutated();
+initBase();
+initRecursos();
+initBP();
+initDonateModal();
