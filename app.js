@@ -439,28 +439,19 @@ function initEspecialesBase() {
 const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx";
 
-const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-let currentUser = null;
-
-function getActiveDisplayName() {
-  const custom = localStorage.getItem('wd_ingame_name');
-  if (custom && custom.trim()) return custom.trim();
-
-  if (!currentUser) return 'Sobreviviente';
-  const meta = currentUser.user_metadata || {};
-  return meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
-}
-
-function updateHeaderBadge() {
-  const nameSpan = document.getElementById('user-discord-name');
-  if (nameSpan) {
-    if (isCurrentUserAdmin()) {
-      nameSpan.innerHTML = `${getActiveDisplayName()} <span style="color:#ef4444; font-size:0.75rem; font-weight:800; border:1px solid #ef4444; border-radius:4px; padding:1px 5px; margin-left:4px;">ADMIN</span>`;
-    } else {
-      nameSpan.textContent = getActiveDisplayName();
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  },
+  global: {
+    headers: {
+      apikey: SUPABASE_ANON_KEY
     }
   }
-}
+}) : null;
+let currentUser = null;
 
 function initIdentityModal() {
   const modal = document.getElementById('modal-identity');
