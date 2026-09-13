@@ -25,7 +25,7 @@ export const supabaseClient = window.supabase ? window.supabase.createClient(SUP
 
 let currentUser = null;
 
-// Obtener nombre activo del usuario (In-Game o Discord) - Ámbito global
+// Obtener nombre activo del usuario (In-Game o Discord)
 export function getActiveDisplayName() {
   const custom = localStorage.getItem('wd_ingame_name');
   if (custom && custom.trim()) return custom.trim();
@@ -622,7 +622,7 @@ async function initAuth() {
 }
 
 // =============================================================================
-// 9. SISTEMA DE MARKETPLACE COMPLETO
+// 9. SISTEMA DE MARKETPLACE Y GESTOR DE HASTA 5 IMÁGENES
 // =============================================================================
 function initMarketplace() {
   const tabMarket = document.getElementById('tab-marketplace');
@@ -635,22 +635,95 @@ function initMarketplace() {
   const searchInput = document.getElementById('market-search-input');
   const filterCat = document.getElementById('market-filter-cat');
 
-  // Input de imagen y preview
-  const inputImageUrl = document.getElementById('pub-image-url');
-  const previewBox = document.getElementById('pub-image-preview-box');
-  const previewImg = document.getElementById('pub-image-preview');
+  // Gestor de fotos (hasta 5 imágenes)
+  const imageGrid = document.getElementById('image-upload-grid');
+  const btnTriggerUpload = document.getElementById('btn-trigger-upload');
+  const fileInput = document.getElementById('pub-file-input');
+  const helperText = document.getElementById('image-upload-helper');
+  let selectedImages = []; // Array de { file?: File, url?: string, preview: string }
 
-  if (inputImageUrl && previewBox && previewImg) {
-    inputImageUrl.addEventListener('input', () => {
-      const url = inputImageUrl.value.trim();
-      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-        previewImg.src = url;
-        previewBox.classList.remove('hidden');
-      } else {
-        previewBox.classList.add('hidden');
-        previewImg.src = '';
-      }
+  function renderImageSlots() {
+    if (!imageGrid) return;
+    const oldThumbs = imageGrid.querySelectorAll('.image-thumb-slot');
+    oldThumbs.forEach(t => t.remove());
+
+    selectedImages.forEach((imgObj, idx) => {
+      const slot = document.createElement('div');
+      slot.className = 'image-thumb-slot';
+      slot.innerHTML = `
+        <img src="${imgObj.preview}" alt="Foto ${idx + 1}">
+        <button type="button" class="image-thumb-remove" data-idx="${idx}" title="Eliminar">×</button>
+      `;
+      slot.querySelector('.image-thumb-remove').addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectedImages.splice(idx, 1);
+        renderImageSlots();
+      });
+      imageGrid.insertBefore(slot, btnTriggerUpload);
     });
+
+    if (btnTriggerUpload) {
+      btnTriggerUpload.style.display = selectedImages.length >= 5 ? 'none' : 'flex';
+    }
+
+    if (helperText) {
+      helperText.textContent = `${selectedImages.length}/5 imágenes - JPG, PNG, GIF, WebP (max 5MB c/u)`;
+    }
+  }
+
+  if (btnTriggerUpload && fileInput) {
+    btnTriggerUpload.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files || []);
+      const remaining = 5 - selectedImages.length;
+      const toAdd = files.slice(0, remaining);
+
+      toAdd.forEach(file => {
+        if (file.size > 5 * 1024 * 1024) {
+          alert(`El archivo ${file.name} supera el límite de 5MB.`);
+          return;
+        }
+        const preview = URL.createObjectURL(file);
+        selectedImages.push({ file, preview });
+      });
+
+      fileInput.value = '';
+      renderImageSlots();
+    });
+  }
+
+  // Subir archivos a Supabase Storage
+  async function subirImagenesStorage() {
+    const finalUrls = [];
+    for (const item of selectedImages) {
+      if (item.url) {
+        finalUrls.push(item.url);
+        continue;
+      }
+      if (item.file) {
+        const fileExt = item.file.name.split('.').pop() || 'png';
+        const fileName = `${currentUser.id}/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+        
+        const { error } = await supabaseClient.storage
+          .from('market-images')
+          .upload(fileName, item.file, { upsert: true });
+
+        if (error) {
+          console.warn('Error subiendo imagen a storage:', error.message);
+          continue;
+        }
+
+        const { data: publicData } = supabaseClient.storage
+          .from('market-images')
+          .getPublicUrl(fileName);
+
+        if (publicData?.publicUrl) {
+          finalUrls.push(publicData.publicUrl);
+        }
+      }
+    }
+    return finalUrls;
   }
 
   // Modal Carga Masiva Excel
@@ -1217,7 +1290,7 @@ function initMarketplace() {
                   desc: descParts.join(' · '),
                   discord_id: currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '',
                   allow_discord: true,
-                  image_url: imgUrl
+                  image_urls: imgUrl ? [imgUrl] : []
                 },
                 min_price: floor,
                 selling_price: sellPrice,
@@ -1276,7 +1349,8 @@ function initMarketplace() {
       }
 
       formPublish.reset();
-      if (previewBox) previewBox.classList.add('hidden');
+      selectedImages = [];
+      renderImageSlots();
       modalPublish.classList.remove('hidden');
       recalcularPiso();
     });
@@ -1312,15 +1386,13 @@ function initMarketplace() {
     const descInput = document.getElementById('pub-details');
     if (descInput) descInput.value = item.details?.desc || '';
 
-    if (inputImageUrl) {
-      inputImageUrl.value = item.details?.image_url || '';
-      if (item.details?.image_url && previewBox && previewImg) {
-        previewImg.src = item.details.image_url;
-        previewBox.classList.remove('hidden');
-      } else if (previewBox) {
-        previewBox.classList.add('hidden');
-      }
-    }
+    // Cargar fotos guardadas
+    selectedImages = [];
+    const savedImgs = item.details?.image_urls || (item.details?.image_url ? [item.details.image_url] : []);
+    savedImgs.forEach(url => {
+      selectedImages.push({ url, preview: url });
+    });
+    renderImageSlots();
 
     const allowDiscordChk = document.getElementById('pub-allow-discord');
     if (allowDiscordChk) {
@@ -1363,10 +1435,13 @@ function initMarketplace() {
 
       if (btnSubmitListing) {
         btnSubmitListing.disabled = true;
-        btnSubmitListing.textContent = "Procesando publicación...";
+        btnSubmitListing.textContent = "Subiendo imágenes y datos...";
       }
 
       try {
+        // Subida de imágenes a Supabase Storage
+        const uploadedUrls = await subirImagenesStorage();
+
         let dinoName = '';
         let statsSummary = [];
 
@@ -1411,7 +1486,6 @@ function initMarketplace() {
         const meta = currentUser.user_metadata || {};
         const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
         const userDesc = document.getElementById('pub-details')?.value.trim() || '';
-        const imageUrl = inputImageUrl ? inputImageUrl.value.trim() : '';
 
         const fullDesc = [statsSummary.join(' · '), userDesc].filter(Boolean).join(' | ');
 
@@ -1425,7 +1499,8 @@ function initMarketplace() {
             desc: fullDesc,
             discord_id: discordId,
             allow_discord: allowDiscord,
-            image_url: imageUrl
+            image_urls: uploadedUrls,
+            image_url: uploadedUrls[0] || '' // retrocompatibilidad con vista previa principal
           },
           min_price: activeFloorPrice,
           selling_price: sellP,
@@ -1446,7 +1521,8 @@ function initMarketplace() {
 
           editingListingId = null;
           formPublish.reset();
-          if (previewBox) previewBox.classList.add('hidden');
+          selectedImages = [];
+          renderImageSlots();
           modalPublish.classList.add('hidden');
           cargarPublicaciones();
           alert('¡Publicación actualizada con éxito!');
@@ -1457,26 +1533,27 @@ function initMarketplace() {
         const { error } = await supabaseClient.from('market_listings').insert([payload]);
         if (error) throw error;
 
-        // Formato para Discord
+        // Formato para Discord con fotos
         const mentionDiscord = discordId ? `<@${discordId}>` : sellerDisplayName;
-        const fotoTexto = imageUrl ? `\n🖼️ **Foto:** ${imageUrl}` : '';
+        const fotosTexto = uploadedUrls.length > 0 ? `\n🖼️ **Fotos (${uploadedUrls.length}):**\n${uploadedUrls.join('\n')}` : '';
         const textoDiscord = 
 `🛒 **MERCADO WILD DODO**
 🦖 **Ítem/Criatura:** ${dinoName}
 📊 **Detalles:** ${fullDesc || 'Sin notas adicionales'}
 💰 **Precio:** ${sellP.toLocaleString()} DDC *(Piso auditado: ${activeFloorPrice.toLocaleString()} DDC)*
-👤 **Vendedor:** ${mentionDiscord}${fotoTexto}
+👤 **Vendedor:** ${mentionDiscord}${fotosTexto}
 🔗 *Publicado desde la Calculadora y Mercado Oficial*`;
 
         const copiadoOk = await copiarAlPortapapelesSeguro(textoDiscord);
 
         formPublish.reset();
-        if (previewBox) previewBox.classList.add('hidden');
+        selectedImages = [];
+        renderImageSlots();
         modalPublish.classList.add('hidden');
         cargarPublicaciones();
 
         const msgTexto = copiadoOk 
-          ? '¡Publicación creada con éxito!\n\n📋 Se copió automáticamente el formato listo para Discord a tu portapapeles.\n\n¿Quieres abrir el canal #mercado ahora para pegarlo con Ctrl + V?'
+          ? '¡Publicación creada con éxito!\n\n📋 Se copió automáticamente el formato listo para Discord al portapapeles.\n\n¿Quieres abrir el canal #mercado ahora para pegarlo con Ctrl + V?'
           : '¡Publicación creada con éxito!\n\n¿Quieres abrir el canal #mercado de Discord ahora?';
 
         const irADiscord = confirm(msgTexto);
@@ -1531,7 +1608,9 @@ function initMarketplace() {
       const allowDiscord = item.details?.allow_discord !== false;
       const sellerName = item.discord_username;
       const sellerDiscordId = item.details?.discord_id || '';
-      const imgUrl = item.details?.image_url;
+      
+      const imgs = item.details?.image_urls || (item.details?.image_url ? [item.details.image_url] : []);
+      const mainImg = imgs[0];
 
       let actionsHtml = '';
       if (isOwner) {
@@ -1585,11 +1664,16 @@ function initMarketplace() {
             <span class="market-badge-cat" style="margin-left:auto;">${item.category}</span>
           </div>
           
-          ${imgUrl ? `
-            <div style="margin-top: 10px; border-radius: 8px; overflow: hidden; max-height: 160px; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1);">
-              <a href="${imgUrl}" target="_blank" rel="noopener noreferrer" title="Ver imagen completa">
-                <img src="${imgUrl}" alt="${item.dino_name}" style="width: 100%; height: 100%; object-fit: cover; max-height: 160px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          ${mainImg ? `
+            <div style="margin-top: 10px; border-radius: 8px; overflow: hidden; max-height: 160px; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); position: relative;">
+              <a href="${mainImg}" target="_blank" rel="noopener noreferrer" title="Ver imagen completa">
+                <img src="${mainImg}" alt="${item.dino_name}" style="width: 100%; height: 100%; object-fit: cover; max-height: 160px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
               </a>
+              ${imgs.length > 1 ? `
+                <span style="position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.75); color: #fff; font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(255,255,255,0.2);">
+                  📷 +${imgs.length - 1}
+                </span>
+              ` : ''}
             </div>
           ` : ''}
 
