@@ -568,6 +568,24 @@ function initMarketplace() {
   const searchInput = document.getElementById('market-search-input');
   const filterCat = document.getElementById('market-filter-cat');
 
+  // Input de imagen y preview
+  const inputImageUrl = document.getElementById('pub-image-url');
+  const previewBox = document.getElementById('pub-image-preview-box');
+  const previewImg = document.getElementById('pub-image-preview');
+
+  if (inputImageUrl && previewBox && previewImg) {
+    inputImageUrl.addEventListener('input', () => {
+      const url = inputImageUrl.value.trim();
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        previewImg.src = url;
+        previewBox.classList.remove('hidden');
+      } else {
+        previewBox.classList.add('hidden');
+        previewImg.src = '';
+      }
+    });
+  }
+
   // Modal Carga Masiva Excel
   const btnOpenBulk = document.getElementById('btn-open-bulk');
   const modalBulk = document.getElementById('modal-bulk');
@@ -1010,6 +1028,7 @@ function initMarketplace() {
           "CASTRADO (SI/NO)": "NO",
           "STAT_ARMOR_O_LVL": 0,
           "PRECIO_VENTA_DDC": 180000,
+          "URL_IMAGEN": "https://i.imgur.com/ejemplo.jpg",
           "NOTAS": "Color cian mutado, obelisco verde"
         },
         {
@@ -1023,20 +1042,8 @@ function initMarketplace() {
           "CASTRADO (SI/NO)": "NO",
           "STAT_ARMOR_O_LVL": 720,
           "PRECIO_VENTA_DDC": 120000,
+          "URL_IMAGEN": "",
           "NOTAS": "Entrega inmediata"
-        },
-        {
-          "CATEGORIA (mutated/base/mek/gacha/bp_arma/bp_montura/otro)": "gacha",
-          "NOMBRE": "Gacha",
-          "SUBTIPO_O_RECURSO": "ELEMENTO",
-          "VIDA": 0,
-          "DANO": 0,
-          "ENERGIA": 0,
-          "PESO": 0,
-          "CASTRADO (SI/NO)": "NO",
-          "STAT_ARMOR_O_LVL": 0,
-          "PRECIO_VENTA_DDC": 15000,
-          "NOTAS": "Pareja reproductora"
         }
       ];
 
@@ -1074,6 +1081,7 @@ function initMarketplace() {
             const nom = String(r["NOMBRE"] || '').trim();
             const sellPrice = Number(r["PRECIO_VENTA_DDC"] || 0);
             const notas = String(r["NOTAS"] || '').trim();
+            const imgUrl = String(r["URL_IMAGEN"] || '').trim();
             const statVal = Number(r["STAT_ARMOR_O_LVL"] || 0);
             const subcat = String(r["SUBTIPO_O_RECURSO"] || '').trim();
 
@@ -1143,7 +1151,8 @@ function initMarketplace() {
                 details: {
                   desc: descParts.join(' · '),
                   discord_id: currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '',
-                  allow_discord: true
+                  allow_discord: true,
+                  image_url: imgUrl
                 },
                 min_price: floor,
                 selling_price: sellPrice,
@@ -1200,6 +1209,7 @@ function initMarketplace() {
       if (submitBtn) submitBtn.textContent = "Confirmar y Publicar";
 
       formPublish.reset();
+      if (previewBox) previewBox.classList.add('hidden');
       modalPublish.classList.remove('hidden');
       recalcularPiso();
     });
@@ -1230,6 +1240,16 @@ function initMarketplace() {
 
     const descInput = document.getElementById('pub-details');
     if (descInput) descInput.value = item.details?.desc || '';
+
+    if (inputImageUrl) {
+      inputImageUrl.value = item.details?.image_url || '';
+      if (item.details?.image_url && previewBox && previewImg) {
+        previewImg.src = item.details.image_url;
+        previewBox.classList.remove('hidden');
+      } else if (previewBox) {
+        previewBox.classList.add('hidden');
+      }
+    }
 
     const allowDiscordChk = document.getElementById('pub-allow-discord');
     if (allowDiscordChk) {
@@ -1294,6 +1314,7 @@ function initMarketplace() {
       const meta = currentUser.user_metadata || {};
       const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
       const userDesc = document.getElementById('pub-details')?.value.trim() || '';
+      const imageUrl = inputImageUrl ? inputImageUrl.value.trim() : '';
 
       const fullDesc = [statsSummary.join(' · '), userDesc].filter(Boolean).join(' | ');
 
@@ -1306,13 +1327,15 @@ function initMarketplace() {
         details: { 
           desc: fullDesc,
           discord_id: discordId,
-          allow_discord: allowDiscord
+          allow_discord: allowDiscord,
+          image_url: imageUrl
         },
         min_price: activeFloorPrice,
         selling_price: sellP,
         status: 'active'
       };
 
+      // Si estamos editando
       if (editingListingId) {
         const { error } = await supabaseClient
           .from('market_listings')
@@ -1327,20 +1350,50 @@ function initMarketplace() {
         } else {
           editingListingId = null;
           formPublish.reset();
+          if (previewBox) previewBox.classList.add('hidden');
           modalPublish.classList.add('hidden');
           cargarPublicaciones();
         }
         return;
       }
 
+      // Si es una publicación nueva
       const { error } = await supabaseClient.from('market_listings').insert([payload]);
 
       if (error) {
         alert('Error al publicar: ' + error.message);
       } else {
+        // Generar texto con formato Markdown para Discord
+        const mentionDiscord = discordId ? `<@${discordId}>` : sellerDisplayName;
+        const fotoTexto = imageUrl ? `\n🖼️ **Foto:** ${imageUrl}` : '';
+        const textoDiscord = 
+`🛒 **MERCADO WILD DODO**
+🦖 **Ítem/Criatura:** ${dinoName}
+📊 **Detalles:** ${fullDesc || 'Sin notas adicionales'}
+💰 **Precio:** ${sellP.toLocaleString()} DDC *(Piso auditado: ${activeFloorPrice.toLocaleString()} DDC)*
+👤 **Vendedor:** ${mentionDiscord}${fotoTexto}
+🔗 *Publicado desde la Calculadora y Mercado Oficial*`;
+
+        try {
+          await navigator.clipboard.writeText(textoDiscord);
+        } catch (err) {
+          console.log('No se pudo copiar automáticamente:', err);
+        }
+
         formPublish.reset();
+        if (previewBox) previewBox.classList.add('hidden');
         modalPublish.classList.add('hidden');
         cargarPublicaciones();
+
+        const irADiscord = confirm(
+          '¡Publicación creada con éxito!\n\n' +
+          '📋 Hemos copiado el formato listo para Discord a tu portapapeles.\n\n' +
+          '¿Quieres abrir el canal #mercado ahora para pegarlo con Ctrl + V?'
+        );
+
+        if (irADiscord) {
+          window.open(DISCORD_MARKET_CHANNEL_URL, '_blank');
+        }
       }
     });
   }
@@ -1380,6 +1433,7 @@ function initMarketplace() {
       const allowDiscord = item.details?.allow_discord !== false;
       const sellerName = item.discord_username;
       const sellerDiscordId = item.details?.discord_id || '';
+      const imgUrl = item.details?.image_url;
 
       let actionsHtml = '';
       if (isOwner) {
@@ -1432,6 +1486,15 @@ function initMarketplace() {
             <span class="seller-name">${item.discord_username}</span>
             <span class="market-badge-cat" style="margin-left:auto;">${item.category}</span>
           </div>
+          
+          ${imgUrl ? `
+            <div style="margin-top: 10px; border-radius: 8px; overflow: hidden; max-height: 160px; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1);">
+              <a href="${imgUrl}" target="_blank" rel="noopener noreferrer" title="Ver imagen completa">
+                <img src="${imgUrl}" alt="${item.dino_name}" style="width: 100%; height: 100%; object-fit: cover; max-height: 160px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+              </a>
+            </div>
+          ` : ''}
+
           <h4 class="market-card-dino" style="margin-top: 10px;">${item.dino_name}</h4>
           <p class="market-card-details">${item.details?.desc || ''}</p>
         </div>
