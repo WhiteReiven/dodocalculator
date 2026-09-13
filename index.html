@@ -292,7 +292,7 @@
     </section>
   </main>
 
-  <!-- MODAL DE PUBLICACIÓN CON STATS OFICIALES -->
+  <!-- MODAL DE PUBLICACIÓN CON STATS OFICIALES + FOTO -->
   <div id="modal-publish" class="market-modal-overlay hidden">
     <div class="card-calculator modal-card modal-large">
       <div class="modal-head">
@@ -397,7 +397,16 @@
           <input type="number" id="pub-bp-stat" class="custom-search-input" value="200" min="0">
         </div>
 
+        <!-- Campo de Foto / Imagen Opcional -->
         <div class="form-group" style="margin-top: 14px;">
+          <label for="pub-image-url">Foto / Captura del Ítem o Dino (Opcional)</label>
+          <input type="url" id="pub-image-url" class="custom-search-input" placeholder="https://i.imgur.com/... o enlace de captura de Discord">
+          <div id="pub-image-preview-box" class="hidden" style="margin-top: 8px; text-align: center;">
+            <img id="pub-image-preview" src="" alt="Vista previa" style="max-height: 120px; border-radius: 8px; border: 1px solid var(--neon-cyan);">
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="pub-details">Detalles adicionales / Contacto / Notas</label>
           <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: Full mutaciones de color, entrega en Obelisco Verde, etc.">
         </div>
