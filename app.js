@@ -1,22 +1,72 @@
 import { BASE_TIER_RATES, BASE_DINOS, MUTATED_DINOS, RECURSOS_DATA, BP_CATEGORIES } from './data.js';
 
-// --- ROLES DE ADMINISTRACIÓN Y CANAL DE DISCORD ---
+// =============================================================================
+// 1. CONFIGURACIÓN GLOBAL, CREDENCIALES Y FUNCIONES DE IDENTIDAD
+// =============================================================================
 const ADMIN_DISCORD_IDS = ['574721030732513306']; 
 const ADMIN_USERNAMES = ['cuervitoblanco']; 
 const DISCORD_MARKET_CHANNEL_URL = "https://discord.com/channels/880306217413668914/1060750333959213066";
 
-// Función robusta para copiar al portapapeles sin bloqueos de navegador
-async function copiarAlPortapapelesSeguro(texto) {
+const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx";
+
+export const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  },
+  global: {
+    headers: {
+      apikey: SUPABASE_ANON_KEY
+    }
+  }
+}) : null;
+
+let currentUser = null;
+
+// Obtener nombre activo del usuario (In-Game o Discord) - Ámbito global
+export function getActiveDisplayName() {
+  const custom = localStorage.getItem('wd_ingame_name');
+  if (custom && custom.trim()) return custom.trim();
+
+  if (!currentUser) return 'Sobreviviente';
+  const meta = currentUser.user_metadata || {};
+  return meta.full_name || meta.custom_claims?.global_name || meta.name || 'Sobreviviente';
+}
+
+// Comprobar si el usuario actual es Administrador
+export function isCurrentUserAdmin() {
+  if (!currentUser) return false;
+  const meta = currentUser.user_metadata || {};
+  const discordId = meta.provider_id || meta.sub || '';
+  const username = meta.name || meta.preferred_username || meta.user_name || '';
+  return ADMIN_DISCORD_IDS.includes(discordId) || ADMIN_USERNAMES.includes(username.toLowerCase());
+}
+
+// Actualizar placa de usuario en la cabecera
+export function updateHeaderBadge() {
+  const nameSpan = document.getElementById('user-discord-name');
+  if (nameSpan) {
+    if (isCurrentUserAdmin()) {
+      nameSpan.innerHTML = `${getActiveDisplayName()} <span style="color:#ef4444; font-size:0.75rem; font-weight:800; border:1px solid #ef4444; border-radius:4px; padding:1px 5px; margin-left:4px;">ADMIN</span>`;
+    } else {
+      nameSpan.textContent = getActiveDisplayName();
+    }
+  }
+}
+
+// Copiar al portapapeles sin bloqueos del navegador
+export async function copiarAlPortapapelesSeguro(texto) {
   try {
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(texto);
       return true;
     }
   } catch (e) {
-    console.warn('Fallback a execCommand por permiso bloqueado:', e);
+    console.warn('Fallo navigator.clipboard, usando fallback:', e);
   }
 
-  // Fallback tradicional con textarea
   try {
     const textArea = document.createElement("textarea");
     textArea.value = texto;
@@ -30,40 +80,10 @@ async function copiarAlPortapapelesSeguro(texto) {
     document.body.removeChild(textArea);
     return successful;
   } catch (err) {
-    console.error('Error al copiar:', err);
+    console.error('Error fallback copiar:', err);
     return false;
   }
 }
-
-function isCurrentUserAdmin() {
-  if (!currentUser) return false;
-  const meta = currentUser.user_metadata || {};
-  const discordId = meta.provider_id || meta.sub || '';
-  const username = meta.name || meta.preferred_username || meta.user_name || '';
-  return ADMIN_DISCORD_IDS.includes(discordId) || ADMIN_USERNAMES.includes(username.toLowerCase());
-}
-
-// --- PESTAÑAS PRINCIPALES ---
-const tabs = {
-  mutated: { btn: document.getElementById('tab-mutated'), sec: document.getElementById('section-mutated') },
-  base: { btn: document.getElementById('tab-base'), sec: document.getElementById('section-base') },
-  recursos: { btn: document.getElementById('tab-recursos'), sec: document.getElementById('section-recursos') },
-  bp: { btn: document.getElementById('tab-bp'), sec: document.getElementById('section-bp') },
-  market: { btn: document.getElementById('tab-marketplace'), sec: document.getElementById('section-marketplace') }
-};
-
-Object.keys(tabs).forEach(k => {
-  if (tabs[k].btn && tabs[k].sec) {
-    tabs[k].btn.addEventListener('click', () => {
-      Object.keys(tabs).forEach(other => {
-        if (tabs[other].btn) tabs[other].btn.classList.remove('active');
-        if (tabs[other].sec) tabs[other].sec.classList.add('hidden');
-      });
-      tabs[k].btn.classList.add('active');
-      tabs[k].sec.classList.remove('hidden');
-    });
-  }
-});
 
 // Helper genérico para autocompletado
 function setupAutocomplete(inputEl, dropdownEl, listKeys, onSelect) {
@@ -102,9 +122,33 @@ function setupAutocomplete(inputEl, dropdownEl, listKeys, onSelect) {
   inputEl.addEventListener('blur', () => setTimeout(() => dropdownEl.classList.add('hidden'), 150));
 }
 
-// ==========================================
-// 1. DINOS MUTADOS
-// ==========================================
+// =============================================================================
+// 2. PESTAÑAS PRINCIPALES
+// =============================================================================
+const tabs = {
+  mutated: { btn: document.getElementById('tab-mutated'), sec: document.getElementById('section-mutated') },
+  base: { btn: document.getElementById('tab-base'), sec: document.getElementById('section-base') },
+  recursos: { btn: document.getElementById('tab-recursos'), sec: document.getElementById('section-recursos') },
+  bp: { btn: document.getElementById('tab-bp'), sec: document.getElementById('section-bp') },
+  market: { btn: document.getElementById('tab-marketplace'), sec: document.getElementById('section-marketplace') }
+};
+
+Object.keys(tabs).forEach(k => {
+  if (tabs[k].btn && tabs[k].sec) {
+    tabs[k].btn.addEventListener('click', () => {
+      Object.keys(tabs).forEach(other => {
+        if (tabs[other].btn) tabs[other].btn.classList.remove('active');
+        if (tabs[other].sec) tabs[other].sec.classList.add('hidden');
+      });
+      tabs[k].btn.classList.add('active');
+      tabs[k].sec.classList.remove('hidden');
+    });
+  }
+});
+
+// =============================================================================
+// 3. DINOS MUTADOS
+// =============================================================================
 const STATS_MUTADOS = [
   { key: 'vida', label: 'VIDA', type: 'principal' },
   { key: 'dano', label: 'DAÑO', type: 'principal' },
@@ -126,33 +170,38 @@ let currentMutated = Object.keys(MUTATED_DINOS)[0] || '';
 
 function initMutated() {
   const dinos = Object.keys(MUTATED_DINOS).sort();
-  inputMutated.value = currentMutated;
+  if (inputMutated) inputMutated.value = currentMutated;
 
-  setupAutocomplete(inputMutated, dropdownMutated, dinos, (val) => {
-    currentMutated = val;
-    calculateMutated();
-  });
+  if (inputMutated && dropdownMutated) {
+    setupAutocomplete(inputMutated, dropdownMutated, dinos, (val) => {
+      currentMutated = val;
+      calculateMutated();
+    });
+  }
 
-  STATS_MUTADOS.forEach(stat => {
-    const row = document.createElement('div');
-    row.className = 'stat-row';
-    row.innerHTML = `
-      <input type="checkbox" id="chk-mut-${stat.key}" class="stat-checkbox">
-      <label for="chk-mut-${stat.key}">${stat.label}</label>
-      <input type="number" id="val-mut-${stat.key}" class="stat-input" value="0" min="0">
-      <span class="stat-badge ${stat.type}">${stat.type.toUpperCase()}</span>
-    `;
-    mutatedStatsList.appendChild(row);
-    row.querySelector('.stat-checkbox').addEventListener('change', calculateMutated);
-    row.querySelector('.stat-input').addEventListener('input', calculateMutated);
-  });
+  if (mutatedStatsList) {
+    mutatedStatsList.innerHTML = '';
+    STATS_MUTADOS.forEach(stat => {
+      const row = document.createElement('div');
+      row.className = 'stat-row';
+      row.innerHTML = `
+        <input type="checkbox" id="chk-mut-${stat.key}" class="stat-checkbox">
+        <label for="chk-mut-${stat.key}">${stat.label}</label>
+        <input type="number" id="val-mut-${stat.key}" class="stat-input" value="0" min="0">
+        <span class="stat-badge ${stat.type}">${stat.type.toUpperCase()}</span>
+      `;
+      mutatedStatsList.appendChild(row);
+      row.querySelector('.stat-checkbox').addEventListener('change', calculateMutated);
+      row.querySelector('.stat-input').addEventListener('input', calculateMutated);
+    });
+  }
 
   calculateMutated();
 }
 
 function calculateMutated() {
   const basePrice = MUTATED_DINOS[currentMutated] || 0;
-  mutatedBasePriceEl.textContent = `${basePrice.toLocaleString()} DodoCoins`;
+  if (mutatedBasePriceEl) mutatedBasePriceEl.textContent = `${basePrice.toLocaleString()} DodoCoins`;
 
   const fPrin = ((basePrice / 4) * 1.5) / 254;
   const fSecH = ((basePrice / 4) / 2) / 254;
@@ -179,13 +228,13 @@ function calculateMutated() {
   });
 
   const sinCastrar = Math.round(total);
-  priceUncasteredEl.textContent = `${sinCastrar.toLocaleString()} DodoCoins`;
-  priceCasteredEl.textContent = `${Math.round(sinCastrar * 0.75).toLocaleString()} DodoCoins`;
+  if (priceUncasteredEl) priceUncasteredEl.textContent = `${sinCastrar.toLocaleString()} DodoCoins`;
+  if (priceCasteredEl) priceCasteredEl.textContent = `${Math.round(sinCastrar * 0.75).toLocaleString()} DodoCoins`;
 }
 
-// ==========================================
-// 2. DINOS BASE
-// ==========================================
+// =============================================================================
+// 4. DINOS BASE
+// =============================================================================
 const STATS_BASE = [
   { key: 'vida', label: 'VIDA', type: 'hp_dmg' },
   { key: 'dano', label: 'DAÑO', type: 'hp_dmg' },
@@ -207,30 +256,35 @@ let currentBase = Object.keys(BASE_DINOS)[0] || '';
 
 function initBase() {
   const dinos = Object.keys(BASE_DINOS).sort();
-  inputBase.value = currentBase;
+  if (inputBase) inputBase.value = currentBase;
 
-  setupAutocomplete(inputBase, dropdownBase, dinos, (val) => {
-    currentBase = val;
-    calculateBase();
-  });
+  if (inputBase && dropdownBase) {
+    setupAutocomplete(inputBase, dropdownBase, dinos, (val) => {
+      currentBase = val;
+      calculateBase();
+    });
+  }
 
-  STATS_BASE.forEach(stat => {
-    const card = document.createElement('div');
-    card.className = 'stat-card-input';
-    card.innerHTML = `
-      <label for="val-base-${stat.key}">${stat.label}</label>
-      <input type="number" id="val-base-${stat.key}" class="stat-input" value="0" min="0">
-    `;
-    baseStatsGrid.appendChild(card);
-    card.querySelector('input').addEventListener('input', calculateBase);
-  });
+  if (baseStatsGrid) {
+    baseStatsGrid.innerHTML = '';
+    STATS_BASE.forEach(stat => {
+      const card = document.createElement('div');
+      card.className = 'stat-card-input';
+      card.innerHTML = `
+        <label for="val-base-${stat.key}">${stat.label}</label>
+        <input type="number" id="val-base-${stat.key}" class="stat-input" value="0" min="0">
+      `;
+      baseStatsGrid.appendChild(card);
+      card.querySelector('input').addEventListener('input', calculateBase);
+    });
+  }
 
   calculateBase();
 }
 
 function calculateBase() {
   const tier = BASE_DINOS[currentBase] ?? 4;
-  baseDinoTierEl.textContent = `Tier ${tier}`;
+  if (baseDinoTierEl) baseDinoTierEl.textContent = `Tier ${tier}`;
   const rates = BASE_TIER_RATES[tier] || BASE_TIER_RATES[4];
 
   let totalPrice = 0;
@@ -244,13 +298,13 @@ function calculateBase() {
     else totalPrice += val * rates.other;
   });
 
-  baseTotalLvlEl.textContent = totalLvl.toString();
-  basePriceTotalEl.textContent = `${Math.round(totalPrice).toLocaleString()} DodoCoins`;
+  if (baseTotalLvlEl) baseTotalLvlEl.textContent = totalLvl.toString();
+  if (basePriceTotalEl) basePriceTotalEl.textContent = `${Math.round(totalPrice).toLocaleString()} DodoCoins`;
 }
 
-// ==========================================
-// 3. RECURSOS
-// ==========================================
+// =============================================================================
+// 5. RECURSOS
+// =============================================================================
 const inputRecurso = document.getElementById('search-recurso');
 const dropdownRecurso = document.getElementById('dropdown-recurso');
 const inputRecursoCant = document.getElementById('input-recurso-cant');
@@ -261,29 +315,31 @@ let currentRecurso = "PERLA NEGRA";
 
 function initRecursos() {
   const recursosList = Object.keys(RECURSOS_DATA).sort();
-  inputRecurso.value = currentRecurso;
+  if (inputRecurso) inputRecurso.value = currentRecurso;
 
-  setupAutocomplete(inputRecurso, dropdownRecurso, recursosList, (val) => {
-    currentRecurso = val;
-    calculateRecursos();
-  });
+  if (inputRecurso && dropdownRecurso) {
+    setupAutocomplete(inputRecurso, dropdownRecurso, recursosList, (val) => {
+      currentRecurso = val;
+      calculateRecursos();
+    });
+  }
 
-  inputRecursoCant.addEventListener('input', calculateRecursos);
+  if (inputRecursoCant) inputRecursoCant.addEventListener('input', calculateRecursos);
   calculateRecursos();
 }
 
 function calculateRecursos() {
   const rec = RECURSOS_DATA[currentRecurso] || { ddc: 1, cant: 1 };
-  const cant = Math.max(0, Number(inputRecursoCant.value || 0));
+  const cant = Math.max(0, Number(inputRecursoCant?.value || 0));
 
-  recursoRateEl.textContent = `${rec.cant} ${currentRecurso} = ${rec.ddc} DDC`;
+  if (recursoRateEl) recursoRateEl.textContent = `${rec.cant} ${currentRecurso} = ${rec.ddc} DDC`;
   const totalDDC = Math.round((cant * rec.ddc) / rec.cant);
-  recursoPriceTotalEl.textContent = `${totalDDC.toLocaleString()} DodoCoins`;
+  if (recursoPriceTotalEl) recursoPriceTotalEl.textContent = `${totalDDC.toLocaleString()} DodoCoins`;
 }
 
-// ==========================================
-// 4. BP ARMAS & MONTURAS
-// ==========================================
+// =============================================================================
+// 6. BP ARMAS & MONTURAS
+// =============================================================================
 const selectBpCategory = document.getElementById('select-bp-category');
 const inputBpItem = document.getElementById('search-bp-item');
 const dropdownBpItem = document.getElementById('dropdown-bp-item');
@@ -296,51 +352,57 @@ let currentBpCatKey = "BP_ARMA_755";
 let currentBpItem = "SIERRA";
 
 function initBP() {
-  selectBpCategory.innerHTML = '';
-  Object.keys(BP_CATEGORIES).forEach(catKey => {
-    const opt = document.createElement('option');
-    opt.value = catKey;
-    opt.textContent = BP_CATEGORIES[catKey].label;
-    selectBpCategory.appendChild(opt);
-  });
+  if (selectBpCategory) {
+    selectBpCategory.innerHTML = '';
+    Object.keys(BP_CATEGORIES).forEach(catKey => {
+      const opt = document.createElement('option');
+      opt.value = catKey;
+      opt.textContent = BP_CATEGORIES[catKey].label;
+      selectBpCategory.appendChild(opt);
+    });
 
-  selectBpCategory.addEventListener('change', () => {
-    currentBpCatKey = selectBpCategory.value;
-    const cat = BP_CATEGORIES[currentBpCatKey];
-    labelBpStat.textContent = `Indicar ${cat.statLabel} (Máx ${cat.maxStat})`;
-    const items = Object.keys(cat.items).sort();
-    currentBpItem = items[0] || '';
-    inputBpItem.value = currentBpItem;
-    inputBpStat.value = cat.ranges[0] || 100;
-    updateBpAutocomplete();
-    calculateBP();
-  });
+    selectBpCategory.addEventListener('change', () => {
+      currentBpCatKey = selectBpCategory.value;
+      const cat = BP_CATEGORIES[currentBpCatKey];
+      if (labelBpStat) labelBpStat.textContent = `Indicar ${cat.statLabel} (Máx ${cat.maxStat})`;
+      const items = Object.keys(cat.items).sort();
+      currentBpItem = items[0] || '';
+      if (inputBpItem) inputBpItem.value = currentBpItem;
+      if (inputBpStat) inputBpStat.value = cat.ranges[0] || 100;
+      updateBpAutocomplete();
+      calculateBP();
+    });
+  }
 
-  inputBpStat.addEventListener('input', calculateBP);
+  if (inputBpStat) inputBpStat.addEventListener('input', calculateBP);
   updateBpAutocomplete();
   calculateBP();
 }
 
 function updateBpAutocomplete() {
   const cat = BP_CATEGORIES[currentBpCatKey];
+  if (!cat) return;
   const items = Object.keys(cat.items).sort();
-  inputBpItem.value = currentBpItem;
+  if (inputBpItem) inputBpItem.value = currentBpItem;
 
-  setupAutocomplete(inputBpItem, dropdownBpItem, items, (val) => {
-    currentBpItem = val;
-    calculateBP();
-  });
+  if (inputBpItem && dropdownBpItem) {
+    setupAutocomplete(inputBpItem, dropdownBpItem, items, (val) => {
+      currentBpItem = val;
+      calculateBP();
+    });
+  }
 }
 
 function calculateBP() {
   const cat = BP_CATEGORIES[currentBpCatKey];
-  const f3Price = cat.items[currentBpItem] || 0;
-  bpF3PriceEl.textContent = `${f3Price.toLocaleString()} DDC`;
+  if (!cat) return;
 
-  const stat = Math.max(0, Number(inputBpStat.value || 0));
+  const f3Price = cat.items[currentBpItem] || 0;
+  if (bpF3PriceEl) bpF3PriceEl.textContent = `${f3Price.toLocaleString()} DDC`;
+
+  const stat = Math.max(0, Number(inputBpStat?.value || 0));
   const ranges = cat.ranges;
   const mults = cat.mults;
-
   const prices = mults.map(m => f3Price * m);
 
   let baseR = ranges[0];
@@ -361,12 +423,12 @@ function calculateBP() {
     total = basePrice + (diff * ratePerUnit);
   }
 
-  bpPriceTotalEl.textContent = `${Math.round(total).toLocaleString()} DodoCoins`;
+  if (bpPriceTotalEl) bpPriceTotalEl.textContent = `${Math.round(total).toLocaleString()} DodoCoins`;
 }
 
-// ==========================================
-// 5. ESPECIALES: MEK & GACHA
-// ==========================================
+// =============================================================================
+// 7. ESPECIALES: MEK & GACHA
+// =============================================================================
 const GACHA_PRECIOS = {
   "ELEMENTO": 15000,
   "POLIMERO": 8000,
@@ -433,26 +495,9 @@ function initEspecialesBase() {
   calcularGacha();
 }
 
-// ==========================================
-// 6. SUPABASE AUTH & IDENTIDAD
-// ==========================================
-const SUPABASE_URL = "https://wuxsgpbynwrubemamfzb.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_ZKrh4YjvMrl8yiWLTwLYcQ_6pYn2Rdx";
-
-const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true
-  },
-  global: {
-    headers: {
-      apikey: SUPABASE_ANON_KEY
-    }
-  }
-}) : null;
-let currentUser = null;
-
+// =============================================================================
+// 8. AUTENTICACIÓN Y MODAL DE IDENTIDAD
+// =============================================================================
 function initIdentityModal() {
   const modal = document.getElementById('modal-identity');
   const preview = document.getElementById('identity-discord-preview');
@@ -576,9 +621,9 @@ async function initAuth() {
   }
 }
 
-// ==========================================
-// 7. SISTEMA DE MARKETPLACE
-// ==========================================
+// =============================================================================
+// 9. SISTEMA DE MARKETPLACE COMPLETO
+// =============================================================================
 function initMarketplace() {
   const tabMarket = document.getElementById('tab-marketplace');
   const btnOpenPublish = document.getElementById('btn-open-publish');
@@ -694,6 +739,7 @@ function initMarketplace() {
   if (mutCastradoChk) mutCastradoChk.addEventListener('change', recalcularPiso);
 
   function obtenerCatalogoActual() {
+    if (!catSelect) return [];
     const cat = catSelect.value;
     if (cat === 'mutated') return Object.keys(MUTATED_DINOS || {}).sort();
     if (cat === 'base') return Object.keys(BASE_DINOS || {}).sort();
@@ -721,7 +767,7 @@ function initMarketplace() {
   }
 
   function actualizarItemsBp() {
-    const subcatKey = bpSubcatSelect.value;
+    const subcatKey = bpSubcatSelect?.value;
     const catData = BP_CATEGORIES[subcatKey];
     if (!catData) return;
 
@@ -730,10 +776,12 @@ function initMarketplace() {
     if (bpItemInput) bpItemInput.value = items[0] || '';
     if (bpStatInput) bpStatInput.value = catData.ranges[0] || 100;
 
-    setupAutocomplete(bpItemInput, bpItemDropdown, items, (seleccionado) => {
-      bpItemInput.value = seleccionado;
-      recalcularPiso();
-    });
+    if (bpItemInput && bpItemDropdown) {
+      setupAutocomplete(bpItemInput, bpItemDropdown, items, (seleccionado) => {
+        bpItemInput.value = seleccionado;
+        recalcularPiso();
+      });
+    }
 
     recalcularPiso();
   }
@@ -973,7 +1021,7 @@ function initMarketplace() {
           if (species) {
             catSelect.value = 'mutated';
             catSelect.dispatchEvent(new Event('change'));
-            dinoInput.value = species;
+            if (dinoInput) dinoInput.value = species;
 
             const levels = asb.levelsWild || asb.levelsMutated || {};
             if (levels[0]) { document.getElementById('pub-chk-mut-vida').checked = true; document.getElementById('pub-val-mut-vida').value = levels[0]; }
@@ -996,7 +1044,7 @@ function initMarketplace() {
       const texto = raw.toLowerCase();
       const todosLosDinos = obtenerCatalogoActual();
       const dinoEncontrado = todosLosDinos.find(d => texto.includes(d.toLowerCase()));
-      if (dinoEncontrado) dinoInput.value = dinoEncontrado;
+      if (dinoEncontrado && dinoInput) dinoInput.value = dinoEncontrado;
 
       const mVida = texto.match(/(?:vida|hp)\s*[:=]?\s*(\d+)/i);
       const mDano = texto.match(/(?:daño|dmg|dano)\s*[:=]?\s*(\d+)/i);
@@ -1006,7 +1054,7 @@ function initMarketplace() {
       if (mVida) { document.getElementById('pub-chk-mut-vida').checked = true; document.getElementById('pub-val-mut-vida').value = mVida[1]; }
       if (mDano) { document.getElementById('pub-chk-mut-dano').checked = true; document.getElementById('pub-val-mut-dano').value = mDano[1]; }
       if (mPeso) { document.getElementById('pub-chk-mut-peso').checked = true; document.getElementById('pub-val-mut-peso').value = mPeso[1]; }
-      if (mPrecio) sellPriceInput.value = mPrecio[1];
+      if (mPrecio && sellPriceInput) sellPriceInput.value = mPrecio[1];
 
       recalcularPiso();
       quickInput.value = '';
@@ -1020,14 +1068,14 @@ function initMarketplace() {
         alert('Debes iniciar sesión con Discord para usar la carga masiva.');
         return;
       }
-      bulkStatusEl.innerHTML = '';
+      if (bulkStatusEl) bulkStatusEl.innerHTML = '';
       if (bulkFileInput) bulkFileInput.value = '';
       if (btnProcessBulk) btnProcessBulk.disabled = true;
-      modalBulk.classList.remove('hidden');
+      if (modalBulk) modalBulk.classList.remove('hidden');
     });
   }
 
-  if (btnCloseBulk) {
+  if (btnCloseBulk && modalBulk) {
     btnCloseBulk.addEventListener('click', () => modalBulk.classList.add('hidden'));
   }
 
@@ -1234,7 +1282,7 @@ function initMarketplace() {
     });
   }
 
-  if (btnCloseModal) {
+  if (btnCloseModal && modalPublish) {
     btnCloseModal.addEventListener('click', () => modalPublish.classList.add('hidden'));
   }
 
@@ -1247,8 +1295,10 @@ function initMarketplace() {
       btnSubmitListing.disabled = false;
     }
 
-    catSelect.value = item.category || 'otro';
-    catSelect.dispatchEvent(new Event('change'));
+    if (catSelect) {
+      catSelect.value = item.category || 'otro';
+      catSelect.dispatchEvent(new Event('change'));
+    }
 
     if (item.category === 'bp_arma' || item.category === 'bp_montura') {
       configurarSubcategoriasBp(item.category);
@@ -1277,7 +1327,7 @@ function initMarketplace() {
       allowDiscordChk.checked = item.details?.allow_discord !== false;
     }
 
-    modalPublish.classList.remove('hidden');
+    if (modalPublish) modalPublish.classList.remove('hidden');
     validarPrecioFinal();
   }
 
@@ -1290,7 +1340,7 @@ function initMarketplace() {
         return;
       }
 
-      const cat = catSelect.value;
+      const cat = catSelect?.value || 'otro';
       const isDinoCat = (cat === 'mutated' || cat === 'base' || cat === 'otro');
       
       if (isDinoCat && (!dinoInput || !dinoInput.value.trim())) {
@@ -1336,11 +1386,13 @@ function initMarketplace() {
             if (val > 0) statsSummary.push(`${s.label}: ${val}`);
           });
         } else if (cat === 'gacha') {
-          dinoName = `Gacha (${gachaSelect.value})`;
+          dinoName = `Gacha (${gachaSelect?.value || 'ELEMENTO'})`;
         } else if (cat === 'mek') {
           let tipo = 'Fabricado';
-          for (const r of mekTypeRadios) if (r.checked && r.value === 'bp') tipo = 'BP';
-          dinoName = `MEK Lvl ${mekLvlInput.value} (${tipo})`;
+          if (mekTypeRadios) {
+            for (const r of mekTypeRadios) if (r.checked && r.value === 'bp') tipo = 'BP';
+          }
+          dinoName = `MEK Lvl ${mekLvlInput?.value || 150} (${tipo})`;
         } else if (cat === 'bp_arma' || cat === 'bp_montura') {
           const subcatKey = bpSubcatSelect?.value || '';
           const catData = BP_CATEGORIES[subcatKey];
@@ -1380,7 +1432,7 @@ function initMarketplace() {
           status: 'active'
         };
 
-        // Si estamos editando
+        // Edición
         if (editingListingId) {
           const { error } = await supabaseClient
             .from('market_listings')
@@ -1401,11 +1453,11 @@ function initMarketplace() {
           return;
         }
 
-        // Si es una publicación nueva
+        // Nueva publicación
         const { error } = await supabaseClient.from('market_listings').insert([payload]);
         if (error) throw error;
 
-        // Generar formato Markdown para Discord
+        // Formato para Discord
         const mentionDiscord = discordId ? `<@${discordId}>` : sellerDisplayName;
         const fotoTexto = imageUrl ? `\n🖼️ **Foto:** ${imageUrl}` : '';
         const textoDiscord = 
@@ -1416,7 +1468,6 @@ function initMarketplace() {
 👤 **Vendedor:** ${mentionDiscord}${fotoTexto}
 🔗 *Publicado desde la Calculadora y Mercado Oficial*`;
 
-        // Copiar con fallback seguro
         const copiadoOk = await copiarAlPortapapelesSeguro(textoDiscord);
 
         formPublish.reset();
@@ -1425,7 +1476,7 @@ function initMarketplace() {
         cargarPublicaciones();
 
         const msgTexto = copiadoOk 
-          ? '¡Publicación creada con éxito!\n\n📋 Se copió automáticamente el formato listo para Discord al portapapeles.\n\n¿Quieres abrir el canal #mercado ahora para pegarlo con Ctrl + V?'
+          ? '¡Publicación creada con éxito!\n\n📋 Se copió automáticamente el formato listo para Discord a tu portapapeles.\n\n¿Quieres abrir el canal #mercado ahora para pegarlo con Ctrl + V?'
           : '¡Publicación creada con éxito!\n\n¿Quieres abrir el canal #mercado de Discord ahora?';
 
         const irADiscord = confirm(msgTexto);
@@ -1634,9 +1685,9 @@ function initMarketplace() {
   if (tabMarket) tabMarket.addEventListener('click', cargarPublicaciones);
 }
 
-// ==========================================
-// 8. MODAL DE DONACIONES POR DEV
-// ==========================================
+// =============================================================================
+// 10. MODAL DE DONACIONES POR DEV
+// =============================================================================
 function initDonateModal() {
   const btnOpen = document.getElementById('btn-open-donate');
   const btnClose = document.getElementById('btn-close-donate');
@@ -1686,7 +1737,9 @@ function initDonateModal() {
   setupCopy(btnCopyCrypto, cryptoText);
 }
 
-// Inicializaciones
+// =============================================================================
+// INICIALIZACIÓN GENERAL
+// =============================================================================
 initAuth();
 initMarketplace();
 initEspecialesBase();
