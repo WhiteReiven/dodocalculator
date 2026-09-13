@@ -40,7 +40,6 @@
           <button id="btn-logout" class="btn-logout" title="Cerrar sesión">Salir</button>
         </div>
 
-        <!-- Botón Donaciones por Dev en cabecera -->
         <button id="btn-open-donate" class="btn-header-donate" title="Apoyar desarrollo comunitario">
           <span class="donate-icon">☕</span>
           <span class="donate-text">Donaciones por Dev</span>
@@ -50,7 +49,6 @@
   </header>
 
   <main class="container">
-    <!-- Pestañas Principales -->
     <div class="tabs-wrapper">
       <button class="tab-btn active" id="tab-mutated">Dinos Mutados</button>
       <button class="tab-btn" id="tab-base">Dinos Base</button>
@@ -98,7 +96,6 @@
     <!-- SECCIÓN DINOS BASE (+ MEK & GACHA) -->
     <section id="section-base" class="calculator-section hidden">
       <div class="base-layout-container">
-        <!-- COLUMNA IZQUIERDA: CALCULADORA DINO BASE -->
         <div class="card-calculator main-calc-card">
           <div class="form-group">
             <label for="search-base-dino">Seleccione Dino</label>
@@ -127,9 +124,8 @@
           </div>
         </div>
 
-        <!-- COLUMNA DERECHA: TARJETAS FIJAS MEK Y GACHA -->
         <div class="side-specials-column">
-          <!-- TARJETA MEK -->
+          <!-- MEK -->
           <div class="card-calculator side-card">
             <div class="side-card-header">
               <span class="side-icon">⚙️</span>
@@ -157,7 +153,7 @@
             </div>
           </div>
 
-          <!-- TARJETA GACHA -->
+          <!-- GACHA -->
           <div class="card-calculator side-card">
             <div class="side-card-header">
               <span class="side-icon">💎</span>
@@ -194,7 +190,7 @@
       <div class="form-group">
         <label for="search-recurso">Buscar Recurso</label>
         <div class="autocomplete-wrapper">
-          <input type="text" id="search-recurso" class="custom-search-input" placeholder="Escribe para buscar recurso (ej. Perla Negra, Metal)..." autocomplete="off" />
+          <input type="text" id="search-recurso" class="custom-search-input" placeholder="Escribe para buscar recurso..." autocomplete="off" />
           <ul id="dropdown-recurso" class="autocomplete-list hidden"></ul>
         </div>
       </div>
@@ -270,7 +266,6 @@
         </div>
       </div>
 
-      <!-- Filtros -->
       <div class="market-filters-row">
         <input type="text" id="market-search-input" class="custom-search-input" placeholder="Buscar por criatura o vendedor...">
         <select id="market-filter-cat" class="custom-search-input custom-select" style="max-width: 220px;">
@@ -285,7 +280,6 @@
         </select>
       </div>
 
-      <!-- Grid de publicaciones -->
       <div id="market-listings-grid" class="market-grid">
         <div class="market-empty-state">Cargando publicaciones del mercado...</div>
       </div>
@@ -300,7 +294,6 @@
         <button id="btn-close-modal" class="modal-close">&times;</button>
       </div>
 
-      <!-- Rellenado Rápido (Texto / Ark Smart Breeding) -->
       <div style="background: rgba(0, 229, 255, 0.05); border: 1px dashed rgba(0, 229, 255, 0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 16px;">
         <span style="font-size: 0.78rem; font-weight: 700; color: var(--neon-cyan); display: block; margin-bottom: 6px;">⚡ RELLENADO RÁPIDO (TEXTO O EXPORT ASB)</span>
         <div style="display: flex; gap: 8px;">
@@ -309,7 +302,8 @@
         </div>
       </div>
 
-      <form id="form-publish-listing">
+      <!-- NOVALIDATE para evitar bloqueos silenciosos del navegador -->
+      <form id="form-publish-listing" novalidate>
         <div class="form-group">
           <label for="pub-category">Categoría</label>
           <select id="pub-category" class="custom-search-input custom-select">
@@ -323,17 +317,15 @@
           </select>
         </div>
 
-        <!-- Selector de Dinos Mutados / Base / Otro -->
         <div class="form-group" id="group-pub-dino">
           <label for="pub-dino-name">Criatura u Objeto</label>
           <div class="autocomplete-wrapper" style="position: relative;">
-            <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Buscar criatura u objeto..." autocomplete="off" required>
+            <input type="text" id="pub-dino-name" class="custom-search-input" placeholder="Buscar criatura u objeto..." autocomplete="off">
             <ul id="dropdown-pub-dino" class="autocomplete-list hidden"></ul>
           </div>
           <span id="pub-tier-badge" class="helper-text" style="color: var(--neon-cyan); font-weight: 600;"></span>
         </div>
 
-        <!-- Panel Dinos Mutados -->
         <div id="group-stats-mutated" class="market-stats-box">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <span class="side-res-label">STATS MUTADAS (MARCAR LAS ACTIVAS)</span>
@@ -344,7 +336,6 @@
           <div id="pub-mutated-stats-list" class="stats-list"></div>
         </div>
 
-        <!-- Panel Dinos Base -->
         <div id="group-stats-base" class="market-stats-box hidden">
           <span class="side-res-label" style="margin-bottom: 10px; display: block;">STATS BASE (PUNTOS)</span>
           <div id="pub-base-stats-grid" class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));"></div>
@@ -353,7 +344,6 @@
           </div>
         </div>
 
-        <!-- Panel Gacha -->
         <div class="form-group hidden" id="group-pub-gacha">
           <label for="pub-gacha-res">Recurso de Gacha</label>
           <select id="pub-gacha-res" class="custom-search-input custom-select">
@@ -367,7 +357,6 @@
           </select>
         </div>
 
-        <!-- Panel MEK -->
         <div class="form-group hidden" id="group-pub-mek">
           <label for="pub-mek-lvl">Nivel del MEK (150 a 540)</label>
           <input type="number" id="pub-mek-lvl" class="custom-search-input" min="150" max="540" value="150">
@@ -377,7 +366,6 @@
           </div>
         </div>
 
-        <!-- Panel BP / Armas & Monturas -->
         <div class="form-group hidden" id="group-pub-bp">
           <label for="pub-bp-subcat">Subtipo de Ítem</label>
           <select id="pub-bp-subcat" class="custom-search-input custom-select" style="margin-bottom: 12px;"></select>
@@ -397,10 +385,9 @@
           <input type="number" id="pub-bp-stat" class="custom-search-input" value="200" min="0">
         </div>
 
-        <!-- Campo de Foto / Imagen Opcional -->
         <div class="form-group" style="margin-top: 14px;">
           <label for="pub-image-url">Foto / Captura del Ítem o Dino (Opcional)</label>
-          <input type="url" id="pub-image-url" class="custom-search-input" placeholder="https://i.imgur.com/... o enlace de captura de Discord">
+          <input type="url" id="pub-image-url" class="custom-search-input" placeholder="https://i.imgur.com/... o enlace de captura">
           <div id="pub-image-preview-box" class="hidden" style="margin-top: 8px; text-align: center;">
             <img id="pub-image-preview" src="" alt="Vista previa" style="max-height: 120px; border-radius: 8px; border: 1px solid var(--neon-cyan);">
           </div>
@@ -421,11 +408,10 @@
 
         <div class="form-group">
           <label for="pub-selling-price">Tu Precio de Venta (DDC)</label>
-          <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Mismo valor o superior al piso" min="0" required>
+          <input type="number" id="pub-selling-price" class="custom-search-input" placeholder="Mismo valor o superior al piso" min="0">
           <span class="helper-text error" id="pub-price-error" style="display: none;">¡El precio no puede ser inferior al precio piso oficial!</span>
         </div>
 
-        <!-- Control de Privacidad Discord -->
         <div class="form-group" style="margin-top: 10px;">
           <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #a5b4fc; font-size: 0.85rem;">
             <input type="checkbox" id="pub-allow-discord" checked style="width: 16px; height: 16px; accent-color: #5865F2;">
@@ -531,7 +517,6 @@
       </p>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <!-- Mercado Pago Argentina -->
         <div class="donate-copy-box">
           <div style="display: flex; flex-direction: column; overflow: hidden;">
             <span style="font-size: 0.72rem; color: #00b4d8; font-weight: 700; text-transform: uppercase;">Mercado Pago Argentina (Alias):</span>
@@ -540,7 +525,6 @@
           <button id="btn-copy-alias" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Alias</button>
         </div>
 
-        <!-- PayPal -->
         <a href="https://paypal.me/whiteravenon" target="_blank" rel="noopener noreferrer" class="btn-donate-link" style="background: rgba(0, 121, 193, 0.15); border-color: #0079C1; color: #fff;">
           <span style="display: flex; align-items: center; gap: 8px;">
             <span>💳</span> Donar por PayPal
@@ -548,7 +532,6 @@
           <span style="font-size: 0.8rem; color: #38bdf8;">Abrir link ↗</span>
         </a>
 
-        <!-- LemonTag -->
         <div class="donate-copy-box">
           <div style="display: flex; flex-direction: column; overflow: hidden;">
             <span style="font-size: 0.72rem; color: #a3e635; font-weight: 700; text-transform: uppercase;">LemonTag (Sin comisión entre usuarios):</span>
@@ -557,7 +540,6 @@
           <button id="btn-copy-lemontag" class="btn-copy-discord" style="padding: 6px 12px; margin-left: 8px;">Copiar Tag</button>
         </div>
 
-        <!-- USDT (Red BEP20 - BSC) -->
         <div class="donate-copy-box" style="flex-direction: column; align-items: stretch; gap: 8px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 0.72rem; color: #22c55e; font-weight: 700; text-transform: uppercase;">USDT Crypto (Red BEP20 - BSC):</span>
