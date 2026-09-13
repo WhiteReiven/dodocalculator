@@ -5,6 +5,36 @@ const ADMIN_DISCORD_IDS = ['574721030732513306'];
 const ADMIN_USERNAMES = ['cuervitoblanco']; 
 const DISCORD_MARKET_CHANNEL_URL = "https://discord.com/channels/880306217413668914/1060750333959213066";
 
+// Función robusta para copiar al portapapeles sin bloqueos de navegador
+async function copiarAlPortapapelesSeguro(texto) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(texto);
+      return true;
+    }
+  } catch (e) {
+    console.warn('Fallback a execCommand por permiso bloqueado:', e);
+  }
+
+  // Fallback tradicional con textarea
+  try {
+    const textArea = document.createElement("textarea");
+    textArea.value = texto;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const successful = document.execCommand('copy');
+    document.body.removeChild(textArea);
+    return successful;
+  } catch (err) {
+    console.error('Error al copiar:', err);
+    return false;
+  }
+}
+
 function isCurrentUserAdmin() {
   if (!currentUser) return false;
   const meta = currentUser.user_metadata || {};
@@ -305,7 +335,7 @@ function updateBpAutocomplete() {
 function calculateBP() {
   const cat = BP_CATEGORIES[currentBpCatKey];
   const f3Price = cat.items[currentBpItem] || 0;
-  bpF3PriceEl.textContent = `${f3Price.toLocaleString()} DodoCoins`;
+  bpF3PriceEl.textContent = `${f3Price.toLocaleString()} DDC`;
 
   const stat = Math.max(0, Number(inputBpStat.value || 0));
   const ranges = cat.ranges;
@@ -564,6 +594,7 @@ function initMarketplace() {
   const modalPublish = document.getElementById('modal-publish');
   const btnCloseModal = document.getElementById('btn-close-modal');
   const formPublish = document.getElementById('form-publish-listing');
+  const btnSubmitListing = document.getElementById('btn-submit-listing');
   const gridListings = document.getElementById('market-listings-grid');
   const searchInput = document.getElementById('market-search-input');
   const filterCat = document.getElementById('market-filter-cat');
@@ -731,11 +762,6 @@ function initMarketplace() {
       if (gachaGroup) gachaGroup.classList.toggle('hidden', cat !== 'gacha');
       if (mekGroup) mekGroup.classList.toggle('hidden', cat !== 'mek');
       if (bpGroup) bpGroup.classList.toggle('hidden', !isBp);
-
-      if (dinoInput) {
-        if (isFixedItem) dinoInput.removeAttribute('required');
-        else dinoInput.setAttribute('required', 'true');
-      }
 
       if (isBp) {
         configurarSubcategoriasBp(cat);
@@ -1205,8 +1231,10 @@ function initMarketplace() {
       editingListingId = null;
       const title = document.querySelector('#modal-publish .side-card-title');
       if (title) title.textContent = "PUBLICAR EN EL MERCADO";
-      const submitBtn = document.getElementById('btn-submit-listing');
-      if (submitBtn) submitBtn.textContent = "Confirmar y Publicar";
+      if (btnSubmitListing) {
+        btnSubmitListing.textContent = "Confirmar y Publicar";
+        btnSubmitListing.disabled = false;
+      }
 
       formPublish.reset();
       if (previewBox) previewBox.classList.add('hidden');
@@ -1223,8 +1251,10 @@ function initMarketplace() {
     editingListingId = item.id;
     const title = document.querySelector('#modal-publish .side-card-title');
     if (title) title.textContent = "EDITAR PUBLICACIÓN";
-    const submitBtn = document.getElementById('btn-submit-listing');
-    if (submitBtn) submitBtn.textContent = "Guardar Cambios";
+    if (btnSubmitListing) {
+      btnSubmitListing.textContent = "Guardar Cambios";
+      btnSubmitListing.disabled = false;
+    }
 
     catSelect.value = item.category || 'otro';
     catSelect.dispatchEvent(new Event('change'));
@@ -1263,107 +1293,128 @@ function initMarketplace() {
   if (formPublish) {
     formPublish.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!currentUser) return;
 
-      const sellP = Number(sellPriceInput.value);
-      if (sellP < activeFloorPrice) {
-        alert(`Error: El precio no puede ser inferior a ${activeFloorPrice.toLocaleString()} DDC.`);
+      if (!currentUser) {
+        alert('Debes iniciar sesión con Discord para publicar en el mercado.');
         return;
       }
 
       const cat = catSelect.value;
-      let dinoName = '';
-      let statsSummary = [];
-
-      if (cat === 'mutated') {
-        dinoName = dinoInput ? dinoInput.value.trim() : 'Dino Mutado';
-        STATS_MUTADOS.forEach(s => {
-          if (document.getElementById(`pub-chk-mut-${s.key}`)?.checked) {
-            const val = document.getElementById(`pub-val-mut-${s.key}`)?.value || 0;
-            statsSummary.push(`${s.label}: ${val}`);
-          }
-        });
-        if (mutCastradoChk?.checked) statsSummary.push('(Castrado)');
-      } else if (cat === 'base') {
-        dinoName = dinoInput ? dinoInput.value.trim() : 'Dino Base';
-        STATS_BASE.forEach(s => {
-          const val = Number(document.getElementById(`pub-val-base-${s.key}`)?.value || 0);
-          if (val > 0) statsSummary.push(`${s.label}: ${val}`);
-        });
-      } else if (cat === 'gacha') {
-        dinoName = `Gacha (${gachaSelect.value})`;
-      } else if (cat === 'mek') {
-        let tipo = 'Fabricado';
-        for (const r of mekTypeRadios) if (r.checked && r.value === 'bp') tipo = 'BP';
-        dinoName = `MEK Lvl ${mekLvlInput.value} (${tipo})`;
-      } else if (cat === 'bp_arma' || cat === 'bp_montura') {
-        const subcatKey = bpSubcatSelect.value;
-        const catData = BP_CATEGORIES[subcatKey];
-        const itemNom = bpItemInput.value.trim() || 'Ítem';
-        const statVal = bpStatInput.value || 0;
-        dinoName = `${itemNom} [${catData.statLabel}: ${statVal}]`;
-        statsSummary.push(catData.label);
-      } else {
-        dinoName = dinoInput ? dinoInput.value.trim() : 'Objeto / Criatura';
+      const isDinoCat = (cat === 'mutated' || cat === 'base' || cat === 'otro');
+      
+      if (isDinoCat && (!dinoInput || !dinoInput.value.trim())) {
+        alert('Por favor, indica el nombre de la criatura u objeto.');
+        if (dinoInput) dinoInput.focus();
+        return;
       }
 
-      const allowDiscord = document.getElementById('pub-allow-discord')?.checked ?? true;
-      const sellerDisplayName = getActiveDisplayName();
-      const discordId = allowDiscord ? (currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '') : '';
+      const sellP = Number(sellPriceInput?.value || 0);
+      if (!sellP || sellP <= 0) {
+        alert('Por favor, indica un precio de venta válido.');
+        if (sellPriceInput) sellPriceInput.focus();
+        return;
+      }
 
-      const meta = currentUser.user_metadata || {};
-      const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
-      const userDesc = document.getElementById('pub-details')?.value.trim() || '';
-      const imageUrl = inputImageUrl ? inputImageUrl.value.trim() : '';
+      if (sellP < activeFloorPrice) {
+        alert(`Error: El precio no puede ser inferior al precio piso oficial (${activeFloorPrice.toLocaleString()} DDC).`);
+        return;
+      }
 
-      const fullDesc = [statsSummary.join(' · '), userDesc].filter(Boolean).join(' | ');
+      if (btnSubmitListing) {
+        btnSubmitListing.disabled = true;
+        btnSubmitListing.textContent = "Procesando publicación...";
+      }
 
-      const payload = {
-        user_id: currentUser.id,
-        discord_username: sellerDisplayName,
-        discord_avatar: avatar,
-        dino_name: dinoName,
-        category: cat,
-        details: { 
-          desc: fullDesc,
-          discord_id: discordId,
-          allow_discord: allowDiscord,
-          image_url: imageUrl
-        },
-        min_price: activeFloorPrice,
-        selling_price: sellP,
-        status: 'active'
-      };
+      try {
+        let dinoName = '';
+        let statsSummary = [];
 
-      // Si estamos editando
-      if (editingListingId) {
-        const { error } = await supabaseClient
-          .from('market_listings')
-          .update({
-            selling_price: sellP,
-            details: payload.details
-          })
-          .eq('id', editingListingId);
-
-        if (error) {
-          alert('Error al actualizar: ' + error.message);
+        if (cat === 'mutated') {
+          dinoName = dinoInput ? dinoInput.value.trim() : 'Dino Mutado';
+          STATS_MUTADOS.forEach(s => {
+            if (document.getElementById(`pub-chk-mut-${s.key}`)?.checked) {
+              const val = document.getElementById(`pub-val-mut-${s.key}`)?.value || 0;
+              statsSummary.push(`${s.label}: ${val}`);
+            }
+          });
+          if (mutCastradoChk?.checked) statsSummary.push('(Castrado)');
+        } else if (cat === 'base') {
+          dinoName = dinoInput ? dinoInput.value.trim() : 'Dino Base';
+          STATS_BASE.forEach(s => {
+            const val = Number(document.getElementById(`pub-val-base-${s.key}`)?.value || 0);
+            if (val > 0) statsSummary.push(`${s.label}: ${val}`);
+          });
+        } else if (cat === 'gacha') {
+          dinoName = `Gacha (${gachaSelect.value})`;
+        } else if (cat === 'mek') {
+          let tipo = 'Fabricado';
+          for (const r of mekTypeRadios) if (r.checked && r.value === 'bp') tipo = 'BP';
+          dinoName = `MEK Lvl ${mekLvlInput.value} (${tipo})`;
+        } else if (cat === 'bp_arma' || cat === 'bp_montura') {
+          const subcatKey = bpSubcatSelect?.value || '';
+          const catData = BP_CATEGORIES[subcatKey];
+          const itemNom = bpItemInput?.value.trim() || 'Ítem';
+          const statVal = bpStatInput?.value || 0;
+          dinoName = `${itemNom} [${catData?.statLabel || 'Stat'}: ${statVal}]`;
+          if (catData?.label) statsSummary.push(catData.label);
         } else {
+          dinoName = dinoInput ? dinoInput.value.trim() : 'Objeto / Criatura';
+        }
+
+        const allowDiscord = document.getElementById('pub-allow-discord')?.checked ?? true;
+        const sellerDisplayName = getActiveDisplayName();
+        const discordId = allowDiscord ? (currentUser.user_metadata?.provider_id || currentUser.user_metadata?.sub || '') : '';
+
+        const meta = currentUser.user_metadata || {};
+        const avatar = meta.avatar_url || meta.picture || 'https://cdn.discordapp.com/embed/avatars/0.png';
+        const userDesc = document.getElementById('pub-details')?.value.trim() || '';
+        const imageUrl = inputImageUrl ? inputImageUrl.value.trim() : '';
+
+        const fullDesc = [statsSummary.join(' · '), userDesc].filter(Boolean).join(' | ');
+
+        const payload = {
+          user_id: currentUser.id,
+          discord_username: sellerDisplayName,
+          discord_avatar: avatar,
+          dino_name: dinoName,
+          category: cat,
+          details: { 
+            desc: fullDesc,
+            discord_id: discordId,
+            allow_discord: allowDiscord,
+            image_url: imageUrl
+          },
+          min_price: activeFloorPrice,
+          selling_price: sellP,
+          status: 'active'
+        };
+
+        // Si estamos editando
+        if (editingListingId) {
+          const { error } = await supabaseClient
+            .from('market_listings')
+            .update({
+              selling_price: sellP,
+              details: payload.details
+            })
+            .eq('id', editingListingId);
+
+          if (error) throw error;
+
           editingListingId = null;
           formPublish.reset();
           if (previewBox) previewBox.classList.add('hidden');
           modalPublish.classList.add('hidden');
           cargarPublicaciones();
+          alert('¡Publicación actualizada con éxito!');
+          return;
         }
-        return;
-      }
 
-      // Si es una publicación nueva
-      const { error } = await supabaseClient.from('market_listings').insert([payload]);
+        // Si es una publicación nueva
+        const { error } = await supabaseClient.from('market_listings').insert([payload]);
+        if (error) throw error;
 
-      if (error) {
-        alert('Error al publicar: ' + error.message);
-      } else {
-        // Generar texto con formato Markdown para Discord
+        // Generar formato Markdown para Discord
         const mentionDiscord = discordId ? `<@${discordId}>` : sellerDisplayName;
         const fotoTexto = imageUrl ? `\n🖼️ **Foto:** ${imageUrl}` : '';
         const textoDiscord = 
@@ -1374,25 +1425,30 @@ function initMarketplace() {
 👤 **Vendedor:** ${mentionDiscord}${fotoTexto}
 🔗 *Publicado desde la Calculadora y Mercado Oficial*`;
 
-        try {
-          await navigator.clipboard.writeText(textoDiscord);
-        } catch (err) {
-          console.log('No se pudo copiar automáticamente:', err);
-        }
+        // Copiar con fallback seguro
+        const copiadoOk = await copiarAlPortapapelesSeguro(textoDiscord);
 
         formPublish.reset();
         if (previewBox) previewBox.classList.add('hidden');
         modalPublish.classList.add('hidden');
         cargarPublicaciones();
 
-        const irADiscord = confirm(
-          '¡Publicación creada con éxito!\n\n' +
-          '📋 Hemos copiado el formato listo para Discord a tu portapapeles.\n\n' +
-          '¿Quieres abrir el canal #mercado ahora para pegarlo con Ctrl + V?'
-        );
+        const msgTexto = copiadoOk 
+          ? '¡Publicación creada con éxito!\n\n📋 Se copió automáticamente el formato listo para Discord al portapapeles.\n\n¿Quieres abrir el canal #mercado ahora para pegarlo con Ctrl + V?'
+          : '¡Publicación creada con éxito!\n\n¿Quieres abrir el canal #mercado de Discord ahora?';
 
+        const irADiscord = confirm(msgTexto);
         if (irADiscord) {
           window.open(DISCORD_MARKET_CHANNEL_URL, '_blank');
+        }
+
+      } catch (err) {
+        console.error('Error durante la publicación:', err);
+        alert('Hubo un problema al guardar la publicación:\n' + (err.message || err));
+      } finally {
+        if (btnSubmitListing) {
+          btnSubmitListing.disabled = false;
+          btnSubmitListing.textContent = "Confirmar y Publicar";
         }
       }
     });
@@ -1523,8 +1579,7 @@ function initMarketplace() {
           editingListingId = null;
           const title = document.querySelector('#modal-publish .side-card-title');
           if (title) title.textContent = "CLONAR PUBLICACIÓN";
-          const submitBtn = document.getElementById('btn-submit-listing');
-          if (submitBtn) submitBtn.textContent = "Confirmar y Publicar Copia";
+          if (btnSubmitListing) btnSubmitListing.textContent = "Confirmar y Publicar Copia";
         });
       }
 
@@ -1550,7 +1605,7 @@ function initMarketplace() {
           const discordId = btnContact.getAttribute('data-id');
 
           const copyText = `Hola @${userTarget}! Te contacto desde Wild Dodo por tu publicación de: ${itemTarget}`;
-          navigator.clipboard.writeText(copyText);
+          copiarAlPortapapelesSeguro(copyText);
 
           const originalHTML = btnContact.innerHTML;
           btnContact.innerHTML = `<span>¡Mensaje copiado! Abriendo...</span>`;
@@ -1627,8 +1682,8 @@ function initDonateModal() {
 
   function setupCopy(btn, targetEl) {
     if (!btn || !targetEl) return;
-    btn.addEventListener('click', () => {
-      navigator.clipboard.writeText(targetEl.textContent.trim());
+    btn.addEventListener('click', async () => {
+      await copiarAlPortapapelesSeguro(targetEl.textContent.trim());
       const originalText = btn.textContent;
       btn.textContent = '¡Copiado!';
       setTimeout(() => { btn.textContent = originalText; }, 1800);
