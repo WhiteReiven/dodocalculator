@@ -1,8 +1,9 @@
 import { BASE_TIER_RATES, BASE_DINOS, MUTATED_DINOS, RECURSOS_DATA, BP_CATEGORIES } from './data.js';
 
-// --- ROLES DE ADMINISTRACIÓN ---
+// --- ROLES DE ADMINISTRACIÓN Y CANAL DE DISCORD ---
 const ADMIN_DISCORD_IDS = ['574721030732513306']; 
 const ADMIN_USERNAMES = ['cuervitoblanco']; 
+const DISCORD_MARKET_CHANNEL_URL = "https://discord.com/channels/880306217413668914/1060750333959213066";
 
 function isCurrentUserAdmin() {
   if (!currentUser) return false;
@@ -930,7 +931,6 @@ function initMarketplace() {
       const raw = quickInput.value.trim();
       if (!raw) return;
 
-      // 1. Detección de JSON (Ark Smart Breeding)
       if (raw.startsWith('{') && raw.endsWith('}')) {
         try {
           const asb = JSON.parse(raw);
@@ -958,7 +958,6 @@ function initMarketplace() {
         }
       }
 
-      // 2. Parser de texto plano tipo Discord
       const texto = raw.toLowerCase();
       const todosLosDinos = obtenerCatalogoActual();
       const dinoEncontrado = todosLosDinos.find(d => texto.includes(d.toLowerCase()));
@@ -1394,23 +1393,36 @@ function initMarketplace() {
       } else if (isAdmin) {
         actionsHtml = `
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            ${allowDiscord 
-              ? `<button class="btn-contact-seller btn-open-discord-app" data-id="${sellerDiscordId}" data-user="${sellerName}" data-item="${item.dino_name}">
-                   <span>Contactar por Discord</span>
-                 </button>`
-              : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">Contacto solo In-Game</div>`
-            }
+            <div style="display: flex; gap: 6px;">
+              ${allowDiscord 
+                ? `<button class="btn-contact-seller btn-open-discord-app" data-id="${sellerDiscordId}" data-user="${sellerName}" data-item="${item.dino_name}" style="flex: 2;">
+                     <span>Contactar por Discord</span>
+                   </button>`
+                : `<div class="btn-contact-seller" style="flex: 2; background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">In-Game</div>`
+              }
+              <a href="${DISCORD_MARKET_CHANNEL_URL}" target="_blank" rel="noopener noreferrer" class="btn-copy-discord" title="Ir al canal #mercado" style="padding: 8px 12px; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                #mercado
+              </a>
+            </div>
             <button class="btn-delete-item btn-admin-delete" data-id="${item.id}" style="background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #fff;">
               🛡️ Eliminar (Mod/Admin)
             </button>
           </div>
         `;
       } else {
-        actionsHtml = allowDiscord
-          ? `<button class="btn-contact-seller btn-open-discord-app" data-id="${sellerDiscordId}" data-user="${sellerName}" data-item="${item.dino_name}">
-               <span>Contactar por Discord</span>
-             </button>`
-          : `<div class="btn-contact-seller" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">Contacto solo In-Game</div>`;
+        actionsHtml = `
+          <div style="display: flex; gap: 6px;">
+            ${allowDiscord
+              ? `<button class="btn-contact-seller btn-open-discord-app" data-id="${sellerDiscordId}" data-user="${sellerName}" data-item="${item.dino_name}" style="flex: 2;">
+                   <span>Contactar por Discord</span>
+                 </button>`
+              : `<div class="btn-contact-seller" style="flex: 2; background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: default;">Contacto solo In-Game</div>`
+            }
+            <a href="${DISCORD_MARKET_CHANNEL_URL}" target="_blank" rel="noopener noreferrer" class="btn-copy-discord" title="Ir al canal #mercado" style="padding: 8px 12px; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+              #mercado
+            </a>
+          </div>
+        `;
       }
 
       card.innerHTML = `
