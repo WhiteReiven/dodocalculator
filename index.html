@@ -286,7 +286,7 @@
     </section>
   </main>
 
-  <!-- MODAL DE PUBLICACIÓN CON STATS OFICIALES + FOTO -->
+  <!-- MODAL DE PUBLICACIÓN CON STATS OFICIALES + UPLOAD IMÁGENES (HASTA 5) -->
   <div id="modal-publish" class="market-modal-overlay hidden">
     <div class="card-calculator modal-card modal-large">
       <div class="modal-head">
@@ -302,7 +302,6 @@
         </div>
       </div>
 
-      <!-- NOVALIDATE para evitar bloqueos silenciosos del navegador -->
       <form id="form-publish-listing" novalidate>
         <div class="form-group">
           <label for="pub-category">Categoría</label>
@@ -385,15 +384,23 @@
           <input type="number" id="pub-bp-stat" class="custom-search-input" value="200" min="0">
         </div>
 
-        <div class="form-group" style="margin-top: 14px;">
-          <label for="pub-image-url">Foto / Captura del Ítem o Dino (Opcional)</label>
-          <input type="url" id="pub-image-url" class="custom-search-input" placeholder="https://i.imgur.com/... o enlace de captura">
-          <div id="pub-image-preview-box" class="hidden" style="margin-top: 8px; text-align: center;">
-            <img id="pub-image-preview" src="" alt="Vista previa" style="max-height: 120px; border-radius: 8px; border: 1px solid var(--neon-cyan);">
+        <!-- UPLOADER DE FOTOS (MÁXIMO 5) -->
+        <div class="image-upload-wrapper">
+          <label class="image-upload-label">Imágenes (máximo 5)</label>
+          <div class="image-upload-grid" id="image-upload-grid">
+            <div class="image-drop-box" id="btn-trigger-upload" title="Seleccionar imagen">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+            </div>
           </div>
+          <input type="file" id="pub-file-input" accept="image/jpeg,image/png,image/gif,image/webp" multiple class="hidden">
+          <span class="image-upload-helper" id="image-upload-helper">0/5 imágenes - JPG, PNG, GIF, WebP (max 5MB c/u)</span>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 14px;">
           <label for="pub-details">Detalles adicionales / Contacto / Notas</label>
           <input type="text" id="pub-details" class="custom-search-input" placeholder="Ej: Full mutaciones de color, entrega en Obelisco Verde, etc.">
         </div>
